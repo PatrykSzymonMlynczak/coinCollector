@@ -1,8 +1,6 @@
 package com.example.demo;
 
-import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
+ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,22 +16,22 @@ public class SaleInMemoryManager implements SaleRepo {
 
     private PersonInMemoryManager personInMemoryManager;
     private SortPricingPricingInMemoryManager sortPricingInMemoryManager;
-    private ArrayList<Sale> saleArrayList;
+    private ArrayList<Sale> saleArrayList = new ArrayList<>();
 
 
     @Autowired
-    public SaleInMemoryManager(PersonInMemoryManager personInMemoryManager, SortPricingPricingInMemoryManager sortPricingInMemoryManager, ArrayList<Sale> saleArrayList) {
+    public SaleInMemoryManager(PersonInMemoryManager personInMemoryManager, SortPricingPricingInMemoryManager sortPricingInMemoryManager) {
         this.personInMemoryManager = personInMemoryManager;
         this.sortPricingInMemoryManager = sortPricingInMemoryManager;
-        this.saleArrayList = saleArrayList;
     }
 
 
     @Override
-    public void saveSale(Weed weed, Integer quantity, String personName) {
+    public ArrayList<Sale> saveSale(Weed weed, Integer quantity, String personName, Float discount,Float mySortPrice) {
         Person person = personInMemoryManager.getAllPerson().stream().filter(p -> p.getName().equals(personName)).findAny().get();
-        Sale sale = new Sale(weed,quantity,person);
+        Sale sale = new Sale(weed,quantity,person,discount,mySortPrice);
         saleArrayList.add(sale);
+        return saleArrayList;
     }
 
     @Override
@@ -42,54 +40,52 @@ public class SaleInMemoryManager implements SaleRepo {
     }
 
     @Override
-    public Float getAllEarnedMoney() {
-        Float totalPrice = 0F;
+    public Float getWholeIncome() {
+        float totalPrice = 0F;
 
-        //For each sale find  price for particular sort and quantity
+
+        //For each sale find price for particular sort and quantity
         for (Sale sale: saleArrayList ) {
-            SortPricing sortPricing  = sortPricingInMemoryManager.getSortPricingByWeed(sale.getWeed());
+            float pricePerSale = 0F;
+            SortPricing sortPricing  = sortPricingInMemoryManager.getSortPricingByWeedAndMyPrice(sale.getWeed(), sale.getMySortPrice());
             HashMap<Integer, Float> sortPricingMap =  sortPricing.getQuantityPriceMap();
-            //Find price for  quantity
-            Float pricePerSale = 0F;
-            Integer backQuantity = 0;
-            //For each quantity in sort pricing map
-            for (Integer quantityFromMap: sortPricingMap.keySet()) {
-                //chek if price is strictly precised just multiple values
-                if (quantityFromMap == sale.getQuantity()) {
-                    pricePerSale = quantityFromMap*sortPricingMap.get(sale.getQuantity()); //get price by quantity key
-                }else if(quantityFromMap < sale.getQuantity()){
-                    backQuantity = quantityFromMap;
-                     //  logger.info("\n form sortPriceMap: "+quantityFromMap +" +realQuantity : " +sale.getQuantity());
-                    //continue;
-                }
-                //get price by backQuantity key and multiply by sale quantity
-                logger.info("\n form sortPriceMap: "+quantityFromMap +" +realQuantity : " +sale.getQuantity()+"back quantity : "+ backQuantity);
-                pricePerSale = sale.getQuantity()*sortPricingMap.get(backQuantity);
 
+                //Checking if sales quantity is standardized and if there is, multiply quantity by price assigned to it
+            if(sortPricingMap.keySet().stream().anyMatch(k -> k.equals(sale.getQuantity()))){
+                pricePerSale = sale.getQuantity() * sortPricingMap.get(sale.getQuantity()); //get price by quantity key
+                logger.info("precised quantity : "+pricePerSale);
+            }else{ //If quantity is not standardized take last bigger value
+                Integer previousQuantity= 0;
+                for (Integer quantityFromMap: sortPricingMap.keySet()) {
+                    if(previousQuantity > sale.getQuantity()) break;
 
-
-
-                /*else{
-                    if(quantityFromMap<sale.getQuantity()) {
-                        backQuantity = quantityFromMap;
-                        continue;
-                    }else{
-                        pricePerSale = sale.getQuantity()*sortPricingMap.get(backQuantity); //get price by quantity key
-
+                    if (sale.getQuantity() > quantityFromMap ) {
+                        previousQuantity = quantityFromMap;
+                        pricePerSale = sale.getQuantity()*sortPricingMap.get(quantityFromMap);
                     }
-                  }*/ //todo -> different quantities
 
-
+                }logger.info("not precised: "+pricePerSale);
             }
             totalPrice+=pricePerSale;
+        }logger.info("total: "+totalPrice);
+        return totalPrice;
+    }
+
+    private Float getStandardized(){
+        return
+
+    }
+
+    public Float getAllEarnings(){
+        for(Sale sale: saleArrayList){
+            SortPricing sortPricing  = sortPricingInMemoryManager.getSortPricingByWeedAndMyPrice(sale.getWeed(), sale.getMySortPrice());
 
         }
-        System.out.println(totalPrice);
+        return null;
+    }
 
-        //saleArrayList.forEach(sale -> sale.getWeed().name());
+    public Float getEarnedMoneyByDay(){
 
-        //.stream().filter(sale -> sale.getWeed().name().equals(sortInMemoryManager.inMemorySortList)).
-        //sortInMemoryManager.getSortByWeed(weed)
         return null;
     }
 }

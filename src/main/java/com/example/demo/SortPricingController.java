@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @AllArgsConstructor
@@ -18,10 +17,10 @@ public class SortPricingController {
         return sortPricingInMemoryManager.getAll().toString();
     }
 
-    @PostMapping("/{weed}")
-    public void addNewWeed(@PathVariable Weed weed,
+    @PostMapping("/{weed}/{myPrice}")
+    public void addNewWeed(@PathVariable Weed weed, @PathVariable Float myPrice,
                            @RequestBody HashMap<Integer,Float> priceQuantityMap) throws IOException {
-        SortPricing sortPricing = new SortPricing(weed, priceQuantityMap);
+        SortPricing sortPricing = new SortPricing(weed, priceQuantityMap, myPrice);
 
    /*     for(int i=0; i<=100; i++){
             if(priceCapacityMap.containsKey())

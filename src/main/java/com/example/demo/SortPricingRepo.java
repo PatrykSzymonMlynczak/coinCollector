@@ -6,9 +6,9 @@ public interface SortPricingRepo {
 
     void save(SortPricing sortPricing);
 
-    HashMap<Enum<Weed>, SortPricing> getAll();
+    HashMap<HashMap<Float,Enum<Weed> >, SortPricing>  getAll();
 
-    SortPricing getSortPricingByWeed(Weed weed);
+    SortPricing getSortPricingByWeedAndMyPrice(Weed weed, Float myPrice);
 
 
 }

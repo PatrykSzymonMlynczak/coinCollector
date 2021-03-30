@@ -1,11 +1,10 @@
 package com.example.demo;
 
-
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
-
 
 @RestController
 @RequestMapping("/sale")
@@ -14,15 +13,21 @@ public class SaleController {
 
     SaleInMemoryManager saleInMemoryManager;
 
-    @PostMapping("/{weed}/{quantity}/{personName}")
-    public void addSale(@PathVariable Weed weed, @PathVariable Integer quantity, @PathVariable String personName){
-
-        saleInMemoryManager.saveSale(weed, quantity, personName);
+    @PostMapping({"/{weed}/{quantity}/{personName}/{discount}/{mySortPrice}", "/{weed}/{quantity}/{personName}/{mySortPrice}"})
+    public ArrayList<Sale> addSale(@PathVariable Weed weed,
+                                   @PathVariable Integer quantity,
+                                   @PathVariable String personName,
+                                   @PathVariable(required = false) Float discount,
+                                   @PathVariable Float mySortPrice){
+        if(discount == null){
+            discount = 0F;
+        }
+        return saleInMemoryManager.saveSale(weed, quantity, personName, discount, mySortPrice);
     }
 
-    @GetMapping()
-    public Float getEarnings(){
-        return saleInMemoryManager.getAllEarnedMoney();
+    @GetMapping("/income")
+    public Float getIncome(){
+        return saleInMemoryManager.getWholeIncome();
     }
 
     @GetMapping("/all")

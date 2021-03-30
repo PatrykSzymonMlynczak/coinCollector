@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.ToString;
 
 import java.util.HashMap;
-import java.util.Map;
 
 @ToString
 @Getter
@@ -14,5 +13,6 @@ public class SortPricing {
 
     private Enum<Weed> name;
     private HashMap<Integer,Float> quantityPriceMap;
+    private Float myPrice;
 
 }

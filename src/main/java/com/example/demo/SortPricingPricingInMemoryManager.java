@@ -2,28 +2,35 @@ package com.example.demo;
 
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
 @Service
 public class SortPricingPricingInMemoryManager implements SortPricingRepo {
 
-    HashMap<Enum<Weed>, SortPricing> inMemorySortList = new HashMap<>();
+    HashMap<HashMap<Float,Enum<Weed>>, SortPricing> inMemorySortMap = new HashMap<>();
 
     @Override
     public void save(SortPricing sortPricing) {
-        inMemorySortList.put(sortPricing.getName(), sortPricing);
+
+        HashMap<Float,Enum<Weed>> priceWeedMap = new HashMap();
+        priceWeedMap.put(sortPricing.getMyPrice(), sortPricing.getName());
+
+        inMemorySortMap.put(priceWeedMap, sortPricing);
     }
 
     @Override
-    public  HashMap<Enum<Weed>, SortPricing> getAll() {
-        return inMemorySortList;
+    public  HashMap<HashMap<Float,Enum<Weed> >, SortPricing> getAll() {
+        return inMemorySortMap;
     }
 
     @Override
-    public SortPricing getSortPricingByWeed(Weed weed) {
-        Weed soldWeed = Arrays.stream(Weed.values()).filter(w -> w.name().equals(weed.name())).findAny().get();
-        return inMemorySortList.get(soldWeed);
+    public SortPricing getSortPricingByWeedAndMyPrice(Weed weed, Float myPrice) {
+        HashMap<Float,Enum<Weed>> priceWeedMap = new HashMap();
+        priceWeedMap.put(myPrice,weed);
+
+        return inMemorySortMap.get(priceWeedMap);
     }
 
 
