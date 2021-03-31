@@ -56,10 +56,10 @@ public class SaleInMemoryManager implements SaleRepo {
                 logger.info("precised quantity : "+pricePerSale);
             }else{ //If quantity is not standardized take last bigger value
                 pricePerSale = getCustomQuantityIncome(sale,sortPricingMap);
-                logger.info("not precised: "+pricePerSale);
+                logger.info("not precised quantity: "+pricePerSale);
             }
             totalPrice += pricePerSale;
-        }logger.info("total: "+totalPrice);
+        }logger.info("total income: "+totalPrice);
         return totalPrice;
     }
 
@@ -92,16 +92,19 @@ public class SaleInMemoryManager implements SaleRepo {
 
     public Integer getPriceOverrideForStandard(Sale sale){
         if (sale.getWeed().equals(Weed.STANDARD)){
-            return sale.getPerson().getPricePerGramOverride();
-        }
-        return 0;
+            Integer priceOverride = sale.getPerson().getPricePerGramOverride();
+
+            logger.info("price per gram override :" + priceOverride);
+            return priceOverride;
+
+        }else return 0;
     }
 
     public Float getTotalEarnings() {
         Float totalSaleCost = 0F;
         for(Sale sale: saleArrayList){
             totalSaleCost += sale.getMySortPrice()*sale.getQuantity();
-        }
+        }logger.info("total earnings: " + (getWholeIncome() - totalSaleCost));
         return getWholeIncome() - totalSaleCost;
     }
 }
