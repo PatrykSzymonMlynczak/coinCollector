@@ -2,8 +2,7 @@ package com.example.demo;
 
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+
 import java.util.HashMap;
 
 @Service
@@ -14,7 +13,7 @@ public class SortPricingPricingInMemoryManager implements SortPricingRepo {
     @Override
     public void save(SortPricing sortPricing) {
 
-        HashMap<Float,Enum<Weed>> priceWeedMap = new HashMap();
+        HashMap<Float,Enum<Weed>> priceWeedMap = new HashMap<Float,Enum<Weed>>();
         priceWeedMap.put(sortPricing.getMyPrice(), sortPricing.getName());
 
         inMemorySortMap.put(priceWeedMap, sortPricing);
@@ -27,10 +26,10 @@ public class SortPricingPricingInMemoryManager implements SortPricingRepo {
 
     @Override
     public SortPricing getSortPricingByWeedAndMyPrice(Weed weed, Float myPrice) {
-        HashMap<Float,Enum<Weed>> priceWeedMap = new HashMap();
+        HashMap<Float,Enum<Weed>> priceWeedMap = new HashMap<Float,Enum<Weed>>();
         priceWeedMap.put(myPrice,weed);
-
-        return inMemorySortMap.get(priceWeedMap);
+        SortPricing sortPricing = inMemorySortMap.get(priceWeedMap);
+        return sortPricing;
     }
 
 

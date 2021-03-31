@@ -34,6 +34,10 @@ public class SaleController {
     public List<Sale> getAllSales(){
         return saleInMemoryManager.getAllSales();
     }
+    @GetMapping("/earnings")
+    public Float getTotalEarnings(){
+        return saleInMemoryManager.getTotalEarnings();
+    }
 
 
 }

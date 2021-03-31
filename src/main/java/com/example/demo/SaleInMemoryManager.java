@@ -46,46 +46,62 @@ public class SaleInMemoryManager implements SaleRepo {
 
         //For each sale find price for particular sort and quantity
         for (Sale sale: saleArrayList ) {
-            float pricePerSale = 0F;
-            SortPricing sortPricing  = sortPricingInMemoryManager.getSortPricingByWeedAndMyPrice(sale.getWeed(), sale.getMySortPrice());
-            HashMap<Integer, Float> sortPricingMap =  sortPricing.getQuantityPriceMap();
+            float pricePerSale;
+            SortPricing sortPricing = sortPricingInMemoryManager.getSortPricingByWeedAndMyPrice(sale.getWeed(), sale.getMySortPrice());
+            HashMap<Integer, Float> sortPricingMap = sortPricing.getQuantityPriceMap();
 
                 //Checking if sales quantity is standardized and if there is, multiply quantity by price assigned to it
             if(sortPricingMap.keySet().stream().anyMatch(k -> k.equals(sale.getQuantity()))){
-                pricePerSale = sale.getQuantity() * sortPricingMap.get(sale.getQuantity()); //get price by quantity key
+                pricePerSale = getStandardQuantityIncome(sale,sortPricingMap);
                 logger.info("precised quantity : "+pricePerSale);
             }else{ //If quantity is not standardized take last bigger value
-                Integer previousQuantity= 0;
-                for (Integer quantityFromMap: sortPricingMap.keySet()) {
-                    if(previousQuantity > sale.getQuantity()) break;
-
-                    if (sale.getQuantity() > quantityFromMap ) {
-                        previousQuantity = quantityFromMap;
-                        pricePerSale = sale.getQuantity()*sortPricingMap.get(quantityFromMap);
-                    }
-
-                }logger.info("not precised: "+pricePerSale);
+                pricePerSale = getCustomQuantityIncome(sale,sortPricingMap);
+                logger.info("not precised: "+pricePerSale);
             }
-            totalPrice+=pricePerSale;
+            totalPrice += pricePerSale;
         }logger.info("total: "+totalPrice);
         return totalPrice;
-    }
-
-    private Float getStandardized(){
-        return
-
-    }
-
-    public Float getAllEarnings(){
-        for(Sale sale: saleArrayList){
-            SortPricing sortPricing  = sortPricingInMemoryManager.getSortPricingByWeedAndMyPrice(sale.getWeed(), sale.getMySortPrice());
-
-        }
-        return null;
     }
 
     public Float getEarnedMoneyByDay(){
 
         return null;
+    }
+
+    public Float getStandardQuantityIncome(Sale sale, HashMap<Integer,Float> sortPricingMap){
+        Integer priceOverride = getPriceOverrideForStandard(sale);
+
+        return sale.getQuantity() * ( sortPricingMap.get(sale.getQuantity()) + priceOverride); //get price by quantity key
+    }
+
+    public Float getCustomQuantityIncome(Sale sale, HashMap<Integer, Float> sortPricingMap ){
+        Integer priceOverride = getPriceOverrideForStandard(sale);
+        Float pricePerSale = 0F;
+
+        Integer previousQuantity= 0;
+        for (Integer quantityFromMap: sortPricingMap.keySet()) {
+            if(previousQuantity > sale.getQuantity()) break;
+
+            if (sale.getQuantity() > quantityFromMap ) {
+                previousQuantity = quantityFromMap;
+                pricePerSale = sale.getQuantity() * ( sortPricingMap.get(quantityFromMap) + priceOverride);
+            }
+        }
+            return pricePerSale;
+    }
+
+    public Integer getPriceOverrideForStandard(Sale sale){
+        if (sale.getWeed().equals(Weed.STANDARD)){
+            return sale.getPerson().getPricePerGramOverride();
+        }
+        return 0;
+    }
+
+    public Float getTotalEarnings() {
+        Float totalSaleCost = 0F;
+        for(Sale sale: saleArrayList){
+            totalSaleCost += sale.getMySortPrice()*sale.getQuantity();
+        }
+        return getWholeIncome() - totalSaleCost;
     }
 }
