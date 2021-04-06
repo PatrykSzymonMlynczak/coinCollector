@@ -27,7 +27,7 @@ public class SaleInMemoryManager implements SaleRepo {
         this.sortPricingInMemoryManager = sortPricingInMemoryManager;
     }
 
-    public List<Sale> gsonread(Sale sale){
+    public List<Sale> readSaleListFromFileAndAddNewSale(Sale newSale){
         Gson gson = new Gson();
         List<Sale> salelist;
 
@@ -40,16 +40,16 @@ public class SaleInMemoryManager implements SaleRepo {
             }
             salelist = Arrays.stream(model).collect(Collectors.toList());
         }else salelist = new ArrayList<>();
-        salelist.add(sale);
+
+        salelist.add(newSale);
         return salelist;
 
     }
 
 
-    public void saveToFileAsJson(Sale sale){
+    public void saveToFileAsJson(Sale newSale){
         FileWriter fileWriter;
-
-        String serialized = new Gson().toJson(gsonread(sale));
+        String serialized = new Gson().toJson(readSaleListFromFileAndAddNewSale(newSale));
 
         try {
             fileWriter = new FileWriter("sale.json", false);
@@ -190,38 +190,7 @@ public class SaleInMemoryManager implements SaleRepo {
         }
     }
 
-    public ArrayList<Sale> saveToFile() throws IOException, ClassNotFoundException {
-        FileOutputStream f = new FileOutputStream(new File("myObjects.txt"));
-        ObjectOutputStream o = new ObjectOutputStream(f);
 
-        // Write objects to file
-        for (Sale sale: saleArrayList ) {
-            o.writeObject(sale);
-        }
-
-        o.close();
-        f.close();
-
-        ///////////////////////////////////////////////////////////////
-
-        FileInputStream fi = new FileInputStream(new File("myObjects.txt"));
-        ObjectInputStream oi = new ObjectInputStream(fi);
-        ArrayList<Sale> saleListFromFile = new ArrayList<>();
-
-        // Read objects
-        for (Sale sale: saleArrayList) {
-
-        }
-        Sale pr1 = (Sale) oi.readObject();
-
-        System.out.println(pr1.toString());
-
-        oi.close();
-        fi.close();
-
-
-        return null;
-    }
 
       private void saveSaleAsJSON(Sale sale){
         FileWriter fileWriter;
