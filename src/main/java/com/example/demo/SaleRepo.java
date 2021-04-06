@@ -5,7 +5,7 @@ import java.util.List;
 
 public interface SaleRepo {
 
-    ArrayList<Sale> saveSale(Product product, Integer quantity, String personName, Float discount, Float mySortPrice);
+    ArrayList<Sale> saveSale(String product, Integer quantity, String personName, Float discount, Float mySortPrice);
 
     List<Sale> getAllSales();
 

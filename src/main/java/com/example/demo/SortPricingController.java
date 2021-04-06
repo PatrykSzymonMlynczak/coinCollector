@@ -13,12 +13,12 @@ public class SortPricingController {
     SortPricingPricingInMemoryManager sortPricingInMemoryManager;
 
     @GetMapping("/weed")
-    public HashMap<HashMap<Float,Enum<Product> >, SortPricing> getWeed(){
+    public HashMap<HashMap<Float,String>, SortPricing> getWeed(){
         return sortPricingInMemoryManager.getAllProducts();
     }
 
     @PostMapping("/{product}/{myPrice}")
-    public SortPricing addNewWeed(@PathVariable Product product, @PathVariable Float myPrice,
+    public SortPricing addNewWeed(@PathVariable String product, @PathVariable Float myPrice,
                            @RequestBody HashMap<Integer,Float> priceQuantityMap) throws IOException {
         SortPricing sortPricing = new SortPricing(product, priceQuantityMap, myPrice);
 

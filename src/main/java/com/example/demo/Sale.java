@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 public class Sale implements Serializable {
 
-    private final Product product;
+    private final String productName;
     private final Integer quantity;
     private final Person person;
     private final LocalDateTime transactionDate;
@@ -19,8 +19,8 @@ public class Sale implements Serializable {
     @JsonIgnore
     private final Float mySortPrice;
 
-    public Sale(Product product, Integer quantity, Person person, Float discount, Float mySortPrice) {
-        this.product = product;
+    public Sale(String productName, Integer quantity, Person person, Float discount, Float mySortPrice) {
+        this.productName = productName;
         this.quantity = quantity;
         this.person = person;
         this.transactionDate = LocalDateTime.now();

@@ -6,9 +6,9 @@ public interface SortPricingRepo {
 
     SortPricing saveProduct(SortPricing sortPricing);
 
-    HashMap<HashMap<Float,Enum<Product> >, SortPricing> getAllProducts();
+    HashMap<HashMap<Float,String >, SortPricing> getAllProducts();
 
-    SortPricing getSortPricingByProductAndMyPrice(Product product, Float myPrice);
+    SortPricing getSortPricingByProductAndMyPrice(String product, Float myPrice);
 
 
 }
