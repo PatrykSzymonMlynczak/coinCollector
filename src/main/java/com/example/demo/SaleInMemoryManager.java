@@ -66,11 +66,11 @@ public class SaleInMemoryManager implements SaleRepo {
 
 
     @Override
-    public ArrayList<Sale> saveSale(Product product, Integer quantity, String personName, Float discount, Float mySortPrice) {
+    public ArrayList<Sale> saveSale(String product, Integer quantity, String personName, Float discount, Float mySortPrice) {
         Person person = personInMemoryManager.getAllPerson().stream().filter(p -> p.getName().equals(personName)).findAny().get();
         Sale sale = new Sale(product,quantity,person,discount,mySortPrice);
 
-        if( sortPricingInMemoryManager.getSortPricingByProductAndMyPrice(sale.getProduct(), sale.getMySortPrice()) != null){
+        if( sortPricingInMemoryManager.getSortPricingByProductAndMyPrice(sale.getProductName(), sale.getMySortPrice()) != null){
             saleArrayList.add(sale);
         }else throw new SortPricingNotExistException(product,mySortPrice);
 
@@ -92,7 +92,7 @@ public class SaleInMemoryManager implements SaleRepo {
         //For each sale find price for particular sort and quantity
         for (Sale sale: saleArrayList ) {
             float pricePerSale;
-            SortPricing sortPricing = sortPricingInMemoryManager.getSortPricingByProductAndMyPrice(sale.getProduct(), sale.getMySortPrice());
+            SortPricing sortPricing = sortPricingInMemoryManager.getSortPricingByProductAndMyPrice(sale.getProductName(), sale.getMySortPrice());
             HashMap<Integer, Float> sortPricingMap = sortPricing.getQuantityPriceMap();
 
                 //Checking if sales quantity is standardized and if there is, multiply quantity by price assigned to it
@@ -135,8 +135,9 @@ public class SaleInMemoryManager implements SaleRepo {
             return pricePerSale;
     }
 
+    //todo -> in real time overriding
     public Integer getPriceOverrideForStandard(Sale sale){
-        if (sale.getProduct().equals(Product.STANDARD)){
+        if (sale.getProductName().equals("STANDARD")){
             Integer priceOverride = sale.getPerson().getPricePerGramOverride();
 
             logger.info("price per gram override :" + priceOverride);

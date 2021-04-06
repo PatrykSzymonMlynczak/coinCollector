@@ -14,14 +14,14 @@ import java.util.stream.Collectors;
 @Service
 public class SortPricingPricingInMemoryManager implements SortPricingRepo {
 
-    HashMap<HashMap<Float,Enum<Product>>, SortPricing> inMemorySortMap = new HashMap<>();
+    HashMap<HashMap<Float,String>, SortPricing> inMemorySortMap = new HashMap<>();
     ArrayList<SortPricing> sortPricingArrayList = new ArrayList<>();
 
 
     @Override
     public SortPricing saveProduct(SortPricing sortPricing) {
 
-        HashMap<Float,Enum<Product>> priceWeedMap = new HashMap<>();
+        HashMap<Float,String> priceWeedMap = new HashMap<>();
         priceWeedMap.put(sortPricing.getMyPrice(), sortPricing.getName());
 
         inMemorySortMap.put(priceWeedMap, sortPricing);
@@ -30,13 +30,13 @@ public class SortPricingPricingInMemoryManager implements SortPricingRepo {
     }
 
     @Override
-    public  HashMap<HashMap<Float,Enum<Product> >, SortPricing> getAllProducts() {
+    public  HashMap<HashMap<Float,String >, SortPricing> getAllProducts() {
         return inMemorySortMap;
     }
 
     @Override
-    public SortPricing getSortPricingByProductAndMyPrice(Product product, Float myPrice) {
-        HashMap<Float,Enum<Product>> priceProductMap = new HashMap<>();
+    public SortPricing getSortPricingByProductAndMyPrice(String product, Float myPrice) {
+        HashMap<Float,String> priceProductMap = new HashMap<>();
         priceProductMap.put(myPrice, product);
         return inMemorySortMap.get(priceProductMap);
     }
@@ -57,7 +57,7 @@ public class SortPricingPricingInMemoryManager implements SortPricingRepo {
         }
     }
 
-
+    //
     private List<SortPricing> readSaleListFromFileAndAddNewSale(SortPricing newSortPricing){
         Gson gson = new Gson();
         List<SortPricing> sortPricingList;
