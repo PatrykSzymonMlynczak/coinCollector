@@ -11,7 +11,7 @@ import java.util.HashMap;
 @AllArgsConstructor
 public class SortPricing {
 
-    private Enum<Weed> name;
+    private Enum<Product> name;
     private HashMap<Integer,Float> quantityPriceMap;
     private Float myPrice;
 

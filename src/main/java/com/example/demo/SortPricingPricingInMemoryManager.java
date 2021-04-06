@@ -3,33 +3,37 @@ package com.example.demo;
 import org.springframework.stereotype.Service;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 @Service
 public class SortPricingPricingInMemoryManager implements SortPricingRepo {
 
-    HashMap<HashMap<Float,Enum<Weed>>, SortPricing> inMemorySortMap = new HashMap<>();
+    HashMap<HashMap<Float,Enum<Product>>, SortPricing> inMemorySortMap = new HashMap<>();
+    ArrayList<SortPricing> sortPricingArrayList = new ArrayList<>();
+
+
 
     @Override
-    public void save(SortPricing sortPricing) {
+    public SortPricing saveProduct(SortPricing sortPricing) {
 
-        HashMap<Float,Enum<Weed>> priceWeedMap = new HashMap<Float,Enum<Weed>>();
+        HashMap<Float,Enum<Product>> priceWeedMap = new HashMap<>();
         priceWeedMap.put(sortPricing.getMyPrice(), sortPricing.getName());
 
-        inMemorySortMap.put(priceWeedMap, sortPricing);
+         inMemorySortMap.put(priceWeedMap, sortPricing);
+         return sortPricing;
     }
 
     @Override
-    public  HashMap<HashMap<Float,Enum<Weed> >, SortPricing> getAll() {
+    public  HashMap<HashMap<Float,Enum<Product> >, SortPricing> getAllProducts() {
         return inMemorySortMap;
     }
 
     @Override
-    public SortPricing getSortPricingByWeedAndMyPrice(Weed weed, Float myPrice) {
-        HashMap<Float,Enum<Weed>> priceWeedMap = new HashMap<Float,Enum<Weed>>();
-        priceWeedMap.put(myPrice,weed);
-        SortPricing sortPricing = inMemorySortMap.get(priceWeedMap);
-        return sortPricing;
+    public SortPricing getSortPricingByProductAndMyPrice(Product product, Float myPrice) {
+        HashMap<Float,Enum<Product>> priceProductMap = new HashMap<>();
+        priceProductMap.put(myPrice, product);
+        return inMemorySortMap.get(priceProductMap);
     }
 
 

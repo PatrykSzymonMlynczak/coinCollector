@@ -13,8 +13,8 @@ public class SaleController {
 
     SaleInMemoryManager saleInMemoryManager;
 
-    @PostMapping({"/{weed}/{quantity}/{personName}/{discount}/{mySortPrice}", "/{weed}/{quantity}/{personName}/{mySortPrice}"})
-    public ArrayList<Sale> addSale(@PathVariable Weed weed,
+    @PostMapping({"/{product}/{quantity}/{personName}/{discount}/{mySortPrice}", "/{product}/{quantity}/{personName}/{mySortPrice}"})
+    public ArrayList<Sale> addSale(@PathVariable Product product,
                                    @PathVariable Integer quantity,
                                    @PathVariable String personName,
                                    @PathVariable(required = false) Float discount,
@@ -22,7 +22,7 @@ public class SaleController {
         if(discount == null){
             discount = 0F;
         }
-        return saleInMemoryManager.saveSale(weed, quantity, personName, discount, mySortPrice);
+        return saleInMemoryManager.saveSale(product, quantity, personName, discount, mySortPrice);
     }
 
     @GetMapping("/income")

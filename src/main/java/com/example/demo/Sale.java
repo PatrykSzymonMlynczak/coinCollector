@@ -1,27 +1,29 @@
 package com.example.demo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.time.LocalDate;
+import java.io.Serializable;
+import java.time.LocalDateTime;
 
 @Getter
-public class Sale {
 
-    private final Weed weed;
+public class Sale implements Serializable {
+
+    private final Product product;
     private final Integer quantity;
     private final Person person;
-    private final LocalDate transactionDate;
+    private final LocalDateTime transactionDate;
     private final Float discount;
+
     @JsonIgnore
     private final Float mySortPrice;
 
-    public Sale(Weed weed, Integer quantity, Person person, Float discount, Float mySortPrice) {
-        this.weed = weed;
+    public Sale(Product product, Integer quantity, Person person, Float discount, Float mySortPrice) {
+        this.product = product;
         this.quantity = quantity;
         this.person = person;
-        this.transactionDate = LocalDate.now();
+        this.transactionDate = LocalDateTime.now();
         this.discount = discount;
         this.mySortPrice = mySortPrice;
     }

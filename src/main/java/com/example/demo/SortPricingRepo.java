@@ -4,11 +4,11 @@ import java.util.HashMap;
 
 public interface SortPricingRepo {
 
-    void save(SortPricing sortPricing);
+    SortPricing saveProduct(SortPricing sortPricing);
 
-    HashMap<HashMap<Float,Enum<Weed> >, SortPricing>  getAll();
+    HashMap<HashMap<Float,Enum<Product> >, SortPricing> getAllProducts();
 
-    SortPricing getSortPricingByWeedAndMyPrice(Weed weed, Float myPrice);
+    SortPricing getSortPricingByProductAndMyPrice(Product product, Float myPrice);
 
 
 }

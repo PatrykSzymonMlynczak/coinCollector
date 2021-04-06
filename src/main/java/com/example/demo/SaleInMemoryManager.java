@@ -1,21 +1,23 @@
 package com.example.demo;
 
+ import com.google.gson.Gson;
  import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+ import java.io.*;
+ import java.util.*;
+ import java.util.stream.Collectors;
 
 @Service
 public class SaleInMemoryManager implements SaleRepo {
 
     private final Logger logger = LoggerFactory.getLogger(SaleInMemoryManager.class);
 
-    private PersonInMemoryManager personInMemoryManager;
-    private SortPricingPricingInMemoryManager sortPricingInMemoryManager;
+    private final PersonInMemoryManager personInMemoryManager;
+    private final SortPricingPricingInMemoryManager sortPricingInMemoryManager;
+
     private ArrayList<Sale> saleArrayList = new ArrayList<>();
 
 
@@ -25,12 +27,55 @@ public class SaleInMemoryManager implements SaleRepo {
         this.sortPricingInMemoryManager = sortPricingInMemoryManager;
     }
 
+    public List<Sale> gsonread(Sale sale){
+        Gson gson = new Gson();
+        List<Sale> salelist;
+
+        Sale[] model = null;
+        if(new File("sale.json").length() != 0){
+            try {
+                model = gson.fromJson(new FileReader("sale.json"), Sale[].class);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            salelist = Arrays.stream(model).collect(Collectors.toList());
+        }else salelist = new ArrayList<>();
+        salelist.add(sale);
+        return salelist;
+
+    }
+
+
+    public void saveToFileAsJson(Sale sale){
+        FileWriter fileWriter;
+
+        String serialized = new Gson().toJson(gsonread(sale));
+
+        try {
+            fileWriter = new FileWriter("sale.json", false);
+
+            fileWriter.write(serialized);
+            fileWriter.flush();
+            fileWriter.close();
+            logger.info("Successfully Saved");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 
     @Override
-    public ArrayList<Sale> saveSale(Weed weed, Integer quantity, String personName, Float discount,Float mySortPrice) {
+    public ArrayList<Sale> saveSale(Product product, Integer quantity, String personName, Float discount, Float mySortPrice) {
         Person person = personInMemoryManager.getAllPerson().stream().filter(p -> p.getName().equals(personName)).findAny().get();
-        Sale sale = new Sale(weed,quantity,person,discount,mySortPrice);
-        saleArrayList.add(sale);
+        Sale sale = new Sale(product,quantity,person,discount,mySortPrice);
+
+        if( sortPricingInMemoryManager.getSortPricingByProductAndMyPrice(sale.getProduct(), sale.getMySortPrice()) != null){
+            saleArrayList.add(sale);
+        }else throw new SortPricingNotExistException(product,mySortPrice);
+
+        saveToFileAsJson(sale);
+
         return saleArrayList;
     }
 
@@ -47,7 +92,7 @@ public class SaleInMemoryManager implements SaleRepo {
         //For each sale find price for particular sort and quantity
         for (Sale sale: saleArrayList ) {
             float pricePerSale;
-            SortPricing sortPricing = sortPricingInMemoryManager.getSortPricingByWeedAndMyPrice(sale.getWeed(), sale.getMySortPrice());
+            SortPricing sortPricing = sortPricingInMemoryManager.getSortPricingByProductAndMyPrice(sale.getProduct(), sale.getMySortPrice());
             HashMap<Integer, Float> sortPricingMap = sortPricing.getQuantityPriceMap();
 
                 //Checking if sales quantity is standardized and if there is, multiply quantity by price assigned to it
@@ -91,7 +136,7 @@ public class SaleInMemoryManager implements SaleRepo {
     }
 
     public Integer getPriceOverrideForStandard(Sale sale){
-        if (sale.getWeed().equals(Weed.STANDARD)){
+        if (sale.getProduct().equals(Product.STANDARD)){
             Integer priceOverride = sale.getPerson().getPricePerGramOverride();
 
             logger.info("price per gram override :" + priceOverride);
@@ -107,4 +152,127 @@ public class SaleInMemoryManager implements SaleRepo {
         }logger.info("total earnings: " + (getWholeIncome() - totalSaleCost));
         return getWholeIncome() - totalSaleCost;
     }
+
+/*
+
+     public void saveAllAsJSON(ArrayList<Sale> saleArrayList){
+        FileWriter fileWriter;
+
+
+
+        JSONArray jsonArray = new JSONArray();
+        for (Sale sale: saleArrayList) {
+            JSONObject jsonSaleObject = new JSONObject();
+            JSONObject jsonPersonObject = new JSONObject();
+            jsonSaleObject.put("product", sale.getProduct().name());
+            jsonSaleObject.put("quantity", sale.getQuantity().toString());
+                jsonPersonObject.put("name", sale.getPerson().getName());
+                jsonPersonObject.put("pricePerGramOverride", sale.getPerson().getPricePerGramOverride().toString());
+            jsonSaleObject.put("person", jsonPersonObject);
+            jsonSaleObject.put("transactionDate", sale.getTransactionDate().toString());
+            jsonSaleObject.put("discount", sale.getDiscount().toString());
+            jsonSaleObject.put("mySortPrice", sale.getMySortPrice().toString());
+
+            jsonArray.add(jsonSaleObject);
+
+        }
+
+        try {
+            fileWriter = new FileWriter("sale.txt", true);
+            fileWriter.write("[");
+            fileWriter.write(jsonArray.toJSONString());
+            fileWriter.write("]");
+            fileWriter.flush();
+            fileWriter.close();
+            logger.info("Successfully Saved");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public ArrayList<Sale> saveToFile() throws IOException, ClassNotFoundException {
+        FileOutputStream f = new FileOutputStream(new File("myObjects.txt"));
+        ObjectOutputStream o = new ObjectOutputStream(f);
+
+        // Write objects to file
+        for (Sale sale: saleArrayList ) {
+            o.writeObject(sale);
+        }
+
+        o.close();
+        f.close();
+
+        ///////////////////////////////////////////////////////////////
+
+        FileInputStream fi = new FileInputStream(new File("myObjects.txt"));
+        ObjectInputStream oi = new ObjectInputStream(fi);
+        ArrayList<Sale> saleListFromFile = new ArrayList<>();
+
+        // Read objects
+        for (Sale sale: saleArrayList) {
+
+        }
+        Sale pr1 = (Sale) oi.readObject();
+
+        System.out.println(pr1.toString());
+
+        oi.close();
+        fi.close();
+
+
+        return null;
+    }
+
+      private void saveSaleAsJSON(Sale sale){
+        FileWriter fileWriter;
+        JSONObject jsonSaleObject = new JSONObject();
+        JSONObject jsonPersonObject = new JSONObject();
+
+        jsonSaleObject.put("product", sale.getProduct().name());
+        jsonSaleObject.put("quantity", sale.getQuantity().toString());
+            jsonPersonObject.put("name", sale.getPerson().getName());
+            jsonPersonObject.put("pricePerGramOverride", sale.getPerson().getPricePerGramOverride().toString());
+        jsonSaleObject.put("person", jsonPersonObject);
+        jsonSaleObject.put("transactionDate", sale.getTransactionDate().toString());
+        jsonSaleObject.put("discount", sale.getDiscount().toString());
+        jsonSaleObject.put("mySortPrice", sale.getMySortPrice().toString());
+
+
+
+
+        try {
+            fileWriter = new FileWriter("sale.json", true);
+
+            fileWriter.write(jsonSaleObject.toJSONString());
+            fileWriter.flush();
+            fileWriter.close();
+            logger.info("Successfully Saved");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+        public void readJSOnFile(){
+        // parsing file "JSONExample.json"
+        Object obj = null;
+        try {
+            obj = new JSONParser().parse(new FileReader("sale.json"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        // typecasting obj to JSONObject
+        JSONObject jo = (JSONObject) obj;
+
+        // getting firstName and lastName
+        String product = (String) jo.get("product");
+
+        logger.info(product);
+
+    }
+
+*/
+
 }

@@ -1,5 +1,7 @@
 package com.example.demo;
 
-public enum Weed {
+import java.io.Serializable;
+
+public enum Product implements Serializable {
     STANDARD, TROPICAL_POISON, GIRL_SCOUT_COOKIE, TROPICANA_GRAPE, TROPICANA_SILVER_PINK, CRITICAL_KUSH, CRITICAL_PLUS
 }
