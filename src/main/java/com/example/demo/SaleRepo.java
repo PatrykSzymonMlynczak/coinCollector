@@ -7,7 +7,7 @@ public interface SaleRepo {
 
     ArrayList<Sale> saveSale(String product, Integer quantity, String personName, Float discount, Float mySortPrice);
 
-    List<Sale> getAllSales();
+    List<Sale> loadAllSales();
 
     Float getWholeIncome();
 }

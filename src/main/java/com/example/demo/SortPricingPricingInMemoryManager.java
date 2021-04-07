@@ -1,36 +1,47 @@
 package com.example.demo;
 
-import com.google.gson.Gson;
+import com.example.demo.exceptions.SortPricingAlreadyExistsException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Service;
 
-
-import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
-public class SortPricingPricingInMemoryManager implements SortPricingRepo {
+public class SortPricingPricingInMemoryManager implements SortPricingRepo, ApplicationRunner {
 
+    //todo immutable single key-val pair
     HashMap<HashMap<Float,String>, SortPricing> inMemorySortMap = new HashMap<>();
-    ArrayList<SortPricing> sortPricingArrayList = new ArrayList<>();
+    JSONtoFileSaver jsoNtoFileSaver;
 
+    @Autowired
+    public SortPricingPricingInMemoryManager(JSONtoFileSaver jsoNtoFileSaver) {
+        this.jsoNtoFileSaver = jsoNtoFileSaver;
+    }
 
     @Override
-    public SortPricing saveProduct(SortPricing sortPricing) {
+    public SortPricing saveProduct(SortPricing sortPricing)  {
+        inMemorySortMap = loadAllProductsToMemory();
 
         HashMap<Float,String> priceWeedMap = new HashMap<>();
         priceWeedMap.put(sortPricing.getMyPrice(), sortPricing.getName());
 
-        inMemorySortMap.put(priceWeedMap, sortPricing);
-        saveToFileAsJson(sortPricing);
+        if(!inMemorySortMap.containsKey(priceWeedMap)) {
+            jsoNtoFileSaver.saveToFileAsJson(sortPricing);
+            inMemorySortMap.put(priceWeedMap, sortPricing);
+        } else throw new SortPricingAlreadyExistsException(sortPricing.getName(), sortPricing.getMyPrice());
+
         return sortPricing;
     }
 
     @Override
-    public  HashMap<HashMap<Float,String >, SortPricing> getAllProducts() {
+    public HashMap<HashMap<Float,String >, SortPricing> loadAllProductsToMemory() {
+        for (SortPricing sortPricing: jsoNtoFileSaver.readSortPricingListFromFile()) {
+            HashMap<Float,String> priceWeedMap = new HashMap<>();
+            priceWeedMap.put(sortPricing.getMyPrice(), sortPricing.getName());
+            inMemorySortMap.put(priceWeedMap, sortPricing);
+        }
         return inMemorySortMap;
     }
 
@@ -41,79 +52,8 @@ public class SortPricingPricingInMemoryManager implements SortPricingRepo {
         return inMemorySortMap.get(priceProductMap);
     }
 
-    private void saveToFileAsJson(SortPricing newSortPricing){
-
-        FileWriter fileWriter;
-        String serialized = new Gson().toJson(readSaleListFromFileAndAddNewSale(newSortPricing));
-
-        try {
-            fileWriter = new FileWriter("sortPricing.json", false);
-
-            fileWriter.write(serialized);
-            fileWriter.flush();
-            fileWriter.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    @Override
+    public void run(ApplicationArguments args) throws Exception {
+        loadAllProductsToMemory();
     }
-
-    //
-    private List<SortPricing> readSaleListFromFileAndAddNewSale(SortPricing newSortPricing){
-        Gson gson = new Gson();
-        List<SortPricing> sortPricingList;
-
-        SortPricing[] model = null;
-        if(new File("sortPricing.json").length() != 0){
-            try {
-                model = gson.fromJson(new FileReader("sortPricing.json"), SortPricing[].class);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-            sortPricingList = Arrays.stream(model).collect(Collectors.toList());
-        }else sortPricingList = new ArrayList<>();
-
-        sortPricingList.add(newSortPricing);
-        return sortPricingList;
-
-    }
-/*
-        public void saveAllAsJSON(ArrayList<Sale> saleArrayList){
-            FileWriter fileWriter;
-
-
-
-            JSONArray jsonArray = new JSONArray();
-            for (Sale sale: saleArrayList) {
-                JSONObject jsonSaleObject = new JSONObject();
-                JSONObject jsonPersonObject = new JSONObject();
-                jsonSaleObject.put("product", sale.getProduct().name());
-                jsonSaleObject.put("quantity", sale.getQuantity().toString());
-                jsonPersonObject.put("name", sale.getPerson().getName());
-                jsonPersonObject.put("pricePerGramOverride", sale.getPerson().getPricePerGramOverride().toString());
-                jsonSaleObject.put("person", jsonPersonObject);
-                jsonSaleObject.put("transactionDate", sale.getTransactionDate().toString());
-                jsonSaleObject.put("discount", sale.getDiscount().toString());
-                jsonSaleObject.put("mySortPrice", sale.getMySortPrice().toString());
-
-                jsonArray.add(jsonSaleObject);
-
-            }
-
-            try {
-                fileWriter = new FileWriter("sale.txt", true);
-                fileWriter.write("[");
-                fileWriter.write(jsonArray.toJSONString());
-                fileWriter.write("]");
-                fileWriter.flush();
-                fileWriter.close();
-                logger.info("Successfully Saved");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-*/
-
-
-
-
 }

@@ -11,7 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 public class SaleController {
 
-    SaleInMemoryManager saleInMemoryManager;
+    SaleManager saleManager;
 
     @PostMapping({"/{product}/{quantity}/{personName}/{discount}/{mySortPrice}", "/{product}/{quantity}/{personName}/{mySortPrice}"})
     public ArrayList<Sale> addSale(@PathVariable String product,
@@ -22,21 +22,21 @@ public class SaleController {
         if(discount == null){
             discount = 0F;
         }
-        return saleInMemoryManager.saveSale(product, quantity, personName, discount, mySortPrice);
+        return saleManager.saveSale(product, quantity, personName, discount, mySortPrice);
     }
 
     @GetMapping("/income")
     public Float getIncome(){
-        return saleInMemoryManager.getWholeIncome();
+        return saleManager.getWholeIncome();
     }
 
     @GetMapping("/all")
     public List<Sale> getAllSales(){
-        return saleInMemoryManager.getAllSales();
+        return saleManager.loadAllSales();
     }
     @GetMapping("/earnings")
     public Float getTotalEarnings(){
-        return saleInMemoryManager.getTotalEarnings();
+        return saleManager.getTotalEarnings();
     }
 
 

@@ -7,7 +7,6 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Getter
-
 public class Sale implements Serializable {
 
     private final String productName;
@@ -15,6 +14,7 @@ public class Sale implements Serializable {
     private final Person person;
     private final LocalDateTime transactionDate;
     private final Float discount;
+    private  Float earned;
 
     @JsonIgnore
     private final Float mySortPrice;
@@ -27,4 +27,8 @@ public class Sale implements Serializable {
         this.discount = discount;
         this.mySortPrice = mySortPrice;
     }
+
+
+
+
 }
