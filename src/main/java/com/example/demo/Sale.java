@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Getter
 public class Sale implements Serializable {
 
-    private final String productName;
+    private final String productName; //
     private final Integer quantity;
     private final Person person;
     private final LocalDateTime transactionDate;

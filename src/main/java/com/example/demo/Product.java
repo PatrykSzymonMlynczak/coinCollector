@@ -9,7 +9,7 @@ import java.util.HashMap;
 @ToString
 @Getter
 @AllArgsConstructor
-public class SortPricing {
+public class Product {
 
     private String name;
     private HashMap<Integer,Float> quantityPriceMap;

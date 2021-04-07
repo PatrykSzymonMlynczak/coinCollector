@@ -8,7 +8,8 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Service;
 
- import java.util.*;
+import java.time.LocalDate;
+import java.util.*;
 
 @Service
 public class SaleManager implements SaleRepo, ApplicationRunner {
@@ -16,24 +17,24 @@ public class SaleManager implements SaleRepo, ApplicationRunner {
     private final Logger logger = LoggerFactory.getLogger(SaleManager.class);
 
     private final PersonInMemoryManager personInMemoryManager;
-    private final SortPricingPricingInMemoryManager sortPricingInMemoryManager;
-    private final JSONtoFileSaver jsonToFileSaver;
+    private final ProductManager sortPricingInMemoryManager;
+    private final JsonFileManager jsonFileManager;
 
     private ArrayList<Sale> saleArrayList = new ArrayList<>();
 
 
     @Autowired
     public SaleManager(PersonInMemoryManager personInMemoryManager,
-                       JSONtoFileSaver jsonToFileSaver,
-                       SortPricingPricingInMemoryManager sortPricingInMemoryManager) {
+                       JsonFileManager jsonFileManager,
+                       ProductManager sortPricingInMemoryManager) {
         this.personInMemoryManager = personInMemoryManager;
         this.sortPricingInMemoryManager = sortPricingInMemoryManager;
-        this.jsonToFileSaver = jsonToFileSaver;
+        this.jsonFileManager = jsonFileManager;
     }
 
     @Override
     public ArrayList<Sale> saveSale(String product, Integer quantity, String personName, Float discount, Float mySortPrice) {
-        saleArrayList = (ArrayList<Sale>) jsonToFileSaver.readSaleListFromFile();
+        saleArrayList = (ArrayList<Sale>) jsonFileManager.readSaleListFromFile();
 
         Person person = personInMemoryManager.getAllPerson().stream().filter(p -> p.getName().equals(personName)).findAny().get();
         Sale sale = new Sale(product,quantity,person,discount,mySortPrice);
@@ -42,14 +43,14 @@ public class SaleManager implements SaleRepo, ApplicationRunner {
             saleArrayList.add(sale);
         }else throw new SortPricingNotExistException(product,mySortPrice);
 
-        jsonToFileSaver.saveToFileAsJson(sale);
+        jsonFileManager.saveSaleToFileAsJson(sale);
 
         return saleArrayList;
     }
 
     @Override
     public ArrayList<Sale> loadAllSales() {
-        saleArrayList = (ArrayList<Sale>) jsonToFileSaver.readSaleListFromFile();
+        saleArrayList = (ArrayList<Sale>) jsonFileManager.readSaleListFromFile();
         return saleArrayList;
     }
 
@@ -60,8 +61,8 @@ public class SaleManager implements SaleRepo, ApplicationRunner {
         //For each sale find price for particular sort and quantity
         for (Sale sale: saleArrayList ) {
             float pricePerSale;
-            SortPricing sortPricing = sortPricingInMemoryManager.getSortPricingByProductAndMyPrice(sale.getProductName(), sale.getMySortPrice());
-            HashMap<Integer, Float> sortPricingMap = sortPricing.getQuantityPriceMap();
+            Product product = sortPricingInMemoryManager.getSortPricingByProductAndMyPrice(sale.getProductName(), sale.getMySortPrice());
+            HashMap<Integer, Float> sortPricingMap = product.getQuantityPriceMap();
 
             //Checking if sales quantity is standardized and if there is, multiplication quantity by price assigned to it
             if(sortPricingMap.keySet().stream().anyMatch(k -> k.equals(sale.getQuantity()))){
@@ -81,12 +82,20 @@ public class SaleManager implements SaleRepo, ApplicationRunner {
         for(Sale sale: saleArrayList){
             totalSaleCost += sale.getMySortPrice()*sale.getQuantity();
         }logger.info("total earnings: " + (getWholeIncome() - totalSaleCost));
+        getEarnedMoneyByDay();
         return getWholeIncome() - totalSaleCost;
     }
 
-    public Float getEarnedMoneyByDay(){
+    public void getEarnedMoneyByDay(){
+        Float totalSaleCost = 0F;
 
-        return null;
+        LocalDate localDate = LocalDate.now();
+        for(Sale sale: saleArrayList){
+            if( sale.getTransactionDate().toLocalDate().equals(localDate) ) {
+                totalSaleCost += sale.getMySortPrice() * sale.getQuantity();
+            }
+        }
+        logger.info("  by day: "+": total = "+totalSaleCost);
     }
 
     private Float getStandardQuantityIncome(Sale sale, HashMap<Integer,Float> sortPricingMap){
@@ -124,7 +133,7 @@ public class SaleManager implements SaleRepo, ApplicationRunner {
     }
 
     @Override
-    public void run(ApplicationArguments args) throws Exception {
+    public void run(ApplicationArguments args){
         loadAllSales();
     }
 }
