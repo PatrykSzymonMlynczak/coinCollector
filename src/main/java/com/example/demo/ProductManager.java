@@ -14,22 +14,21 @@ public class ProductManager implements ProductRepo, ApplicationRunner {
 
     //todo ? immutable single key-val pair
     HashMap<HashMap<Float,String>, Product> inMemorySortMap = new HashMap<>();
-    JsonFileManager jsoNtoFileManager;
+    JsonFileManager jsonToFileManager;
 
     @Autowired
-    public ProductManager(JsonFileManager jsoNtoFileManager) {
-        this.jsoNtoFileManager = jsoNtoFileManager;
+    public ProductManager(JsonFileManager jsonToFileManager) {
+        this.jsonToFileManager = jsonToFileManager;
     }
 
     @Override
     public Product saveProduct(Product product)  {
-        inMemorySortMap = loadAllProductsToMemory();
 
         HashMap<Float,String> priceProductKeyMap = new HashMap<>();
         priceProductKeyMap.put(product.getMyPrice(), product.getName());
 
         if(!inMemorySortMap.containsKey(priceProductKeyMap)) {
-            jsoNtoFileManager.saveNewProductToFileAsJson(product);
+            jsonToFileManager.saveNewProductToFileAsJson(product);
             inMemorySortMap.put(priceProductKeyMap, product);
         } else throw new SortPricingAlreadyExistsException(product.getName(), product.getMyPrice());
 
@@ -37,8 +36,8 @@ public class ProductManager implements ProductRepo, ApplicationRunner {
     }
 
     @Override
-    public HashMap<HashMap<Float,String >, Product> loadAllProductsToMemory() {
-        for (Product product : jsoNtoFileManager.readProductListFromFile()) {
+    public HashMap<HashMap<Float,String >, Product> loadAllProducts() {
+        for (Product product : jsonToFileManager.readProductListFromFile()) {
             HashMap<Float,String> priceProductKeyMap = new HashMap<>();
             priceProductKeyMap.put(product.getMyPrice(), product.getName());
             inMemorySortMap.put(priceProductKeyMap, product);
@@ -59,11 +58,11 @@ public class ProductManager implements ProductRepo, ApplicationRunner {
         priceProductKeyMap.put(myPrice, product);
 
         inMemorySortMap.remove(priceProductKeyMap);
-        jsoNtoFileManager.updateProductFile(new ArrayList<>(inMemorySortMap.values()));
+        jsonToFileManager.updateProductFile(new ArrayList<>(inMemorySortMap.values()));
     }
 
     @Override
     public void run(ApplicationArguments args) {
-        loadAllProductsToMemory();
+        loadAllProducts();
     }
 }

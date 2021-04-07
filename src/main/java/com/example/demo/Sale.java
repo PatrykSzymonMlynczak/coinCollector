@@ -1,34 +1,51 @@
 package com.example.demo;
 
+import com.example.demo.exceptions.ProductNotExistException;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 
 @Getter
 public class Sale implements Serializable {
 
-    private final String productName; //
+    private final Product product;
     private final Integer quantity;
     private final Person person;
     private final LocalDateTime transactionDate;
     private final Float discount;
-    private  Float earned;
+    private final Float earned;
 
     @JsonIgnore
     private final Float mySortPrice;
 
-    public Sale(String productName, Integer quantity, Person person, Float discount, Float mySortPrice) {
-        this.productName = productName;
+    public Sale(Product product, Integer quantity, Person person, Float discount, Float mySortPrice) {
+        this.product = product;
         this.quantity = quantity;
         this.person = person;
         this.transactionDate = LocalDateTime.now();
         this.discount = discount;
         this.mySortPrice = mySortPrice;
+        this.earned = getIncomeByProductPricing(product.getQuantityPriceMap()) - (mySortPrice*quantity);
     }
 
+    private Float getIncomeByProductPricing(HashMap<Integer, Float> sortPricingMap ){
+        Float pricePerSale = 0F;
 
+        Integer previousQuantity= 0;
+        //If quantity is not standardized take last bigger value
+        for (Integer quantityFromMap: sortPricingMap.keySet()) {
+            if(previousQuantity > this.quantity) break;
+
+            if (this.quantity >= quantityFromMap ) {
+                previousQuantity = quantityFromMap;
+                pricePerSale = this.quantity * ( sortPricingMap.get(quantityFromMap));
+            }
+        }
+        return pricePerSale;
+    }
 
 
 }

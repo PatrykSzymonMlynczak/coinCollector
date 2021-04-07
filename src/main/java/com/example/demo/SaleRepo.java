@@ -9,5 +9,4 @@ public interface SaleRepo {
 
     List<Sale> loadAllSales();
 
-    Float getWholeIncome();
 }

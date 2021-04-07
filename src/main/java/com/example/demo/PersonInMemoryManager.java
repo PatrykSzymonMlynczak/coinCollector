@@ -9,18 +9,18 @@ import java.util.List;
 public class PersonInMemoryManager implements PersonRepo {
 
     List<Person> personArrayList = Arrays.asList(
-            new Person("Ada",2),
-            new Person("Qń",0),
-            new Person("Marek",0),
-            new Person("Han",0),
-            new Person("Oltek",0),
-            new Person("Zamor",0),
-            new Person("mlodyZamor",0),
-            new Person("Roksa",0),
-            new Person("Bleid",0),
-            new Person("Andrzej",0),
-            new Person("Kris",0),
-            new Person("Bany",0)
+            new Person("Ada"),
+            new Person("Qń"),
+            new Person("Marek"),
+            new Person("Han"),
+            new Person("Oltek"),
+            new Person("Zamor"),
+            new Person("mlodyZamor"),
+            new Person("Roksa"),
+            new Person("Bleid"),
+            new Person("Andrzej"),
+            new Person("Kris"),
+            new Person("Bany")
     );
 
     @Override

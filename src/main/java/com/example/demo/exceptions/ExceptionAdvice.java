@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class ExceptionAdvice {
 
     @ExceptionHandler({SortPricingNotExistException.class,
-            SortPricingAlreadyExistsException.class})
+             SortPricingAlreadyExistsException.class,
+             ProductNotExistException.class,
+             StartDateIsAfterEndDateException.class})
     public ResponseEntity<String> handleException(RuntimeException exception){
         return buildResponseEntity(exception.getMessage(), HttpStatus.BAD_REQUEST);
     }

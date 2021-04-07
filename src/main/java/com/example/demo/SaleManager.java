@@ -1,6 +1,8 @@
 package com.example.demo;
 
+import com.example.demo.exceptions.ProductNotExistException;
 import com.example.demo.exceptions.SortPricingNotExistException;
+import com.example.demo.exceptions.StartDateIsAfterEndDateException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,35 +19,40 @@ public class SaleManager implements SaleRepo, ApplicationRunner {
     private final Logger logger = LoggerFactory.getLogger(SaleManager.class);
 
     private final PersonInMemoryManager personInMemoryManager;
-    private final ProductManager sortPricingInMemoryManager;
+    private final ProductManager productManager;
     private final JsonFileManager jsonFileManager;
 
     private ArrayList<Sale> saleArrayList = new ArrayList<>();
 
-
     @Autowired
     public SaleManager(PersonInMemoryManager personInMemoryManager,
                        JsonFileManager jsonFileManager,
-                       ProductManager sortPricingInMemoryManager) {
+                       ProductManager productManager) {
         this.personInMemoryManager = personInMemoryManager;
-        this.sortPricingInMemoryManager = sortPricingInMemoryManager;
+        this.productManager = productManager;
         this.jsonFileManager = jsonFileManager;
     }
 
     @Override
-    public ArrayList<Sale> saveSale(String product, Integer quantity, String personName, Float discount, Float mySortPrice) {
-        saleArrayList = (ArrayList<Sale>) jsonFileManager.readSaleListFromFile();
+    public ArrayList<Sale> saveSale(String productName, Integer quantity, String personName, Float discount, Float mySortPrice) {
 
+        Product product = getProductByNameAndPrice(mySortPrice,productName);
         Person person = personInMemoryManager.getAllPerson().stream().filter(p -> p.getName().equals(personName)).findAny().get();
         Sale sale = new Sale(product,quantity,person,discount,mySortPrice);
-
-        if( sortPricingInMemoryManager.getSortPricingByProductAndMyPrice(sale.getProductName(), sale.getMySortPrice()) != null){
+        if( productManager.getSortPricingByProductAndMyPrice(sale.getProduct().getName(), sale.getMySortPrice()) != null){
             saleArrayList.add(sale);
-        }else throw new SortPricingNotExistException(product,mySortPrice);
-
-        jsonFileManager.saveSaleToFileAsJson(sale);
+            jsonFileManager.saveSaleToFileAsJson(sale);
+        }else throw new SortPricingNotExistException(product.getName(),mySortPrice);
 
         return saleArrayList;
+    }
+
+    private Product getProductByNameAndPrice(Float mySortPrice, String productName){
+        HashMap<Float, String> productKeyMap = new HashMap<>();
+        productKeyMap.put(mySortPrice,productName);
+        if(productManager.loadAllProducts().containsKey(productKeyMap)) {
+            return productManager.loadAllProducts().get(productKeyMap);
+        }else throw new ProductNotExistException(productName,mySortPrice);
     }
 
     @Override
@@ -54,83 +61,59 @@ public class SaleManager implements SaleRepo, ApplicationRunner {
         return saleArrayList;
     }
 
-    @Override
-    public Float getWholeIncome() {
-        float totalPrice = 0F;
-
-        //For each sale find price for particular sort and quantity
-        for (Sale sale: saleArrayList ) {
-            float pricePerSale;
-            Product product = sortPricingInMemoryManager.getSortPricingByProductAndMyPrice(sale.getProductName(), sale.getMySortPrice());
-            HashMap<Integer, Float> sortPricingMap = product.getQuantityPriceMap();
-
-            //Checking if sales quantity is standardized and if there is, multiplication quantity by price assigned to it
-            if(sortPricingMap.keySet().stream().anyMatch(k -> k.equals(sale.getQuantity()))){
-                pricePerSale = getStandardQuantityIncome(sale,sortPricingMap);
-                logger.info("precised quantity : "+pricePerSale);
-            }else{
-                pricePerSale = getCustomQuantityIncome(sale,sortPricingMap);
-                logger.info("not precised quantity: "+pricePerSale);
-            }
-            totalPrice += pricePerSale;
-        }logger.info("total income: "+totalPrice);
-        return totalPrice;
-    }
-
     public Float getTotalEarnings() {
-        Float totalSaleCost = 0F;
-        for(Sale sale: saleArrayList){
-            totalSaleCost += sale.getMySortPrice()*sale.getQuantity();
-        }logger.info("total earnings: " + (getWholeIncome() - totalSaleCost));
-        getEarnedMoneyByDay();
-        return getWholeIncome() - totalSaleCost;
+        float totalEarnings = 0F;
+
+        for (Sale sale: saleArrayList ) {
+            totalEarnings += sale.getEarned();
+        }logger.info("total earnings: "+totalEarnings);
+        return totalEarnings;
     }
 
-    public void getEarnedMoneyByDay(){
+    public Float getTotalCost() {
+        float totalCost = 0F;
+
+        for (Sale sale: saleArrayList ) {
+            totalCost += sale.getMySortPrice()* sale.getQuantity();
+        }logger.info("total cost: "+totalCost);
+        return totalCost;
+    }
+
+    public Float getTotalIncome() {
+        return getTotalEarnings()+getTotalCost();
+    }
+
+    public Float getEarnedMoneyByDay(String date){
+        LocalDate localDate = LocalDate.parse(date);
         Float totalSaleCost = 0F;
 
-        LocalDate localDate = LocalDate.now();
         for(Sale sale: saleArrayList){
             if( sale.getTransactionDate().toLocalDate().equals(localDate) ) {
-                totalSaleCost += sale.getMySortPrice() * sale.getQuantity();
+                totalSaleCost += sale.getEarned();
             }
         }
         logger.info("  by day: "+": total = "+totalSaleCost);
+        return totalSaleCost;
     }
 
-    private Float getStandardQuantityIncome(Sale sale, HashMap<Integer,Float> sortPricingMap){
-        Integer priceOverride = getPriceOverrideForStandard(sale);
+    public Float getEarnedMoneyByWeek(String dateStart,String dateEnd){
+        LocalDate localDateStart = LocalDate.parse(dateStart);
+        LocalDate localDateEnd = LocalDate.parse(dateEnd);
+        Float totalSaleCost = 0F;
 
-        return sale.getQuantity() * ( sortPricingMap.get(sale.getQuantity()) + priceOverride); //get price by quantity key
-    }
+        if(localDateEnd.isBefore(localDateStart)) throw new StartDateIsAfterEndDateException(dateStart,dateEnd);
 
-    //If quantity is not standardized take last bigger value
-    private Float getCustomQuantityIncome(Sale sale, HashMap<Integer, Float> sortPricingMap ){
-        Integer priceOverride = getPriceOverrideForStandard(sale);
-        Float pricePerSale = 0F;
-
-        Integer previousQuantity= 0;
-        for (Integer quantityFromMap: sortPricingMap.keySet()) {
-            if(previousQuantity > sale.getQuantity()) break;
-
-            if (sale.getQuantity() > quantityFromMap ) {
-                previousQuantity = quantityFromMap;
-                pricePerSale = sale.getQuantity() * ( sortPricingMap.get(quantityFromMap) + priceOverride);
-            }
+        for(Sale sale: saleArrayList){
+            if( sale.getTransactionDate().toLocalDate().isEqual(localDateStart)
+                    || sale.getTransactionDate().toLocalDate().isEqual(localDateEnd)
+                    || (    sale.getTransactionDate().toLocalDate().isAfter(localDateStart)
+                            && sale.getTransactionDate().toLocalDate().isBefore(localDateEnd) )
+            ) { totalSaleCost += sale.getEarned(); }
         }
-        return pricePerSale;
+        logger.info("  by day: "+": total = "+totalSaleCost);
+        return totalSaleCost;
     }
 
-    //todo -> in real time overriding
-    private Integer getPriceOverrideForStandard(Sale sale){
-        if (sale.getProductName().equals("STANDARD")){
-            Integer priceOverride = sale.getPerson().getPricePerGramOverride();
-
-            logger.info("price per gram override :" + priceOverride);
-            return priceOverride;
-
-        }else return 0;
-    }
 
     @Override
     public void run(ApplicationArguments args){

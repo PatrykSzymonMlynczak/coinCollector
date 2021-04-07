@@ -6,7 +6,7 @@ public interface ProductRepo {
 
     Product saveProduct(Product product);
 
-    HashMap<HashMap<Float,String >, Product> loadAllProductsToMemory();
+    HashMap<HashMap<Float,String >, Product> loadAllProducts();
 
     Product getSortPricingByProductAndMyPrice(String product, Float myPrice);
 

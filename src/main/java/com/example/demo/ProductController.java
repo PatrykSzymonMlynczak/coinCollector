@@ -13,13 +13,13 @@ public class ProductController {
 
     @GetMapping("/weed")
     public HashMap<HashMap<Float,String>, Product> getWeed(){
-        return sortPricingInMemoryManager.loadAllProductsToMemory();
+        return sortPricingInMemoryManager.loadAllProducts();
     }
 
     @PostMapping("/{product}/{myPrice}")
     public Product addNewProduct(@PathVariable String product,
                                  @PathVariable Float myPrice,
-                              @RequestBody HashMap<Integer,Float> priceQuantityMap)  {
+                                 @RequestBody HashMap<Integer,Float> priceQuantityMap)  {
         Product sortPricing = new Product(product, priceQuantityMap, myPrice);
         return sortPricingInMemoryManager.saveProduct(sortPricing);
     }

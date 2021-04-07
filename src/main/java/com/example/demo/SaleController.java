@@ -13,8 +13,8 @@ public class SaleController {
 
     SaleManager saleManager;
 
-    @PostMapping({"/{product}/{quantity}/{personName}/{discount}/{mySortPrice}", "/{product}/{quantity}/{personName}/{mySortPrice}"})
-    public ArrayList<Sale> addSale(@PathVariable String product,
+    @PostMapping({"/{productName}/{quantity}/{personName}/{discount}/{mySortPrice}", "/{productName}/{quantity}/{personName}/{mySortPrice}"})
+    public ArrayList<Sale> addSale(@PathVariable String productName,
                                    @PathVariable Integer quantity,
                                    @PathVariable String personName,
                                    @PathVariable(required = false) Float discount,
@@ -22,21 +22,38 @@ public class SaleController {
         if(discount == null){
             discount = 0F;
         }
-        return saleManager.saveSale(product, quantity, personName, discount, mySortPrice);
+        return saleManager.saveSale(productName, quantity, personName, discount, mySortPrice);
     }
 
     @GetMapping("/income")
     public Float getIncome(){
-        return saleManager.getWholeIncome();
+        return saleManager.getTotalIncome();
     }
 
     @GetMapping("/all")
     public List<Sale> getAllSales(){
         return saleManager.loadAllSales();
     }
+
     @GetMapping("/earnings")
     public Float getTotalEarnings(){
         return saleManager.getTotalEarnings();
+    }
+
+    @GetMapping("/cost")
+    public Float getTotalCost(){
+        return saleManager.getTotalCost();
+    }
+
+    @GetMapping("/date/{date}")
+    public Float getEarnedMoneyByDay(@PathVariable String date){
+        return saleManager.getEarnedMoneyByDay(date);
+    }
+
+    @GetMapping("/week/{dateStart}/{dateEnd}")
+    public Float getEarnedMoneyByWeek(@PathVariable String dateStart,
+                                      @PathVariable String dateEnd){
+        return  saleManager.getEarnedMoneyByWeek(dateStart,dateEnd);
     }
 
 
