@@ -42,12 +42,12 @@ jobs: # a collection of steps
   deploy:
     docker: # run the steps with Docker
       - image: circleci/buildpack-deps:trusty
-        steps
-        - checkout
-        - run:
-            name: Deploy on Heroku
-            command: |
-              git push https://heroku:$HEROKU_API_KEY@GIT.HEROKU.COM/$HEROKU_APP_NAME.git master
+    steps:
+      - checkout
+      - run:
+         name: Deploy on Heroku
+         command: |
+            git push https://heroku:$HEROKU_API_KEY@GIT.HEROKU.COM/$HEROKU_APP_NAME.git master
 
 workflows:
   version: 2
