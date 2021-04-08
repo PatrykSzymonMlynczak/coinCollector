@@ -12,7 +12,7 @@ import java.util.HashMap;
 public class Sale implements Serializable {
 
     private final Product product;
-    private final Integer quantity;
+    private final Float quantity;
     private final Person person;
     private final LocalDateTime transactionDate;
     private final Float discount;
@@ -21,7 +21,7 @@ public class Sale implements Serializable {
     @JsonIgnore
     private final Float mySortPrice;
 
-    public Sale(Product product, Integer quantity, Person person, Float discount, Float mySortPrice) {
+    public Sale(Product product, Float quantity, Person person, Float discount, Float mySortPrice) {
         this.product = product;
         this.quantity = quantity;
         this.person = person;

@@ -15,7 +15,7 @@ public class SaleController {
 
     @PostMapping({"/{productName}/{quantity}/{personName}/{discount}/{mySortPrice}", "/{productName}/{quantity}/{personName}/{mySortPrice}"})
     public ArrayList<Sale> addSale(@PathVariable String productName,
-                                   @PathVariable Integer quantity,
+                                   @PathVariable Float quantity,
                                    @PathVariable String personName,
                                    @PathVariable(required = false) Float discount,
                                    @PathVariable Float mySortPrice){

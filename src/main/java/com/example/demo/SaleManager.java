@@ -34,7 +34,7 @@ public class SaleManager implements SaleRepo, ApplicationRunner {
     }
 
     @Override
-    public ArrayList<Sale> saveSale(String productName, Integer quantity, String personName, Float discount, Float mySortPrice) {
+    public ArrayList<Sale> saveSale(String productName, Float quantity, String personName, Float discount, Float mySortPrice) {
 
         Product product = getProductByNameAndPrice(mySortPrice,productName);
         Person person = personInMemoryManager.getAllPerson().stream().filter(p -> p.getName().equals(personName)).findAny().get();
