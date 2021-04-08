@@ -31,12 +31,12 @@ public class Sale implements Serializable {
         this.earned = getIncomeByProductPricing(product.getQuantityPriceMap()) - (mySortPrice*quantity);
     }
 
-    private Float getIncomeByProductPricing(HashMap<Integer, Float> sortPricingMap ){
+    private Float getIncomeByProductPricing(HashMap<Float, Float> sortPricingMap ){
         Float pricePerSale = 0F;
 
-        Integer previousQuantity= 0;
+        Float previousQuantity= 0F;
         //If quantity is not standardized take last bigger value
-        for (Integer quantityFromMap: sortPricingMap.keySet()) {
+        for (Float quantityFromMap: sortPricingMap.keySet()) {
             if(previousQuantity > this.quantity) break;
 
             if (this.quantity >= quantityFromMap ) {

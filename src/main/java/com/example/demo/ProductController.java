@@ -19,7 +19,7 @@ public class ProductController {
     @PostMapping("/{product}/{myPrice}")
     public Product addNewProduct(@PathVariable String product,
                                  @PathVariable Float myPrice,
-                                 @RequestBody HashMap<Integer,Float> priceQuantityMap)  {
+                                 @RequestBody HashMap<Float,Float> priceQuantityMap)  {
         Product sortPricing = new Product(product, priceQuantityMap, myPrice);
         return sortPricingInMemoryManager.saveProduct(sortPricing);
     }

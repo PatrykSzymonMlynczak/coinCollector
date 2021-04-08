@@ -12,7 +12,7 @@ import java.util.HashMap;
 public class Product {
 
     private String name;
-    private HashMap<Integer,Float> quantityPriceMap;
+    private HashMap<Float,Float> quantityPriceMap;
     private Float myPrice;
 
 }
