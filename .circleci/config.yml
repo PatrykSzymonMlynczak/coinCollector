@@ -51,7 +51,9 @@ jobs: # a collection of steps
 
 workflows:
   version: 2
-  workflow:
+  build-deploy:
     jobs:
       - build
-      - deploy
+      - deploy:
+          requires:
+            - build
