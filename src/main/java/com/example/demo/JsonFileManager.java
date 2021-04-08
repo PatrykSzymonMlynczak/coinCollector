@@ -91,4 +91,18 @@ public class JsonFileManager {
         return saleList;
 
     }
+
+    public List<Sale> clearAllSales() {
+        FileWriter fwOb = null;
+        try {
+            fwOb = new FileWriter("sale.json", false);
+            PrintWriter pwOb = new PrintWriter(fwOb, false);
+            pwOb.flush();
+            pwOb.close();
+            fwOb.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
+    }
 }

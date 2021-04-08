@@ -56,5 +56,10 @@ public class SaleController {
         return  saleManager.getEarnedMoneyByWeek(dateStart,dateEnd);
     }
 
+    @DeleteMapping("/all")
+    public List<Sale> clearAllSales(){
+            return saleManager.clearAllSales();
+    }
+
 
 }

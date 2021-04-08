@@ -114,6 +114,10 @@ public class SaleManager implements SaleRepo, ApplicationRunner {
         return totalSaleCost;
     }
 
+    public List<Sale> clearAllSales(){
+       return jsonFileManager.clearAllSales();
+    }
+
 
     @Override
     public void run(ApplicationArguments args){
