@@ -44,6 +44,7 @@ public class Sale implements Serializable {
                 pricePerSale = this.quantity * ( sortPricingMap.get(quantityFromMap));
             }
         }
+        pricePerSale -= discount;
         return pricePerSale;
     }
 
