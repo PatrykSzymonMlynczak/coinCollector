@@ -22,7 +22,8 @@ public class PersonInMemoryManager implements PersonRepo {
             new Person("Kris"),
             new Person("Bany"),
             new Person("Tomasz"),
-            new Person("Bartek")
+            new Person("Bartek"),
+            new Person("Kamil")
     );
 
     @Override

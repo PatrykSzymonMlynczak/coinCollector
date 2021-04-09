@@ -13,16 +13,16 @@ public class SaleController {
 
     SaleManager saleManager;
 
-    @PostMapping({"/{productName}/{quantity}/{personName}/{discount}/{mySortPrice}", "/{productName}/{quantity}/{personName}/{mySortPrice}"})
+    @PostMapping({"/{productName}/{mySortPrice}/{quantity}/{personName}/{discount}", "/{productName}/{mySortPrice}/{quantity}/{personName}"})
     public ArrayList<Sale> addSale(@PathVariable String productName,
                                    @PathVariable Float quantity,
                                    @PathVariable String personName,
                                    @PathVariable(required = false) Float discount,
-                                   @PathVariable Float mySortPrice){
-        if(discount == null){
-            discount = 0F;
-        }
-        return saleManager.saveSale(productName, quantity, personName, discount, mySortPrice);
+                                   @PathVariable Float mySortPrice,
+                                   @RequestParam(required = false) Float money){
+        if(discount == null) discount = 0F;
+
+        return saleManager.saveSale(productName, quantity, personName, discount, mySortPrice, money);
     }
 
     @GetMapping("/income")

@@ -16,18 +16,24 @@ public class Sale implements Serializable {
     private final LocalDateTime transactionDate;
     private final Float discount;
     private final Float earned;
+    private final Float money;
 
     @JsonIgnore
     private final Float mySortPrice;
 
-    public Sale(Product product, Float quantity, Person person, Float discount, Float mySortPrice) {
+    public Sale(Product product, Float quantity, Person person, Float discount, Float mySortPrice, Float money) {
+
+        if(money == null) {
+            this.money = getIncomeByProductPricing(product.getQuantityPriceMap());
+        }else this.money = money;
+
         this.product = product;
         this.quantity = quantity;
         this.person = person;
         this.transactionDate = LocalDateTime.now();
         this.discount = discount;
         this.mySortPrice = mySortPrice;
-        this.earned = getIncomeByProductPricing(product.getQuantityPriceMap()) - (mySortPrice*quantity);
+        this.earned =/* money - */getIncomeByProductPricing(product.getQuantityPriceMap()) - (mySortPrice*quantity);
     }
 
     private Float getIncomeByProductPricing(HashMap<Float, Float> sortPricingMap ){
