@@ -10,7 +10,7 @@ public class PersonInMemoryManager implements PersonRepo {
 
     List<Person> personArrayList = Arrays.asList(
             new Person("Ada"),
-            new Person("Qń"),
+            new Person("Qn"),
             new Person("Marek"),
             new Person("Han"),
             new Person("Oltek"),
@@ -21,7 +21,8 @@ public class PersonInMemoryManager implements PersonRepo {
             new Person("Andrzej"),
             new Person("Kris"),
             new Person("Bany"),
-            new Person("Tomasz")
+            new Person("Tomasz"),
+            new Person("Bartek")
     );
 
     @Override

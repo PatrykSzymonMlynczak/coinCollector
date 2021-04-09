@@ -7,3 +7,6 @@ public class SortPricingNotExistException extends RuntimeException {
     public SortPricingNotExistException(String product, Float price) { super(MESSAGE + product +" price: "+ price); }
 
 }
+
+
+
