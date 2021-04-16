@@ -20,12 +20,23 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1'
     implementation 'com.google.code.gson:gson:2.8.6'
+    //GOOGLE DRIVE API demands Jetty
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-jetty', version: '2.4.4'
+    implementation  'com.google.api-client:google-api-client:1.23.0'
+    implementation  'com.google.oauth-client:google-oauth-client-jetty:1.23.0'
+    // todo: it must exclude tomcat ?? find way to do Auth on Tomcat
+    implementation  'com.google.apis:google-api-services-drive:v3-rev110-1.23.0'
 
+/*  ???????????????????????
+    implementation group: 'org.springframework.boot', name: 'spring-boot-devtools', version: '2.4.4' */
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
         compileOnly "org.projectlombok:lombok:${lombokVersion}"
         annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+}
 
+configurations {
+    implementation.exclude module: "spring-boot-starter-tomcat"
 }
 
 test {

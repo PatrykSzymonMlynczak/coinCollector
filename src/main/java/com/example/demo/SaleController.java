@@ -21,7 +21,6 @@ public class SaleController {
                                    @PathVariable Float mySortPrice,
                                    @RequestParam(required = false) Float money){
         if(discount == null) discount = 0F;
-
         return saleManager.saveSale(productName, quantity, personName, discount, mySortPrice, money);
     }
 
@@ -58,8 +57,7 @@ public class SaleController {
 
     @DeleteMapping("/all")
     public List<Sale> clearAllSales(){
-            return saleManager.clearAllSales();
+        return saleManager.clearAllSales();
     }
-
 
 }

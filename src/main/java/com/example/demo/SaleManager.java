@@ -1,5 +1,6 @@
 package com.example.demo;
 
+import com.example.demo.GoogleApi.GoogleDriveSaleFileManager;
 import com.example.demo.exceptions.ProductNotExistException;
 import com.example.demo.exceptions.SortPricingNotExistException;
 import com.example.demo.exceptions.StartDateIsAfterEndDateException;
@@ -14,26 +15,27 @@ import java.time.LocalDate;
 import java.util.*;
 
 @Service
-public class SaleManager implements SaleRepo, ApplicationRunner {
+public class SaleManager implements ApplicationRunner {
 
     private final Logger logger = LoggerFactory.getLogger(SaleManager.class);
 
     private final PersonInMemoryManager personInMemoryManager;
     private final ProductManager productManager;
     private final JsonFileManager jsonFileManager;
+    private final GoogleDriveSaleFileManager googleDriveSaleFileManager;
 
     private ArrayList<Sale> saleArrayList = new ArrayList<>();
 
     @Autowired
     public SaleManager(PersonInMemoryManager personInMemoryManager,
                        JsonFileManager jsonFileManager,
-                       ProductManager productManager) {
+                       ProductManager productManager, GoogleDriveSaleFileManager googleDriveSaleFileManager) {
         this.personInMemoryManager = personInMemoryManager;
         this.productManager = productManager;
         this.jsonFileManager = jsonFileManager;
+        this.googleDriveSaleFileManager = googleDriveSaleFileManager;
     }
 
-    @Override
     public ArrayList<Sale> saveSale(String productName, Float quantity, String personName, Float discount, Float mySortPrice,Float money) {
 
         Product product = getProductByNameAndPrice(mySortPrice,productName);
@@ -42,23 +44,22 @@ public class SaleManager implements SaleRepo, ApplicationRunner {
         if( productManager.getSortPricingByProductAndMyPrice(sale.getProduct().getName(), sale.getMySortPrice()) != null){
             saleArrayList.add(sale);
             jsonFileManager.saveSaleToFileAsJson(sale);
+            googleDriveSaleFileManager.updateSaleFile();
         }else throw new SortPricingNotExistException(product.getName(),mySortPrice);
 
         return saleArrayList;
     }
 
-    private Product getProductByNameAndPrice(Float mySortPrice, String productName){
-        HashMap<Float, String> productKeyMap = new HashMap<>();
-        productKeyMap.put(mySortPrice,productName);
-        if(productManager.loadAllProducts().containsKey(productKeyMap)) {
-            return productManager.loadAllProducts().get(productKeyMap);
-        }else throw new ProductNotExistException(productName,mySortPrice);
+    public ArrayList<Sale> loadAllSales() {
+        saleArrayList = (ArrayList<Sale>) googleDriveSaleFileManager.getSalesList();
+      //  saleArrayList = (ArrayList<Sale>) jsonFileManager.readSaleListFromFile();
+        return saleArrayList;
     }
 
-    @Override
-    public ArrayList<Sale> loadAllSales() {
-        saleArrayList = (ArrayList<Sale>) jsonFileManager.readSaleListFromFile();
-        return saleArrayList;
+    public List<Sale> clearAllSales(){
+        List<Sale> saleEmptyList = jsonFileManager.clearAllSales();
+        googleDriveSaleFileManager.updateSaleFile();
+        return saleEmptyList;
     }
 
     public Float getTotalEarnings() {
@@ -114,13 +115,16 @@ public class SaleManager implements SaleRepo, ApplicationRunner {
         return totalSaleCost;
     }
 
-    public List<Sale> clearAllSales(){
-       return jsonFileManager.clearAllSales();
-    }
-
-
     @Override
     public void run(ApplicationArguments args){
         loadAllSales();
+    }
+
+    private Product getProductByNameAndPrice(Float mySortPrice, String productName){
+        HashMap<Float, String> productKeyMap = new HashMap<>();
+        productKeyMap.put(mySortPrice,productName);
+        if(productManager.loadAllProducts().containsKey(productKeyMap)) {
+            return productManager.loadAllProducts().get(productKeyMap);
+        }else throw new ProductNotExistException(productName,mySortPrice);
     }
 }

@@ -11,6 +11,4 @@ public interface ProductRepo {
     Product getSortPricingByProductAndMyPrice(String product, Float myPrice);
 
     void deleteProduct(String product, Float myPrice);
-
-
 }

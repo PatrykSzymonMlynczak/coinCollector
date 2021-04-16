@@ -54,9 +54,7 @@ public class FileBackupController {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
             return uploadedJsonFile;
-
     }
 
 }

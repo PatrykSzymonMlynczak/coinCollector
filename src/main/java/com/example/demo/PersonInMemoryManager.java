@@ -28,7 +28,6 @@ public class PersonInMemoryManager implements PersonRepo {
 
     @Override
     public void savePerson() {
-
     }
 
     @Override
@@ -38,7 +37,7 @@ public class PersonInMemoryManager implements PersonRepo {
 
     @Override
     public List<Person> getAllPerson() {
-
         return personArrayList;
     }
+
 }
