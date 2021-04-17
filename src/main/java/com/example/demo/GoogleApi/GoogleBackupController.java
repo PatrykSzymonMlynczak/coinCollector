@@ -1,34 +1,39 @@
 package com.example.demo.GoogleApi;
 
-import com.example.demo.Sale;
-
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 @RestController
 public class GoogleBackupController {
 
-    private final GoogleDriveSaleFileManager fileManager;
+    private final GoogleDriveProductFileManager googleDriveProductFileManager;
+    private final GoogleDriveSaleFileManager googleDriveSaleFileManager;
 
-    public GoogleBackupController(GoogleDriveSaleFileManager fileManager) {
-        this.fileManager = fileManager;
+    public GoogleBackupController(GoogleDriveProductFileManager googleDriveProductFileManager,
+                                  GoogleDriveSaleFileManager googleDriveSaleFileManager) {
+        this.googleDriveProductFileManager = googleDriveProductFileManager;
+        this.googleDriveSaleFileManager = googleDriveSaleFileManager;
     }
 
+    @GetMapping("/pu")
+    public void productsSend(){
+        googleDriveProductFileManager.uploadGoogleFile(GoogleFile.PRODUCT);
+    }
+
+/*
     @GetMapping({"/ss"})
     public List<Sale> getSale(){
-        return fileManager.getSalesList();
-    }
+        return (List<Sale>) googleDriveFileManager.getGoogleFileList(GoogleFile.SALE);
+    }*/
 
     @PostMapping("/u")
     public void uploadSale(){
-        fileManager.uploadSaleFile();
+        googleDriveProductFileManager.uploadGoogleFile(GoogleFile.SALE);
     }
 
     @GetMapping("/u")
     public void updateSale(){
-        fileManager.updateSaleFile();
+        googleDriveProductFileManager.updateGoogleFile(GoogleFile.SALE);
     }
 }

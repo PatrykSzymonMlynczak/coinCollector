@@ -1,6 +1,7 @@
 package com.example.demo;
 
 import com.example.demo.GoogleApi.GoogleDriveSaleFileManager;
+import com.example.demo.GoogleApi.GoogleFile;
 import com.example.demo.exceptions.ProductNotExistException;
 import com.example.demo.exceptions.SortPricingNotExistException;
 import com.example.demo.exceptions.StartDateIsAfterEndDateException;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.*;
 
+//todo consider another class for calculting
 @Service
 public class SaleManager implements ApplicationRunner {
 
@@ -44,22 +46,21 @@ public class SaleManager implements ApplicationRunner {
         if( productManager.getSortPricingByProductAndMyPrice(sale.getProduct().getName(), sale.getMySortPrice()) != null){
             saleArrayList.add(sale);
             jsonFileManager.saveSaleToFileAsJson(sale);
-            googleDriveSaleFileManager.updateSaleFile();
+            googleDriveSaleFileManager.updateGoogleFile(GoogleFile.SALE);
         }else throw new SortPricingNotExistException(product.getName(),mySortPrice);
 
         return saleArrayList;
     }
 
     public ArrayList<Sale> loadAllSales() {
-        saleArrayList = (ArrayList<Sale>) googleDriveSaleFileManager.getSalesList();
-      //  saleArrayList = (ArrayList<Sale>) jsonFileManager.readSaleListFromFile();
+        saleArrayList = (ArrayList<Sale>) googleDriveSaleFileManager.getGoogleSaleFileList();
         return saleArrayList;
     }
 
     public List<Sale> clearAllSales(){
         List<Sale> saleEmptyList = jsonFileManager.clearAllSales();
-        googleDriveSaleFileManager.updateSaleFile();
-        return saleEmptyList;
+        googleDriveSaleFileManager.updateGoogleFile(GoogleFile.SALE);
+        return new ArrayList<>();
     }
 
     public Float getTotalEarnings() {

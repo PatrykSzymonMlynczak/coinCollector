@@ -1,26 +1,24 @@
 package com.example.demo.GoogleApi;
 
-import com.example.demo.Sale;
-
+import com.example.demo.Product;
 import com.google.gson.Gson;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class GoogleDriveSaleFileManager extends GoogleDriveFileManagerAbstract {
+public class GoogleDriveProductFileManager extends GoogleDriveFileManagerAbstract {
 
-    public GoogleDriveSaleFileManager(GoogleApiService googleApiService) {
+    public GoogleDriveProductFileManager(GoogleApiService googleApiService) {
         super(googleApiService);
     }
 
-    public List<Sale> getGoogleSaleFileList()  {
-        String salesListString = getFileFromGoogleDrive(GoogleFile.SALE);
+    public List<Product> getGoogleProductFileList()  {
+        String salesListString = getFileFromGoogleDrive(GoogleFile.PRODUCT);
         if(salesListString.length() != 0) {
-            Sale[] model = new Gson().fromJson(salesListString, Sale[].class);
+            Product[] model = new Gson().fromJson(salesListString, Product[].class);
             return Arrays.stream(model).collect(Collectors.toList());
         }else return new ArrayList<>();
     }

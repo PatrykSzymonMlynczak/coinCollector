@@ -5,7 +5,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
+import java.security.GeneralSecurityException;
 
 @RestControllerAdvice
 public class ExceptionAdvice {
@@ -14,8 +16,10 @@ public class ExceptionAdvice {
              SortPricingAlreadyExistsException.class,
              ProductNotExistException.class,
              StartDateIsAfterEndDateException.class,
-            JsonFileNotFoundException.class,
-             MalformedURLException.class})
+             JsonFileNotFoundException.class,
+             MalformedURLException.class,
+             GeneralSecurityException.class,
+             IOException.class})
 
     public ResponseEntity<String> handleException(RuntimeException exception){
         return buildResponseEntity(exception.getMessage(), HttpStatus.BAD_REQUEST);

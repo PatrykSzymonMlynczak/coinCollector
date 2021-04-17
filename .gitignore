@@ -1,6 +1,4 @@
 HELP.md
-sortPricing.json
-sale.json
 .gradle
 build/
 !gradle/wrapper/gradle-wrapper.jar

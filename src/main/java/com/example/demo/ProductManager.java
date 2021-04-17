@@ -1,5 +1,8 @@
 package com.example.demo;
 
+import com.example.demo.GoogleApi.GoogleDriveProductFileManager;
+import com.example.demo.GoogleApi.GoogleDriveSaleFileManager;
+import com.example.demo.GoogleApi.GoogleFile;
 import com.example.demo.exceptions.SortPricingAlreadyExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
@@ -15,10 +18,13 @@ public class ProductManager implements ProductRepo, ApplicationRunner {
     //todo ? immutable single key-val pair
     HashMap<HashMap<Float,String>, Product> inMemoryProductMap = new HashMap<>();
     JsonFileManager jsonToFileManager;
+    GoogleDriveProductFileManager googleDriveProductFileManager;
+
 
     @Autowired
-    public ProductManager(JsonFileManager jsonToFileManager) {
+    public ProductManager(JsonFileManager jsonToFileManager, GoogleDriveProductFileManager googleDriveProductFileManager) {
         this.jsonToFileManager = jsonToFileManager;
+        this.googleDriveProductFileManager = googleDriveProductFileManager;
     }
 
     @Override
@@ -30,6 +36,7 @@ public class ProductManager implements ProductRepo, ApplicationRunner {
         if(!inMemoryProductMap.containsKey(priceProductKeyMap)) {
             jsonToFileManager.saveNewProductToFileAsJson(product);
             inMemoryProductMap.put(priceProductKeyMap, product);
+            googleDriveProductFileManager.updateGoogleFile(GoogleFile.PRODUCT);
         } else throw new SortPricingAlreadyExistsException(product.getName(), product.getMyPrice());
 
         return product;
@@ -37,11 +44,23 @@ public class ProductManager implements ProductRepo, ApplicationRunner {
 
     @Override
     public HashMap<HashMap<Float,String >, Product> loadAllProducts() {
-        for (Product product : jsonToFileManager.readProductListFromFile()) {
+        HashMap<HashMap<Float,String>, Product> inMemoryProductMap = new HashMap<>();
+
+        for (Product product : googleDriveProductFileManager.getGoogleProductFileList()) {
+            HashMap<Float,String> priceProductKeyMap = new HashMap<>();
+            priceProductKeyMap.put(product.getMyPrice(), (product).getName());
+            inMemoryProductMap.put(priceProductKeyMap, product);
+        }
+
+/**
+ *          Load from local file
+ *
+ *          for (Product product : jsonToFileManager.readProductListFromFile()) {
             HashMap<Float,String> priceProductKeyMap = new HashMap<>();
             priceProductKeyMap.put(product.getMyPrice(), product.getName());
             inMemoryProductMap.put(priceProductKeyMap, product);
         }
+ */
         return inMemoryProductMap;
     }
 
@@ -59,6 +78,7 @@ public class ProductManager implements ProductRepo, ApplicationRunner {
 
         inMemoryProductMap.remove(priceProductKeyMap);
         jsonToFileManager.updateProductFile(new ArrayList<>(inMemoryProductMap.values()));
+        googleDriveProductFileManager.updateGoogleFile(GoogleFile.PRODUCT);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.example.demo.GoogleApi;
 
+
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
 import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
@@ -26,6 +27,7 @@ import java.util.List;
 @Service
 public class GoogleApiService {
 
+
     private static final String APPLICATION_NAME = "CoinCollector";
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
     private static final String TOKENS_DIRECTORY_PATH = "tokens";
@@ -42,12 +44,12 @@ public class GoogleApiService {
     }
 
 /**
-     * Creates an authorized Credential object.
-     *
-     * @param HTTP_TRANSPORT The network HTTP Transport.
-     * @return An authorized Credential object.
-     * @throws IOException If the credentials.json file cannot be found.
-     */
+ * Creates an authorized Credential object.
+ *
+ * @param HTTP_TRANSPORT The network HTTP Transport.
+ * @return An authorized Credential object.
+ * @throws IOException If the credentials.json file cannot be found.
+ */
 
     private Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws IOException {
         // Load client secrets.

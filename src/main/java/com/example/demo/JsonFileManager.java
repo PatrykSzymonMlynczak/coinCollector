@@ -1,5 +1,7 @@
 package com.example.demo;
 
+import com.example.demo.GoogleApi.GoogleDriveProductFileManager;
+import com.example.demo.GoogleApi.GoogleDriveSaleFileManager;
 import com.google.gson.Gson;
 import org.springframework.stereotype.Service;
 
@@ -12,9 +14,18 @@ import java.util.stream.Collectors;
 @Service
 public class JsonFileManager {
 
+    GoogleDriveSaleFileManager googleDriveSaleFileManager;
+    GoogleDriveProductFileManager googleDriveProductFileManager;
+
+    public JsonFileManager(GoogleDriveSaleFileManager googleDriveSaleFileManager, GoogleDriveProductFileManager googleDriveProductFileManager) {
+        this.googleDriveSaleFileManager = googleDriveSaleFileManager;
+        this.googleDriveProductFileManager = googleDriveProductFileManager;
+    }
+
     /// PRODUCT
     public void saveNewProductToFileAsJson(Product newProduct){
 
+       // List<Product> productList = readProductListFromFile();
         List<Product> productList = readProductListFromFile();
         productList.add(newProduct);
         saveProductListToFile(productList);
@@ -30,7 +41,7 @@ public class JsonFileManager {
         String jsonProductList = new Gson().toJson(productList);
 
         try {
-            fileWriter = new FileWriter("sortPricing.json", false);
+            fileWriter = new FileWriter("product.json", false);
             fileWriter.write(jsonProductList);
             fileWriter.flush();
             fileWriter.close();
@@ -44,9 +55,9 @@ public class JsonFileManager {
         List<Product> productList;
 
         Product[] model = null;
-        if(new File("sortPricing.json").length() != 0){
+        if(new File("product.json").length() != 0){
             try {
-                model = gson.fromJson(new FileReader("sortPricing.json"), Product[].class);
+                model = gson.fromJson(new FileReader("product.json"), Product[].class);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
