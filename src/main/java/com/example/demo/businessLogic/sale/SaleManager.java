@@ -1,7 +1,12 @@
-package com.example.demo;
+package com.example.demo.businessLogic.sale;
 
-import com.example.demo.GoogleApi.GoogleDriveSaleFileManager;
-import com.example.demo.GoogleApi.GoogleFile;
+import com.example.demo.businessLogic.JsonFileManager;
+import com.example.demo.businessLogic.googleApi.GoogleDriveSaleFileManager;
+import com.example.demo.businessLogic.googleApi.GoogleFile;
+import com.example.demo.businessLogic.person.Person;
+import com.example.demo.businessLogic.person.PersonInMemoryManager;
+import com.example.demo.businessLogic.product.Product;
+import com.example.demo.businessLogic.product.ProductManager;
 import com.example.demo.exceptions.ProductNotExistException;
 import com.example.demo.exceptions.SortPricingNotExistException;
 import com.example.demo.exceptions.StartDateIsAfterEndDateException;

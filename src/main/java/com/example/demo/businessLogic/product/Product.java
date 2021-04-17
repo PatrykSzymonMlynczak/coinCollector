@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.businessLogic.product;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

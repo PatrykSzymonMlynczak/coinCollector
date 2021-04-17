@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.businessLogic.person;
 
 import org.springframework.stereotype.Service;
 

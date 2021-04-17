@@ -1,7 +1,9 @@
-package com.example.demo;
+package com.example.demo.businessLogic;
 
-import com.example.demo.GoogleApi.GoogleDriveProductFileManager;
-import com.example.demo.GoogleApi.GoogleDriveSaleFileManager;
+import com.example.demo.businessLogic.googleApi.GoogleDriveProductFileManager;
+import com.example.demo.businessLogic.googleApi.GoogleDriveSaleFileManager;
+import com.example.demo.businessLogic.product.Product;
+import com.example.demo.businessLogic.sale.Sale;
 import com.google.gson.Gson;
 import org.springframework.stereotype.Service;
 
@@ -24,8 +26,6 @@ public class JsonFileManager {
 
     /// PRODUCT
     public void saveNewProductToFileAsJson(Product newProduct){
-
-       // List<Product> productList = readProductListFromFile();
         List<Product> productList = readProductListFromFile();
         productList.add(newProduct);
         saveProductListToFile(productList);

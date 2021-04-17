@@ -1,5 +1,7 @@
-package com.example.demo;
+package com.example.demo.controllers;
 
+import com.example.demo.businessLogic.sale.Sale;
+import com.example.demo.businessLogic.sale.SaleManager;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

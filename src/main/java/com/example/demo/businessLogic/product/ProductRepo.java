@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.businessLogic.product;
 
 import java.util.HashMap;
 

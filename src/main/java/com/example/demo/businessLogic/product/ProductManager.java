@@ -1,8 +1,8 @@
-package com.example.demo;
+package com.example.demo.businessLogic.product;
 
-import com.example.demo.GoogleApi.GoogleDriveProductFileManager;
-import com.example.demo.GoogleApi.GoogleDriveSaleFileManager;
-import com.example.demo.GoogleApi.GoogleFile;
+import com.example.demo.businessLogic.JsonFileManager;
+import com.example.demo.businessLogic.googleApi.GoogleDriveProductFileManager;
+import com.example.demo.businessLogic.googleApi.GoogleFile;
 import com.example.demo.exceptions.SortPricingAlreadyExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;

@@ -1,5 +1,7 @@
-package com.example.demo;
+package com.example.demo.businessLogic.sale;
 
+import com.example.demo.businessLogic.person.Person;
+import com.example.demo.businessLogic.product.Product;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 

@@ -1,6 +1,6 @@
-package com.example.demo.GoogleApi;
+package com.example.demo.businessLogic.googleApi;
 
-import com.example.demo.Product;
+import com.example.demo.businessLogic.product.Product;
 import com.google.gson.Gson;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;

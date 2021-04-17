@@ -1,4 +1,4 @@
-package com.example.demo.GoogleApi;
+package com.example.demo.businessLogic.googleApi;
 
 public enum GoogleFile {
 
