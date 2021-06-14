@@ -1,8 +1,8 @@
 package com.example.demo.businessLogic.sale;
 
 import com.example.demo.businessLogic.JsonFileManager;
-import com.example.demo.businessLogic.googleApi.GoogleDriveSaleFileManager;
-import com.example.demo.businessLogic.googleApi.GoogleFile;
+import com.example.demo.googleApi.GoogleDriveSaleFileManager;
+import com.example.demo.googleApi.GoogleFile;
 import com.example.demo.businessLogic.person.Person;
 import com.example.demo.businessLogic.person.PersonInMemoryManager;
 import com.example.demo.businessLogic.product.Product;

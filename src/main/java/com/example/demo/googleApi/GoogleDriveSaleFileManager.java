@@ -1,4 +1,4 @@
-package com.example.demo.businessLogic.googleApi;
+package com.example.demo.googleApi;
 
 import com.example.demo.businessLogic.sale.Sale;
 

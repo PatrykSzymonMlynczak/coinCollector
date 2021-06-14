@@ -1,4 +1,4 @@
-package com.example.demo.businessLogic.googleApi;
+package com.example.demo.googleApi;
 
 import com.example.demo.businessLogic.product.Product;
 import com.google.gson.Gson;
