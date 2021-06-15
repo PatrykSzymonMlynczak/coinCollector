@@ -4,14 +4,14 @@
 * [General info](#general-info)
 * [Versions](#versions)
 * [Technologies](#technologies)
-* [Setup](#setup)
+* [How it works](#how-it-works)
 * [Status](#status)
 
 
 ## Why this version was suspended
 Because Heroku is re-started, and any saved data on the server is removed I wanted to send it to my own Google Drive. 
 Unfortunately, to find the file on GDrive its name is not enough. You need its Id, which is changing after each re-write data, and that leads to the same problem :
-Can't save id on Heroku because it will be removed. 
+Can't save file id on Heroku because it will be removed. 
 Besides that this implementation of Google API enforces change Tomcat to Jetty and I think that could be problematic
 
 
@@ -38,9 +38,23 @@ For more info check this : [DEVELOPED VERSION](https://github.com/PatrykSzymonMl
 * Circle CI
 * Heroku
 
-
-## Setup
-
-
 ## Status
-Contantly developed
+Suspended 
+
+## How it works
+Application was performed mostly for CBD sales
+Base endpoint https://coin-collector-app.herokuapp.com/
+
+####To add new product:
+POST base-url/{product_name}/{my_price}
+as a body pass map {quantity:price_per_gram}
+![image](https://user-images.githubusercontent.com/44747531/122130747-62711280-ce38-11eb-82fb-2cdee8eed557.png)
+
+####To add new sale:
+POST base-url/{productName}/{mySortPrice}/{quantity}/{personName}/{discount}"
+![image](https://user-images.githubusercontent.com/44747531/122131244-2be7c780-ce39-11eb-90d9-7613ef7081d3.png)
+
+
+
+
+
