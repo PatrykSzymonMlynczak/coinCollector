@@ -10,9 +10,9 @@
 
 ## Why this version was suspended
 Because Heroku is re-started, and any saved data on the server is removed I wanted to send it to my own Google Drive. 
-Unfortunately, to find the file on GDrive its name is not enough. You need its Id, which is changing after each re-write data, and that leads to the same problem :
-Can't save file id on Heroku because it will be removed. 
-Besides that this implementation of Google API enforces change Tomcat to Jetty and I think that could be problematic
+Unfortunately, to find the file on GDrive its name is not enough. You need its Id, which is changing after each re-write data, and that leads to the same problem :<br />
+Can't save file id on Heroku because it will be removed. <br />
+Besides that this implementation of Google API enforces change Tomcat to Jetty and I think that could be problematic.
 
 
 ## General info
@@ -23,8 +23,8 @@ and joy from coding instead of connecting to the database I decided to base data
 
 
 ## Versions
-Here on the default branch is developed version 
-For more info check this : <br />
+Here on the default branch is developed version <br />
+For more info check this : 
 [DEVELOPED VERSION](https://github.com/PatrykSzymonMlynczak/coinCollector/tree/withoutGDrive)
 
 
