@@ -42,8 +42,10 @@ For more info check this : [DEVELOPED VERSION](https://github.com/PatrykSzymonMl
 Suspended 
 
 ## How it works
-Application was performed mostly for CBD sales
+Application was performed mostly for CBD sales, and is used by me, but Im working on local-machine-version.
 Base endpoint https://coin-collector-app.herokuapp.com/
+
+###Chosen Endpoints
 
 ####To add new product:
 POST base-url/{product_name}/{my_price}
@@ -51,8 +53,14 @@ as a body pass map {quantity:price_per_gram}
 ![image](https://user-images.githubusercontent.com/44747531/122130747-62711280-ce38-11eb-82fb-2cdee8eed557.png)
 
 ####To add new sale:
-POST base-url/{productName}/{mySortPrice}/{quantity}/{personName}/{discount}"
+POST base-url/sale/{productName}/{mySortPrice}/{quantity}/{personName}/{discount}  (discount is optional)
+POST base-url/sale/{productName}/{mySortPrice}/{quantity}/{personName}
 ![image](https://user-images.githubusercontent.com/44747531/122131244-2be7c780-ce39-11eb-90d9-7613ef7081d3.png)
+
+####Get earnings by chosen period:
+GET base-url/sale/period/{dateStart}/{dateEnd}
+![image](https://user-images.githubusercontent.com/44747531/122133698-808d4180-ce3d-11eb-9c0e-ba7fe5e8b6f6.png)
+
 
 
 
