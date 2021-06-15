@@ -40,7 +40,7 @@ For more info check this : [DEVELOPED VERSION](https://github.com/PatrykSzymonMl
 
 
 ## How it works
-Application was performed mostly for CBD sales, and is used by me, but Im working on local-machine-version.
+Application was performed mostly for CBD sales, and is used by me, but Im working on [local-machine-version](https://github.com/PatrykSzymonMlynczak/coinCollector/tree/withoutGDrive)
 
 ### Chosen Endpoints
 
