@@ -13,7 +13,7 @@ public class ProductController {
 
     ProductRepo sortPricingInMemoryManager;
 
-    @GetMapping("/weed")
+    @GetMapping("/product")
     public HashMap<HashMap<Float,String>, Product> getWeed(){
         return sortPricingInMemoryManager.loadAllProducts();
     }
