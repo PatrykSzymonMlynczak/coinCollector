@@ -24,7 +24,8 @@ and joy from coding instead of connecting to the database I decided to base data
 
 ## Versions
 Here on the default branch is developed version 
-For more info check this : [DEVELOPED VERSION](https://github.com/PatrykSzymonMlynczak/coinCollector/tree/withoutGDrive)
+For more info check this : <br />
+[DEVELOPED VERSION](https://github.com/PatrykSzymonMlynczak/coinCollector/tree/withoutGDrive)
 
 
 ## Technologies:
@@ -67,7 +68,6 @@ POST https://coin-collector-app.herokuapp.com/sale/STANDARD/6/3/Marek/10
 GET coin-collector-app.herokuapp.com/ale/period/{dateStart}/{dateEnd}<br /> 
 GET https://coin-collector-app.herokuapp.com/sale/period/2021-06-13/2021-06-16
 ![image](https://user-images.githubusercontent.com/44747531/122133698-808d4180-ce3d-11eb-9c0e-ba7fe5e8b6f6.png)
-
 
 
 ## Status
