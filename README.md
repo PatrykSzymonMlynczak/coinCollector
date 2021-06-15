@@ -38,8 +38,6 @@ For more info check this : [DEVELOPED VERSION](https://github.com/PatrykSzymonMl
 * Circle CI
 * Heroku
 
-## Status
-Suspended 
 
 ## How it works
 Application was performed mostly for CBD sales, and is used by me, but Im working on local-machine-version.
@@ -47,8 +45,8 @@ Application was performed mostly for CBD sales, and is used by me, but Im workin
 ### Chosen Endpoints
 
 #### To add new product:
-POST https://coin-collector-app.herokuapp.com/{product_name}/{my_price}
-POST https://coin-collector-app.herokuapp.com/STANDARD/6
+POST coin-collector-app.herokuapp.com/{product_name}/{my_price}<br /> 
+POST https://coin-collector-app.herokuapp.com/STANDARD/6<br /> 
 Body:
 {
     "1.0": 20.0,
@@ -60,18 +58,20 @@ Body:
 ![image](https://user-images.githubusercontent.com/44747531/122130747-62711280-ce38-11eb-82fb-2cdee8eed557.png)
 
 #### To add new sale:
-POST coin-collector-app.herokuapp.com/sale/{productName}/{mySortPrice}/{quantity}/{personName}/{discount}  (discount is optional)
-POST coin-collector-app.herokuapp.com/sale/{productName}/{mySortPrice}/{quantity}/{personName}
+POST coin-collector-app.herokuapp.com/sale/{productName}/{mySortPrice}/{quantity}/{personName}/{discount}  (discount is optional)<br /> 
+POST coin-collector-app.herokuapp.com/sale/{productName}/{mySortPrice}/{quantity}/{personName}<br /> 
 POST https://coin-collector-app.herokuapp.com/sale/STANDARD/6/3/Marek/10
 ![image](https://user-images.githubusercontent.com/44747531/122131244-2be7c780-ce39-11eb-90d9-7613ef7081d3.png)
 
 #### Get earnings by chosen period:
-GET coin-collector-app.herokuapp.com/ale/period/{dateStart}/{dateEnd}
+GET coin-collector-app.herokuapp.com/ale/period/{dateStart}/{dateEnd}<br /> 
 GET https://coin-collector-app.herokuapp.com/sale/period/2021-06-13/2021-06-16
 ![image](https://user-images.githubusercontent.com/44747531/122133698-808d4180-ce3d-11eb-9c0e-ba7fe5e8b6f6.png)
 
 
 
+## Status
+Suspended 
 
 
 
