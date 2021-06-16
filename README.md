@@ -40,6 +40,7 @@ For more info check this :
 * Google API
 * Circle CI
 * Heroku
+* Lombok
 
 
 ## How it works
