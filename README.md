@@ -1,4 +1,4 @@
-# CoinCollector + Heroku + Goole Drive 
+# CoinCollector + Heroku + Google Drive 
 ## Table of contents
 * [Why this version was suspended](#why-this-version-was-suspended)
 * [General info](#general-info)
