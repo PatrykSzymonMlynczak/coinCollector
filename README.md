@@ -10,9 +10,11 @@
 
 ## Why this version was suspended
 Because Heroku is re-started, and any saved data on the server is removed I wanted to send it to my own Google Drive. 
-Unfortunately, to find the file on GDrive its name is not enough. You need its Id, which is changing after each re-write data, and that leads to the same problem :<br />
+Unfortunately, to find the file on Goggle Drive its name is not enough. You need its ID, which is changing after each re-write data, and that leads to the same problem :<br />
 Can't save file id on Heroku because it will be removed. <br />
 Besides that this implementation of Google API enforces change Tomcat to Jetty and I think that could be problematic.
+
+#### Application still works: [How it works](#how-it-works), but is not able to persist data after heroku restart
 
 
 ## General info
