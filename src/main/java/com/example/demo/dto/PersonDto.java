@@ -12,6 +12,5 @@ public class PersonDto {
 
     private String name;
     private Float debt;
-    private boolean hasDebt;
 
 }
