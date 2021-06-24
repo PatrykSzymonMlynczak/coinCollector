@@ -47,15 +47,6 @@ public class SaleController {
         return saleMapper.mapToDto(sale);
     }
 
-    @ApiOperation(value = "Endpoint allowing to get income from all Sales")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully received whole income")})
-    @GetMapping("/income")
-    public Float getIncome(){
-        return saleRepo.getTotalIncome();
-    }
-
-
     @ApiOperation(value = "Endpoint allowing to get all Sales")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully received all Sales")})
@@ -64,6 +55,14 @@ public class SaleController {
         return saleRepo.loadAllSales().stream()
                 .map(saleMapper::mapToDto)
                 .collect(Collectors.toList());
+    }
+
+    @ApiOperation(value = "Endpoint allowing to get income from all Sales")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully received whole income")})
+    @GetMapping("/income")
+    public Float getIncome(){
+        return saleRepo.getTotalIncome();
     }
 
     @ApiOperation(value = "Endpoint allowing to get earned money from all Sales")
