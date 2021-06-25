@@ -15,7 +15,6 @@ public class ExceptionAdvice {
     @ExceptionHandler({
              ProductNotExistException.class,
             JsonFileNotFoundException.class})
-
     public ResponseEntity<ApiError> handleNotFoundException(RuntimeException exception){
         return buildResponseEntity(HttpStatus.NOT_FOUND, exception);
     }

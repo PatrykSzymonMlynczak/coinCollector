@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -84,6 +85,8 @@ public class IntegrationE2eTest {
 
     @Test
     public void should_save_sale_to_file_E2E() throws Exception {
+
+
         //when
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
                 .post("/sale/{productName}/{mySortPrice}/{quantity}/{personName}/{discount}",
@@ -104,7 +107,7 @@ public class IntegrationE2eTest {
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
                 .post("/sale/{productName}/{mySortPrice}/{quantity}/{personName}/{discount}",
                                     "test",      "1",      "1",        "Zamor",    null))
-                .andExpect(MockMvcResultMatchers.status().is(400))
+                .andExpect(MockMvcResultMatchers.status().is(HttpStatus.NOT_FOUND.value()))
                 .andReturn();
         String actualMessage = mvcResult.getResolvedException().getMessage();
 
@@ -120,16 +123,15 @@ public class IntegrationE2eTest {
         TreeMap<Float,Float> map = new TreeMap<>();
         map.put(1F,5F);
         String json = objectMapper.writeValueAsString(map);
-
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/product/{productName}/{myPrice}", "test", "10")
-                .contentType(MediaType.APPLICATION_JSON).content(json))
-                .andExpect(MockMvcResultMatchers.status().is2xxSuccessful());
+                .contentType(MediaType.APPLICATION_JSON).content(json));
 
         //when
         MvcResult mvcResult =mockMvc.perform(MockMvcRequestBuilders
                 .post("/product/{productName}/{myPrice}", "test", "10")
                 .contentType(MediaType.APPLICATION_JSON).content(json))
+                .andExpect(MockMvcResultMatchers.status().is(HttpStatus.CONFLICT.value()))
                 .andReturn();
         String actualMessage = mvcResult.getResolvedException().getMessage();
 
