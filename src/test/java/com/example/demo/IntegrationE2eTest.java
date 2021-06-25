@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -109,6 +110,32 @@ public class IntegrationE2eTest {
 
         //then
         Assertions.assertEquals("You can't add sale because Sort not exists: "+"test"+" price: "+"1.0",actualMessage);
+
+    }
+
+    @Test
+    public void should_throw_sort_already_exists_exception() throws Exception {
+
+        //given
+        TreeMap<Float,Float> map = new TreeMap<>();
+        map.put(1F,5F);
+        String json = objectMapper.writeValueAsString(map);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .post("/product/{productName}/{myPrice}", "test", "10")
+                .contentType(MediaType.APPLICATION_JSON).content(json))
+                .andExpect(MockMvcResultMatchers.status().is2xxSuccessful());
+
+        //when
+        MvcResult mvcResult =mockMvc.perform(MockMvcRequestBuilders
+                .post("/product/{productName}/{myPrice}", "test", "10")
+                .contentType(MediaType.APPLICATION_JSON).content(json))
+                .andReturn();
+        String actualMessage = mvcResult.getResolvedException().getMessage();
+
+        //then
+        Assertions.assertEquals("You can't add sort pricing because it already exists: "+"test"+" price: "+"10.0",
+                actualMessage);
 
     }
 
