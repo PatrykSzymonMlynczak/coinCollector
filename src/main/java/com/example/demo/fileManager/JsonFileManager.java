@@ -113,4 +113,18 @@ public class JsonFileManager {
         }
         return new ArrayList<>();
     }
+
+    public List<Sale> clearAllProducts() {
+        FileWriter fwOb = null;
+        try {
+            fwOb = new FileWriter(sortPricingFilename, false);
+            PrintWriter pwOb = new PrintWriter(fwOb, false);
+            pwOb.flush();
+            pwOb.close();
+            fwOb.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
+    }
 }
