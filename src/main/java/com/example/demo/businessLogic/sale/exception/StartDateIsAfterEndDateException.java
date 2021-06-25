@@ -1,5 +1,6 @@
 package com.example.demo.businessLogic.sale.exception;
 
+
 public class StartDateIsAfterEndDateException extends RuntimeException {
 
     public StartDateIsAfterEndDateException(String dateStart, String dateEnd) {
