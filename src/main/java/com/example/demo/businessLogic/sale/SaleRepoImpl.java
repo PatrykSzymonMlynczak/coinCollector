@@ -67,6 +67,7 @@ public class SaleRepoImpl implements SaleRepo, ApplicationRunner {
         return this.saleArrayList;
     }
 
+    @Override
     public Float getTotalEarnings() {
         float totalEarnings = 0F;
 
@@ -76,6 +77,7 @@ public class SaleRepoImpl implements SaleRepo, ApplicationRunner {
         return totalEarnings;
     }
 
+    @Override
     public Float getTotalCost() {
         float totalCost = 0F;
 
@@ -85,10 +87,12 @@ public class SaleRepoImpl implements SaleRepo, ApplicationRunner {
         return totalCost;
     }
 
+    @Override
     public Float getTotalIncome() {
         return getTotalEarnings()+getTotalCost();
     }
 
+    @Override
     public Float getEarnedMoneyByDay(String date){
         LocalDate localDate = LocalDate.parse(date);
         Float totalSaleCost = 0F;
@@ -102,6 +106,7 @@ public class SaleRepoImpl implements SaleRepo, ApplicationRunner {
         return totalSaleCost;
     }
 
+    @Override
     public Float getEarnedMoneyByWeek(String dateStart,String dateEnd){
         LocalDate localDateStart = LocalDate.parse(dateStart);
         LocalDate localDateEnd = LocalDate.parse(dateEnd);
@@ -120,6 +125,7 @@ public class SaleRepoImpl implements SaleRepo, ApplicationRunner {
         return totalSaleCost;
     }
 
+    @Override
     public List<Sale> clearAllSales(){
        return jsonFileManager.clearAllSales();
     }

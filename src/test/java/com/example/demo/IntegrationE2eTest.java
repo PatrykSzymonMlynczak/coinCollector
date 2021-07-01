@@ -1,7 +1,6 @@
 package com.example.demo;
 
 
-import com.example.demo.businessLogic.product.Product;
 import com.example.demo.businessLogic.sale.Sale;
 import com.example.demo.dto.SaleDto;
 import com.example.demo.fileManager.JsonFileManager;
@@ -24,8 +23,15 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.util.List;
 import java.util.TreeMap;
 
-//todo - proper exception http codes
 //todo - product controller
+
+/**
+ *  //todo
+ * In case of standard Integration tests
+ * FileManager should be mocked and tested separately
+ * but I decided to simplify that process and do it at once
+ * until I decide to adapt a real database
+ */
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -49,9 +55,12 @@ public class IntegrationE2eTest {
 
     @BeforeEach
     public void setupProduct() throws Exception {
-        TreeMap<Float,Float> sortPricing = new TreeMap<>();
-        sortPricing.put(1F,20F);
-        jsonFileManager.saveNewProductToFileAsJson(new Product("test",sortPricing, 10F));
+        TreeMap<Float,Float> map = new TreeMap<>();
+        map.put(1F,5F);
+        String json = objectMapper.writeValueAsString(map);
+        mockMvc.perform(MockMvcRequestBuilders
+                .post("/product/{productName}/{myPrice}", "test", "10")
+                .contentType(MediaType.APPLICATION_JSON).content(json));
     }
 
     @Test
@@ -65,18 +74,24 @@ public class IntegrationE2eTest {
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
                 .andReturn();
         SaleDto[] sales = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), SaleDto[].class);
+
         //then
         Assertions.assertEquals("Zamor",sales[0].getPerson().getName());
         Assertions.assertEquals(1F,sales[0].getQuantity());
     }
 
     @Test
-    public void should_return_() throws Exception {
+    public void should_return_proper_values_after_POST() throws Exception {
+        //given
+
+        //when
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
                 .post("/sale/{productName}/{mySortPrice}/{quantity}/{personName}/{discount}",
                                     "test",      "10",      "1",        "Zamor",    null))
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
                 .andReturn();
+
+        //then
         SaleDto sale = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), SaleDto.class);
         Assertions.assertEquals("Zamor",sale.getPerson().getName());
         Assertions.assertEquals(1,sale.getQuantity());
@@ -85,8 +100,6 @@ public class IntegrationE2eTest {
 
     @Test
     public void should_save_sale_to_file_E2E() throws Exception {
-
-
         //when
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
                 .post("/sale/{productName}/{mySortPrice}/{quantity}/{personName}/{discount}",
@@ -118,14 +131,10 @@ public class IntegrationE2eTest {
 
     @Test
     public void should_throw_sort_already_exists_exception() throws Exception {
-
         //given
         TreeMap<Float,Float> map = new TreeMap<>();
         map.put(1F,5F);
         String json = objectMapper.writeValueAsString(map);
-        mockMvc.perform(MockMvcRequestBuilders
-                .post("/product/{productName}/{myPrice}", "test", "10")
-                .contentType(MediaType.APPLICATION_JSON).content(json));
 
         //when
         MvcResult mvcResult =mockMvc.perform(MockMvcRequestBuilders
