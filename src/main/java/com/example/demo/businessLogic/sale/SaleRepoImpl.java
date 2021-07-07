@@ -28,7 +28,7 @@ public class SaleRepoImpl implements SaleRepo, ApplicationRunner {
     private final ProductRepo productRepoImpl;
     private final JsonFileManager jsonFileManager;
 
-    private final ArrayList<Sale> saleArrayList = new ArrayList<>();
+    private ArrayList<Sale> saleArrayList = new ArrayList<>();
 
     @Autowired
     public SaleRepoImpl(PersonInMemoryManager personInMemoryManager,
@@ -63,8 +63,7 @@ public class SaleRepoImpl implements SaleRepo, ApplicationRunner {
 
     @Override
     public ArrayList<Sale> loadAllSales() {
-        saleArrayList.addAll(jsonFileManager.readSaleListFromFile());
-        return this.saleArrayList;
+        return saleArrayList = (ArrayList<Sale>) jsonFileManager.readSaleListFromFile();
     }
 
     @Override

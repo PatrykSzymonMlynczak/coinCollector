@@ -1,6 +1,5 @@
 package com.example.demo;
 
-
 import com.example.demo.businessLogic.sale.Sale;
 import com.example.demo.dto.SaleDto;
 import com.example.demo.fileManager.JsonFileManager;
