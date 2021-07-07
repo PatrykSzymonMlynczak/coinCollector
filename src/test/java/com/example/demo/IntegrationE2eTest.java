@@ -63,7 +63,7 @@ public class IntegrationE2eTest {
     }
 
     @Test
-    public void should_return_sale_after_GET() throws Exception {
+    public void should_return_sale_after_sale_GET() throws Exception {
         //given
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/sale/{productName}/{mySortPrice}/{quantity}/{personName}/{discount}",
@@ -80,7 +80,7 @@ public class IntegrationE2eTest {
     }
 
     @Test
-    public void should_return_proper_values_after_POST() throws Exception {
+    public void should_return_proper_values_after_sale_POST() throws Exception {
         //given
 
         //when
@@ -148,10 +148,5 @@ public class IntegrationE2eTest {
                 actualMessage);
 
     }
-
-
-
-
-
 
 }
