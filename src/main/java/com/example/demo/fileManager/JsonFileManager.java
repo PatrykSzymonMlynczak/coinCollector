@@ -69,17 +69,16 @@ public class JsonFileManager {
         List<Sale> saleList = readSaleListFromFile();
         saleList.add(newSale);
 
-        FileWriter fileWriter;
         String jsonProductList = new Gson().toJson(saleList);
 
-        try {
-            fileWriter = new FileWriter(saleFilename, false);
+        try( FileWriter fileWriter = new FileWriter(saleFilename, false) ){
             fileWriter.write(jsonProductList);
             fileWriter.flush();
-            fileWriter.close();
-        } catch (IOException e) {
+        }catch (IOException e){
             e.printStackTrace();
+
         }
+
     }
 
     public List<Sale> readSaleListFromFile(){
@@ -115,6 +114,7 @@ public class JsonFileManager {
     }
 
     public List<Sale> clearAllProducts() {
+
         FileWriter fwOb = null;
         try {
             fwOb = new FileWriter(sortPricingFilename, false);
@@ -125,6 +125,7 @@ public class JsonFileManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         return new ArrayList<>();
     }
 }

@@ -10,7 +10,6 @@ public class Person implements Serializable {
     private final String name;
     /**debt is stored as negative number*/
     private Float debt;
-    private boolean hasDebt;
 
     public Person(String name) {
         this.name = name;
@@ -19,7 +18,6 @@ public class Person implements Serializable {
 
     public void increaseDebt(Float debt){
         this.debt -= debt;
-        hasDebt = debt > 0;
     }
 
     //todo controller for this

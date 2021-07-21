@@ -27,8 +27,8 @@ public class PersonInMemoryManager implements PersonRepo {
     );
 
     @Override
-    public void savePerson() {
-
+    public Person savePerson(Person person) {
+        return person;
     }
 
     @Override

@@ -28,6 +28,10 @@ dependencies {
     implementation  group: 'io.springfox', name: 'springfox-swagger2', version: springfoxVersion
     implementation  group: 'io.springfox', name: 'springfox-swagger-ui', version: springfoxVersion
 
+    implementation group: 'org.postgresql', name: 'postgresql', version: '42.2.23'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: '2.5.1'
+
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
         compileOnly "org.projectlombok:lombok:${lombokVersion}"
         annotationProcessor "org.projectlombok:lombok:${lombokVersion}"

@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface PersonRepo {
 
-    void savePerson();
+    Person savePerson(Person person);
 
     Person getPerson(String name);
 

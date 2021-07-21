@@ -7,6 +7,9 @@ import com.example.demo.businessLogic.sale.Sale;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 import java.util.TreeMap;
 
 //todo proper test names - should !
@@ -17,6 +20,78 @@ public class SaleTest {
     Person person;
 
     @Test
+    public void ccc(){
+        String str = "amoaaoma";
+
+        int right=str.length()-1;
+        int left=0;
+        boolean isPalindrom = true;
+        do{
+            if (str.charAt(left) != str.charAt(right)) {
+                System.out.println(left + " != "+ right );
+                isPalindrom = false;
+                break;
+            }else {left++; right--;}
+        }while(left<=right);
+        System.out.println("Is "+str+" palindrome ? : "+isPalindrom);
+
+      //paindrom petla for:
+
+/*        int right=str.length()-1;
+        int left=0;
+        for (left =0; left <= right; left++){
+            if (str.charAt(left) != str.charAt(right)) {
+                System.out.println("to nie palindrom  -> " + str.charAt(left) + " != "+ str.charAt(right) );
+                break;
+            }else right--;
+        }
+        if (left>=right) System.out.println("Paindrom");*/
+    }
+
+    @Test
+    public void cccc(){
+        List<Integer> tab = Arrays.asList(3,4,51,2,3,4,5);
+        for (int i: tab ) {
+            System.out.print(i +",");
+        }
+        tab.sort(Comparator.naturalOrder());
+        System.out.println("two biggest numbers: " +tab.get(tab.size()-1)+" and "+ tab.get(tab.size()-2));
+
+
+
+/*        Integer tab2[] = {3,4,51,2,3,4,5};
+        Arrays.sort(tab2);
+
+        System.out.println("Sorted:");
+        for (int i: tab ) {
+            System.out.print(i +",");
+        }
+        System.out.println("two biggest numbers: " +tab2[tab2.length-1]+" and "+ tab2[tab2.length-2]);*/
+    }
+
+    @Test
+    public void anagram(){
+
+        char[] first = "bebak".toCharArray();
+        char[] second = "kebab".toCharArray();
+        Arrays.sort(first);
+        Arrays.sort(second);
+        if(Arrays.equals(first,second)) System.out.println("equal");
+        else System.out.println("not equal");
+
+
+/*        for(char e : second.toCharArray()){
+            if(map.containsKey(e))
+                map.get(e)
+        }*/
+
+    }
+
+    public void fibonacci() {
+
+    }
+
+        @Test
     public void check_calculation_when_given_money_are_less_than_price(){
         //given
         quantityPriceMap.put(1F,20F);

@@ -1,14 +1,11 @@
 package com.example.demo.businessLogic.sale;
 
-import com.example.demo.dto.SaleDto;
-
+import java.util.ArrayList;
 import java.util.List;
 
 public interface SaleRepo {
 
     Sale saveSale(String product, Float quantity, String personName, Float discount, Float mySortPrice, Float money);
-
-    List<Sale> loadAllSales();
 
     Float getTotalEarnings();
 
@@ -20,6 +17,12 @@ public interface SaleRepo {
 
     Float getEarnedMoneyByWeek(String dateStart,String dateEnd);
 
-    List<Sale> clearAllSales();
+    default List<Sale> clearAllSales(){
+        return new ArrayList<>();
+    }
+
+    default List<Sale> loadAllSales(){
+        return new ArrayList<>();
+    }
 
 }

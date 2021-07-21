@@ -3,7 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.businessLogic.sale.SaleRepo;
 import com.example.demo.dto.SaleDto;
 import com.example.demo.businessLogic.sale.Sale;
-import com.example.demo.mapper.SaleMapper;
+import com.example.demo.mapper.pojoToDto.SaleToDtoMapper;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 public class SaleController {
 
     SaleRepo saleRepo;
-    SaleMapper saleMapper;
+    SaleToDtoMapper saleToDtoMapper;
 
     @ApiOperation(value = "Endpoint allowing to add new Sale")
     @ApiResponses(value = {
@@ -44,7 +44,7 @@ public class SaleController {
                                     * so there is need to distinguish it by price.*/
         Sale sale = saleRepo
                 .saveSale(productName, quantity, personName, discount, mySortPrice, givenMoney);
-        return saleMapper.mapToDto(sale);
+        return saleToDtoMapper.mapToDto(sale);
     }
 
     @ApiOperation(value = "Endpoint allowing to get all Sales")
@@ -53,7 +53,7 @@ public class SaleController {
     @GetMapping("/all")
     public List<SaleDto> getAllSales(){
         return saleRepo.loadAllSales().stream()
-                .map(saleMapper::mapToDto)
+                .map(saleToDtoMapper::mapToDto)
                 .collect(Collectors.toList());
     }
 
@@ -107,7 +107,7 @@ public class SaleController {
     @DeleteMapping("/all")
     public List<SaleDto> clearAllSales(){
         return saleRepo.clearAllSales().stream()
-                .map(saleMapper::mapToDto)
+                .map(saleToDtoMapper::mapToDto)
                 .collect(Collectors.toList());
     }
 
