@@ -10,11 +10,8 @@ import org.mapstruct.ReportingPolicy;
 public interface PersonMapper {
 
     PersonEntity personToEntity(Person person);
-
     Person entityToPerson(PersonEntity personEntity);
-
     PersonDto personToDto(Person person);
-
     Person dtoToPerson(PersonDto personDto);
 
 }

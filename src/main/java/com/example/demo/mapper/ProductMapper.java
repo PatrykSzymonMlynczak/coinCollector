@@ -10,10 +10,6 @@ import org.mapstruct.ReportingPolicy;
 public interface ProductMapper {
 
     ProductEntity productToEntity(Product product);
-
     Product entityToProduct(ProductEntity productEntity);
-
     ProductDto productToDto(Product product);
-
-    Product dtoToProduct(ProductDto productDto);
 }

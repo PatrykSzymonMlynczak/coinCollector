@@ -10,10 +10,5 @@ import org.mapstruct.ReportingPolicy;
 public interface SaleMapper {
 
     SaleEntity saleToEntity(Sale sale);
-
-    Sale entityToSale(SaleEntity saleEntity);
-
     SaleDto saleToDto(Sale sale);
-
-    Sale dtoToSale(SaleDto saleDto);
 }

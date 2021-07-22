@@ -3,30 +3,29 @@ package com.example.demo.businessLogic.sale;
 import com.example.demo.businessLogic.person.Person;
 import com.example.demo.businessLogic.product.Product;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.TreeMap;
 
+
 @Data
-@NoArgsConstructor
 public class Sale implements Serializable {
 
     //given data
-    private Product product;
-    private Float quantity;
-    private Person person;
+    private final Product product;
+    private final Float quantity;
+    private final Person person;
 
     //optional
-    private Float discount;
+    private final Float discount;
 
     // calculated data
-    private LocalDate transactionDate;
-    private LocalTime transactionTime;
-    private Float mySortPrice;
-    private Float earned;
+    private final LocalDate transactionDate;
+    private final LocalTime transactionTime;
+    private final Float mySortPrice;
+    private final Float earned;
     private Float income;
 
     public Sale(Product product, Float quantity, Person person, Float discount, Float givenMoney/*optional*/) {

@@ -23,7 +23,8 @@ public class PersonService implements PersonRepo {
 
     @Override
     public Person savePerson(Person person) {
-        personRepoPostgres.save(personMapper.personToEntity(person));
+        PersonEntity personEntity = personMapper.personToEntity(person);
+        personRepoPostgres.save(personEntity);
         return person;
     }
 
