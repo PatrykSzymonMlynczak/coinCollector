@@ -22,7 +22,6 @@ public class JsonFileManager {
 
     /// PRODUCT
     public void saveNewProductToFileAsJson(Product newProduct){
-
         List<Product> productList = readProductListFromFile();
         productList.add(newProduct);
         saveProductListToFile(productList);
@@ -33,15 +32,11 @@ public class JsonFileManager {
     }
 
     private void saveProductListToFile(List<Product> productList){
-
-        FileWriter fileWriter;
         String jsonProductList = new Gson().toJson(productList);
 
-        try {
-            fileWriter = new FileWriter(sortPricingFilename, false);
+        try (FileWriter fileWriter = new FileWriter(sortPricingFilename, false)){
             fileWriter.write(jsonProductList);
             fileWriter.flush();
-            fileWriter.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -68,17 +63,14 @@ public class JsonFileManager {
     public void saveSaleToFileAsJson(Sale newSale){
         List<Sale> saleList = readSaleListFromFile();
         saleList.add(newSale);
-
         String jsonProductList = new Gson().toJson(saleList);
 
-        try( FileWriter fileWriter = new FileWriter(saleFilename, false) ){
+        try(FileWriter fileWriter = new FileWriter(saleFilename, false) ){
             fileWriter.write(jsonProductList);
             fileWriter.flush();
         }catch (IOException e){
             e.printStackTrace();
-
         }
-
     }
 
     public List<Sale> readSaleListFromFile(){
@@ -100,32 +92,22 @@ public class JsonFileManager {
     }
 
     public List<Sale> clearAllSales() {
-        FileWriter fwOb = null;
-        try {
-            fwOb = new FileWriter(saleFilename, false);
-            PrintWriter pwOb = new PrintWriter(fwOb, false);
-            pwOb.flush();
-            pwOb.close();
-            fwOb.close();
+        try (FileWriter fileWriter = new FileWriter(saleFilename, false);
+             PrintWriter printWriter = new PrintWriter(fileWriter, false);){
+             printWriter.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
         return new ArrayList<>();
     }
 
-    public List<Sale> clearAllProducts() {
-
-        FileWriter fwOb = null;
-        try {
-            fwOb = new FileWriter(sortPricingFilename, false);
-            PrintWriter pwOb = new PrintWriter(fwOb, false);
-            pwOb.flush();
-            pwOb.close();
-            fwOb.close();
-        } catch (IOException e) {
+    public List<Product> clearAllProducts() {
+        try( FileWriter fileWriter = new FileWriter(sortPricingFilename, false);
+             PrintWriter printWriter = new PrintWriter(fileWriter, false) ){
+             printWriter.flush();
+        }catch (IOException e){
             e.printStackTrace();
         }
-
         return new ArrayList<>();
     }
 }

@@ -4,14 +4,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-
+/**
+ * debt is stored as negative number
+ * additional money will decrease debt or make surplus
+ * */
 @Data
 @NoArgsConstructor
 public class Person implements Serializable {
 
     private Long id;
     private String name;
-    /**debt is stored as negative number*/
     private Float debt;
 
     public Person(String name) {
@@ -23,7 +25,6 @@ public class Person implements Serializable {
         this.debt -= debt;
     }
 
-    //todo controller for this
     public Person reduceDebt(Float returnedMoney){
         this.debt += returnedMoney;
         return this;
