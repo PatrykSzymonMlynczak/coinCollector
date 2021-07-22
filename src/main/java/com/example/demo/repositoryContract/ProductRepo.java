@@ -1,4 +1,6 @@
-package com.example.demo.businessLogic.product;
+package com.example.demo.repositoryContract;
+
+import com.example.demo.businessLogic.product.Product;
 
 import java.util.HashMap;
 
@@ -6,7 +8,7 @@ public interface ProductRepo{
 
     Product saveProduct(Product product);
 
-    Product getSortPricingByProductAndMyPrice(String product, Float myPrice);
+    Product getProductByNameAndMyPrice(String productName, Float myPrice);
 
     void deleteProduct(String product, Float myPrice);
 

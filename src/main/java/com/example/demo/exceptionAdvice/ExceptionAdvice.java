@@ -1,6 +1,6 @@
 package com.example.demo.exceptionAdvice;
 
-import com.example.demo.businessLogic.product.exception.SortPricingAlreadyExistsException;
+import com.example.demo.businessLogic.product.exception.ProductAlreadyExistsException;
 import com.example.demo.businessLogic.sale.exception.ProductNotExistException;
 import com.example.demo.businessLogic.sale.exception.StartDateIsAfterEndDateException;
 import com.example.demo.fileManager.exception.JsonFileNotFoundException;
@@ -20,7 +20,7 @@ public class ExceptionAdvice {
     }
 
     @ExceptionHandler({
-            SortPricingAlreadyExistsException.class,
+            ProductAlreadyExistsException.class,
             StartDateIsAfterEndDateException.class})
 
     public ResponseEntity<ApiError> handleException(RuntimeException exception){

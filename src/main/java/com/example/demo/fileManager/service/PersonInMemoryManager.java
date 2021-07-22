@@ -1,5 +1,8 @@
-package com.example.demo.businessLogic.person;
+package com.example.demo.fileManager.service;
 
+import com.example.demo.businessLogic.person.Person;
+import com.example.demo.repositoryContract.PersonRepo;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
@@ -8,7 +11,9 @@ import java.util.List;
 
 @Service
 @Qualifier("jsonFile")
+@AllArgsConstructor
 public class PersonInMemoryManager implements PersonRepo {
+
 
     private final List<Person> personArrayList = Arrays.asList(
             new Person("Ada"),
@@ -40,7 +45,6 @@ public class PersonInMemoryManager implements PersonRepo {
 
     @Override
     public List<Person> getAllPerson() {
-
         return personArrayList;
     }
 }

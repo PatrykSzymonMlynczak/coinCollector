@@ -5,7 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Builder
 @Data
@@ -18,7 +19,8 @@ public class SaleDto {
     private PersonDto person;
     private Float discount;
     private Float earned;
-    private LocalDateTime transactionDate;
+    private LocalDate transactionDate;
+    private LocalTime transactionTime;
     private Float income;
 
 }

@@ -1,20 +1,25 @@
 package com.example.demo.businessLogic.product;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.util.HashMap;
 import java.util.TreeMap;
 
-@ToString
-@Getter
+@Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class Product {
 
-    private final String name;
+    private Long id;
+    private String name;
     /** must be sorted*/
-    private final TreeMap<Float,Float> quantityPriceMap;
-    private final Float myPrice;
+    private TreeMap<Float,Float> quantityPriceMap;
+    private Float myPrice;
 
+    public Product(String name, TreeMap<Float, Float> quantityPriceMap, Float myPrice) {
+        this.name = name;
+        this.quantityPriceMap = quantityPriceMap;
+        this.myPrice = myPrice;
+    }
 }

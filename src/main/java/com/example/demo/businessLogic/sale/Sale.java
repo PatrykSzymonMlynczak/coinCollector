@@ -1,28 +1,32 @@
 package com.example.demo.businessLogic.sale;
 
-import com.example.demo.businessLogic.product.Product;
 import com.example.demo.businessLogic.person.Person;
-import lombok.Getter;
+import com.example.demo.businessLogic.product.Product;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.TreeMap;
 
-@Getter
+@Data
+@NoArgsConstructor
 public class Sale implements Serializable {
 
     //given data
-    private final Product product;
-    private final Float quantity;
-    private final Person person;
+    private Product product;
+    private Float quantity;
+    private Person person;
 
     //optional
-    private final Float discount;
+    private Float discount;
 
     // calculated data
-    private final LocalDateTime transactionDate;
-    private final Float mySortPrice;
-    private final Float earned;
+    private LocalDate transactionDate;
+    private LocalTime transactionTime;
+    private Float mySortPrice;
+    private Float earned;
     private Float income;
 
     public Sale(Product product, Float quantity, Person person, Float discount, Float givenMoney/*optional*/) {
@@ -31,7 +35,8 @@ public class Sale implements Serializable {
         this.quantity = quantity;
         this.person = person;
 
-        this.transactionDate = LocalDateTime.now();
+        this.transactionTime = LocalTime.now();
+        this.transactionDate = LocalDate.now();
         this.mySortPrice = product.getMyPrice();
         this.discount = (discount == null) ? 0F : discount;
         this.income = getIncomeByProductPricing(product.getQuantityPriceMap());

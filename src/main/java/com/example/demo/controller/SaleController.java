@@ -1,9 +1,9 @@
 package com.example.demo.controller;
 
 import com.example.demo.businessLogic.sale.Sale;
-import com.example.demo.businessLogic.sale.SaleRepo;
 import com.example.demo.dto.SaleDto;
-import com.example.demo.mapper.pojoToDto.SaleToDtoMapper;
+import com.example.demo.mapper.SaleMapper;
+import com.example.demo.repositoryContract.SaleRepo;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
@@ -21,10 +21,10 @@ public class SaleController {
 
     @Autowired
     @Qualifier("${data.service}")
-    SaleRepo saleRepo;
+    private SaleRepo saleRepo;
 
     @Autowired
-    SaleToDtoMapper saleToDtoMapper;
+    private SaleMapper saleToDtoMapper;
 
     @ApiOperation(value = "Endpoint allowing to add new Sale")
     @ApiResponses(value = {
@@ -36,19 +36,21 @@ public class SaleController {
             "/{productName}/{mySortPrice}/{quantity}/{givenMoney}/{personName}"
     })
     public SaleDto addSale(@PathVariable String productName,
-                                        @PathVariable Float quantity,
-                                   @ApiParam(value = "In case of making debtn")
+                           @PathVariable Float quantity,
+                           @ApiParam(value = "In case of making debt", example = "10")
                                         @PathVariable(required = false) Float givenMoney,
-                                        @PathVariable String personName,
-                                   @ApiParam(value = "Discount can also can increase price, but must be negative)")
+                           @PathVariable String personName,
+                           @ApiParam(value = "Discount can also can increase price, but must be negative)", example = "-10")
                                         @PathVariable(required = false) Float discount,
-                                   @ApiParam(value = "Price per gram")
+                           @ApiParam(value = "Price per gram", example = "20")
                                         @PathVariable Float mySortPrice)
-                                   {/** Pricing for the same sort could be different,
+                                   {
+                                    /** Pricing for the same sort could be different,
                                     * so there is need to distinguish it by price.*/
+
         Sale sale = saleRepo
                 .saveSale(productName, quantity, personName, discount, mySortPrice, givenMoney);
-        return saleToDtoMapper.mapToDto(sale);
+        return saleToDtoMapper.saleToDto(sale);
     }
 
     @ApiOperation(value = "Endpoint allowing to get all Sales")
@@ -57,7 +59,7 @@ public class SaleController {
     @GetMapping("/all")
     public List<SaleDto> getAllSales(){
         return saleRepo.loadAllSales().stream()
-                .map(saleToDtoMapper::mapToDto)
+                .map(saleToDtoMapper::saleToDto)
                 .collect(Collectors.toList());
     }
 
@@ -89,8 +91,9 @@ public class SaleController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully received all Sales by given day")})
     @GetMapping("/date/{date}")
-    public Float getEarnedMoneyByDay(@ApiParam(value = "format : yyyy-mm-dd")
+    public Float getEarnedMoneyByDay(@ApiParam(value = "format : yyyy-mm-dd" , example = "2021-07-25")
                                          @PathVariable String date){
+
         return saleRepo.getEarnedMoneyByDay(date);
     }
 
@@ -98,10 +101,11 @@ public class SaleController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully received all Sales in given time period")})
     @GetMapping("/period/{dateStart}/{dateEnd}")
-    public Float getEarnedMoneyByWeek(@ApiParam(value = "format : yyyy-mm-dd")
-                                          @PathVariable String dateStart,
-                                      @ApiParam(value = "format : yyyy-mm-dd")
-                                          @PathVariable String dateEnd){
+    public Float getEarnedMoneyByWeek(
+                                      @ApiParam(value = "format : yyyy-mm-dd", example = "2022-07-07")
+                                          @PathVariable String dateEnd,
+                                      @ApiParam(value = "format : yyyy-mm-dd", example = "2021-07-07")
+                                      @PathVariable String dateStart){
         return  saleRepo.getEarnedMoneyByWeek(dateStart,dateEnd);
     }
 
@@ -111,9 +115,8 @@ public class SaleController {
     @DeleteMapping("/all")
     public List<SaleDto> clearAllSales(){
         return saleRepo.clearAllSales().stream()
-                .map(saleToDtoMapper::mapToDto)
+                .map(saleToDtoMapper::saleToDto)
                 .collect(Collectors.toList());
     }
 
-    // todo get earnings in time period
 }

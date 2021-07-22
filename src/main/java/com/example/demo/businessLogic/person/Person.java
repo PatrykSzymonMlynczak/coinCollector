@@ -1,13 +1,16 @@
 package com.example.demo.businessLogic.person;
 
-import lombok.Getter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
-@Getter
+@Data
+@NoArgsConstructor
 public class Person implements Serializable {
 
-    private final String name;
+    private Long id;
+    private String name;
     /**debt is stored as negative number*/
     private Float debt;
 

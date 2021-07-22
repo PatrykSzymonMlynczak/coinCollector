@@ -1,4 +1,6 @@
-package com.example.demo.businessLogic.person;
+package com.example.demo.repositoryContract;
+import com.example.demo.businessLogic.person.Person;
+
 import java.util.List;
 
 

@@ -14,7 +14,7 @@ import java.lang.annotation.Annotation;
 /** Class is enabling injecting values
  * from application.properties
  * into @Qualifier
- * */
+ **/
 @Component
 public class AutowireCandidateResolverConfigurer implements BeanFactoryPostProcessor {
     private static class EnvironmentAwareQualifierAnnotationAutowireCandidateResolver extends QualifierAnnotationAutowireCandidateResolver {

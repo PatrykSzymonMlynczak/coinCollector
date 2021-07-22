@@ -1,7 +1,9 @@
-package com.example.demo.businessLogic.product;
+package com.example.demo.fileManager.service;
 
+import com.example.demo.businessLogic.product.Product;
+import com.example.demo.businessLogic.product.exception.ProductAlreadyExistsException;
 import com.example.demo.fileManager.JsonFileManager;
-import com.example.demo.businessLogic.product.exception.SortPricingAlreadyExistsException;
+import com.example.demo.repositoryContract.ProductRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.ApplicationArguments;
@@ -18,6 +20,7 @@ public class ProductRepoImpl implements ProductRepo, ApplicationRunner {
     private final HashMap<HashMap<Float,String>, Product> inMemoryProductMap = new HashMap<>();
     private final JsonFileManager jsonToFileManager;
 
+
     @Autowired
     public ProductRepoImpl(JsonFileManager jsonToFileManager) {
         this.jsonToFileManager = jsonToFileManager;
@@ -32,7 +35,7 @@ public class ProductRepoImpl implements ProductRepo, ApplicationRunner {
         if(!inMemoryProductMap.containsKey(priceProductKeyMap)) {
             jsonToFileManager.saveNewProductToFileAsJson(product);
             inMemoryProductMap.put(priceProductKeyMap, product);
-        } else throw new SortPricingAlreadyExistsException(product.getName(), product.getMyPrice());
+        } else throw new ProductAlreadyExistsException(product.getName(), product.getMyPrice());
 
         return product;
     }
@@ -48,9 +51,9 @@ public class ProductRepoImpl implements ProductRepo, ApplicationRunner {
     }
 
     @Override
-    public Product getSortPricingByProductAndMyPrice(String product, Float myPrice) {
+    public Product getProductByNameAndMyPrice(String productName, Float myPrice) {
         HashMap<Float,String> priceProductKeyMap = new HashMap<>();
-        priceProductKeyMap.put(myPrice, product);
+        priceProductKeyMap.put(myPrice, productName);
         return inMemoryProductMap.get(priceProductKeyMap);
     }
 

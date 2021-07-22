@@ -1,4 +1,6 @@
-package com.example.demo.businessLogic.sale;
+package com.example.demo.repositoryContract;
+
+import com.example.demo.businessLogic.sale.Sale;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,12 +1,13 @@
-package com.example.demo.businessLogic.sale;
+package com.example.demo.fileManager.service;
 
 import com.example.demo.businessLogic.person.Person;
-import com.example.demo.businessLogic.person.PersonInMemoryManager;
 import com.example.demo.businessLogic.product.Product;
-import com.example.demo.businessLogic.product.ProductRepo;
+import com.example.demo.businessLogic.sale.Sale;
 import com.example.demo.businessLogic.sale.exception.ProductNotExistException;
 import com.example.demo.businessLogic.sale.exception.StartDateIsAfterEndDateException;
 import com.example.demo.fileManager.JsonFileManager;
+import com.example.demo.repositoryContract.ProductRepo;
+import com.example.demo.repositoryContract.SaleRepo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +48,7 @@ public class SaleRepoImpl implements SaleRepo, ApplicationRunner {
         Product product = getProductByNameAndPrice(mySortPrice,productName);
         Person person = personInMemoryManager.getAllPerson().stream().filter(p -> p.getName().equals(personName)).findAny().get();
         Sale sale = new Sale(product,quantity,person,discount,money);
-        if( productRepoImpl.getSortPricingByProductAndMyPrice(sale.getProduct().getName(), sale.getMySortPrice()) != null){
+        if( productRepoImpl.getProductByNameAndMyPrice(sale.getProduct().getName(), sale.getMySortPrice()) != null){
             saleArrayList.add(sale);
             jsonFileManager.saveSaleToFileAsJson(sale);
         }else throw new ProductNotExistException(product.getName(),mySortPrice);
@@ -99,7 +100,7 @@ public class SaleRepoImpl implements SaleRepo, ApplicationRunner {
         Float totalSaleCost = 0F;
 
         for(Sale sale: saleArrayList){
-            if( sale.getTransactionDate().toLocalDate().equals(localDate) ) {
+            if( sale.getTransactionDate().equals(localDate) ) {
                 totalSaleCost += sale.getEarned();
             }
         }
@@ -116,10 +117,10 @@ public class SaleRepoImpl implements SaleRepo, ApplicationRunner {
         if(localDateEnd.isBefore(localDateStart)) throw new StartDateIsAfterEndDateException(dateStart,dateEnd);
 
         for(Sale sale: saleArrayList){
-            if( sale.getTransactionDate().toLocalDate().isEqual(localDateStart)
-                    || sale.getTransactionDate().toLocalDate().isEqual(localDateEnd)
-                    || (    sale.getTransactionDate().toLocalDate().isAfter(localDateStart)
-                            && sale.getTransactionDate().toLocalDate().isBefore(localDateEnd) )
+            if( sale.getTransactionDate().isEqual(localDateStart)
+                    || sale.getTransactionDate().isEqual(localDateEnd)
+                    || (    sale.getTransactionDate().isAfter(localDateStart)
+                            && sale.getTransactionDate().isBefore(localDateEnd) )
             ) { totalSaleCost += sale.getEarned(); }
         }
         logger.info("  by day: "+": total = "+totalSaleCost);
