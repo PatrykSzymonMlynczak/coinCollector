@@ -11,13 +11,14 @@ import com.example.demo.mapper.pojoToEntity.PersonToEntityMapper;
 import com.example.demo.mapper.pojoToEntity.ProductToEntityMapper;
 import com.example.demo.mapper.pojoToEntity.SaleToEntityMapper;
 import lombok.AllArgsConstructor;
-import org.springframework.context.annotation.Primary;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.TreeMap;
 
 @Service
-@Primary
+//@Primary
+@Qualifier("postgres")
 @AllArgsConstructor
 public class SaleService implements SaleRepo {
 

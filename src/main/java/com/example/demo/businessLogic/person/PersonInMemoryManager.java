@@ -1,11 +1,13 @@
 package com.example.demo.businessLogic.person;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.List;
 
 @Service
+@Qualifier("jsonFile")
 public class PersonInMemoryManager implements PersonRepo {
 
     private final List<Person> personArrayList = Arrays.asList(

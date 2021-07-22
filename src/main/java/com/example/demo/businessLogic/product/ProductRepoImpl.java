@@ -3,6 +3,7 @@ package com.example.demo.businessLogic.product;
 import com.example.demo.fileManager.JsonFileManager;
 import com.example.demo.businessLogic.product.exception.SortPricingAlreadyExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 @Service
+@Qualifier("jsonFile")
 public class ProductRepoImpl implements ProductRepo, ApplicationRunner {
 
     private final HashMap<HashMap<Float,String>, Product> inMemoryProductMap = new HashMap<>();

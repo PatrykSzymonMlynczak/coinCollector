@@ -10,6 +10,7 @@ import com.example.demo.fileManager.JsonFileManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 
 @Service
+@Qualifier("jsonFile")
 public class SaleRepoImpl implements SaleRepo, ApplicationRunner {
 
     private final Logger logger = LoggerFactory.getLogger(SaleRepo.class);

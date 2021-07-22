@@ -6,6 +6,8 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -15,11 +17,9 @@ import java.util.TreeMap;
 @RequestMapping("/product")
 public class ProductController {
 
+    @Autowired
+    @Qualifier("${data.service}")
     ProductRepo sortPricingInMemoryManager;
-
-    public ProductController(ProductRepo sortPricingInMemoryManager) {
-        this.sortPricingInMemoryManager = sortPricingInMemoryManager;
-    }
 
     @ApiOperation(value = "Endpoint allowing get all Products")
     @ApiResponses(value = {

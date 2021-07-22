@@ -1,14 +1,15 @@
 package com.example.demo.controller;
 
+import com.example.demo.businessLogic.sale.Sale;
 import com.example.demo.businessLogic.sale.SaleRepo;
 import com.example.demo.dto.SaleDto;
-import com.example.demo.businessLogic.sale.Sale;
 import com.example.demo.mapper.pojoToDto.SaleToDtoMapper;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,10 +17,13 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/sale")
-@AllArgsConstructor
 public class SaleController {
 
+    @Autowired
+    @Qualifier("${data.service}")
     SaleRepo saleRepo;
+
+    @Autowired
     SaleToDtoMapper saleToDtoMapper;
 
     @ApiOperation(value = "Endpoint allowing to add new Sale")
