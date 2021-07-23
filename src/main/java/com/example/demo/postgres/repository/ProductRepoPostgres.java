@@ -21,4 +21,3 @@ public interface ProductRepoPostgres extends JpaRepository<ProductEntity, Long> 
     void deleteByNameAndMyPrice(String name, Float price);
 
 }
-//SELECT * FROM product WHERE name = 'Lemon Haze' AND my_price = 18

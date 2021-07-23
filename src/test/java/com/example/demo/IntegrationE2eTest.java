@@ -22,7 +22,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.util.List;
 import java.util.TreeMap;
 
-//todo - product controller
 
 /**
  *  //todo

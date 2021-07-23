@@ -11,7 +11,8 @@ import org.springframework.stereotype.Component;
 
 import java.lang.annotation.Annotation;
 
-/** Class is enabling injecting values
+/**
+ * Class is enabling injecting values
  * from application.properties
  * into @Qualifier
  **/
