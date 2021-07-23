@@ -51,17 +51,15 @@ public class ProductRepoImpl implements ProductRepo, ApplicationRunner {
 
     @Override
     public Product getProductByNameAndMyPrice(String productName, Float myPrice) {
-        HashMap<Float,String> priceProductKeyMap = new HashMap<>();
-        priceProductKeyMap.put(myPrice, productName);
-        return inMemoryProductMap.get(priceProductKeyMap);
+        PriceNameId priceNameId = new PriceNameId(myPrice, productName);
+        return inMemoryProductMap.get(priceNameId);
     }
 
     @Override
-    public void deleteProduct(String product, Float myPrice){
-        HashMap<Float,String> priceProductKeyMap = new HashMap<>();
-        priceProductKeyMap.put(myPrice, product);
+    public void deleteProduct(String productName, Float myPrice){
+        PriceNameId priceNameId = new PriceNameId(myPrice, productName);
 
-        inMemoryProductMap.remove(priceProductKeyMap);
+        inMemoryProductMap.remove(priceNameId);
         jsonToFileManager.updateProductFile(new ArrayList<>(inMemoryProductMap.values()));
     }
 
