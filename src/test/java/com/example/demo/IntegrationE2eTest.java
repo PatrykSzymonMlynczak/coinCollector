@@ -1,26 +1,8 @@
 package com.example.demo;
 
-import com.example.demo.businessLogic.sale.Sale;
-import com.example.demo.dto.SaleDto;
-import com.example.demo.fileManager.JsonFileManager;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-
-import java.util.List;
-import java.util.TreeMap;
 
 
 /**
@@ -36,7 +18,7 @@ import java.util.TreeMap;
 @ActiveProfiles("test")
 public class IntegrationE2eTest {
 
-    @Autowired
+  /*  @Autowired
     MockMvc mockMvc;
 
     @Autowired
@@ -147,5 +129,5 @@ public class IntegrationE2eTest {
                 actualMessage);
 
     }
-
+*/
 }
