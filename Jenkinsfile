@@ -14,7 +14,7 @@ pipeline {
         }
         stage('deploy') {
             steps {
-                bat './gradlew heroku:deploy'
+                bat './gradlew build deployHeroku'
             }
         }
     }
