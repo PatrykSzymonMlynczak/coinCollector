@@ -13,11 +13,9 @@ public interface SaleRepo {
     Float getTotalIncome();
     Float getEarnedMoneyByDay(String date);
     Float getEarnedMoneyByWeek(String dateStart,String dateEnd);
+    List<Sale> loadAllSales();
 
     default List<Sale> clearAllSales(){
-        return new ArrayList<>();
-    }
-    default List<Sale> loadAllSales(){
         return new ArrayList<>();
     }
 

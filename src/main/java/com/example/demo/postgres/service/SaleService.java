@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Qualifier("postgres")
@@ -32,6 +34,12 @@ public class SaleService implements SaleRepo {
         SaleEntity saleEntity = saleMapper.saleToEntity(sale);
         saleRepoPostgres.save(saleEntity);
         return sale;
+    }
+
+    @Override
+    public List<Sale> loadAllSales() {
+        List<SaleEntity> saleEntities = saleRepoPostgres.findAll();
+        return saleEntities.stream().map(saleMapper::entityToSale).collect(Collectors.toList());
     }
 
     @Override
@@ -61,5 +69,6 @@ public class SaleService implements SaleRepo {
         LocalDate dateEnd = LocalDate.parse(dateEndString);
         return saleRepoPostgres.getEarnedMoneyByWeek(dateStart,dateEnd);
     }
+
 
 }

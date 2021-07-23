@@ -1,6 +1,7 @@
 package com.example.demo.fileManager.service;
 
 import com.example.demo.businessLogic.person.Person;
+import com.example.demo.businessLogic.product.PriceNameId;
 import com.example.demo.businessLogic.product.Product;
 import com.example.demo.businessLogic.sale.Sale;
 import com.example.demo.businessLogic.sale.exception.ProductNotExistException;
@@ -18,7 +19,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -57,10 +57,9 @@ public class SaleRepoImpl implements SaleRepo, ApplicationRunner {
     }
 
     private Product getProductByNameAndPrice(Float mySortPrice, String productName){
-        HashMap<Float, String> productKeyMap = new HashMap<>();
-        productKeyMap.put(mySortPrice,productName);
-        if(productRepoImpl.loadAllProducts().containsKey(productKeyMap)) {
-            return productRepoImpl.loadAllProducts().get(productKeyMap);
+        PriceNameId priceNameId = new PriceNameId(mySortPrice,productName);
+        if(productRepoImpl.loadAllProducts().containsKey(priceNameId)) {
+            return productRepoImpl.loadAllProducts().get(priceNameId);
         }else throw new ProductNotExistException(productName,mySortPrice);
     }
 

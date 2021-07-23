@@ -26,6 +26,8 @@ public class SaleController {
     @Autowired
     private SaleMapper saleToDtoMapper;
 
+    //todo separate endpoints
+
     @ApiOperation(value = "Endpoint allowing to add new Sale")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully added ne Sale"),
@@ -42,7 +44,7 @@ public class SaleController {
                            @PathVariable String personName,
                            @ApiParam(value = "Discount can also can increase price, but must be negative)", example = "-10")
                                         @PathVariable(required = false) Float discount,
-                           @ApiParam(value = "Price per gram", example = "20")
+                           @ApiParam(value = "Price per gram", example = "10")
                                         @PathVariable Float mySortPrice)
                                    {
                                     /** Pricing for the same sort could be different,

@@ -1,5 +1,6 @@
 package com.example.demo.fileManager.service;
 
+import com.example.demo.businessLogic.product.PriceNameId;
 import com.example.demo.businessLogic.product.Product;
 import com.example.demo.businessLogic.product.exception.ProductAlreadyExistsException;
 import com.example.demo.fileManager.JsonFileManager;
@@ -17,7 +18,7 @@ import java.util.HashMap;
 @Qualifier("jsonFile")
 public class ProductRepoImpl implements ProductRepo, ApplicationRunner {
 
-    private final HashMap<HashMap<Float,String>, Product> inMemoryProductMap = new HashMap<>();
+    private final HashMap<PriceNameId, Product> inMemoryProductMap = new HashMap<>();
     private final JsonFileManager jsonToFileManager;
 
 
@@ -29,23 +30,21 @@ public class ProductRepoImpl implements ProductRepo, ApplicationRunner {
     @Override
     public Product saveProduct(Product product)  {
 
-        HashMap<Float,String> priceProductKeyMap = new HashMap<>();
-        priceProductKeyMap.put(product.getMyPrice(), product.getName());
+        PriceNameId priceNameId = new PriceNameId(product.getMyPrice(), product.getName());
 
-        if(!inMemoryProductMap.containsKey(priceProductKeyMap)) {
+        if(!inMemoryProductMap.containsKey(priceNameId)) {
             jsonToFileManager.saveNewProductToFileAsJson(product);
-            inMemoryProductMap.put(priceProductKeyMap, product);
+            inMemoryProductMap.put(priceNameId, product);
         } else throw new ProductAlreadyExistsException(product.getName(), product.getMyPrice());
 
         return product;
     }
 
     @Override
-    public HashMap<HashMap<Float,String >, Product> loadAllProducts() {
+    public HashMap<PriceNameId, Product> loadAllProducts() {
         for (Product product : jsonToFileManager.readProductListFromFile()) {
-            HashMap<Float,String> priceProductKeyMap = new HashMap<>();
-            priceProductKeyMap.put(product.getMyPrice(), product.getName());
-            inMemoryProductMap.put(priceProductKeyMap, product);
+            PriceNameId priceNameId = new PriceNameId(product.getMyPrice(), product.getName());
+            inMemoryProductMap.put(priceNameId, product);
         }
         return inMemoryProductMap;
     }

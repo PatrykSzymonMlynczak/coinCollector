@@ -11,4 +11,5 @@ public interface SaleMapper {
 
     SaleEntity saleToEntity(Sale sale);
     SaleDto saleToDto(Sale sale);
+    Sale entityToSale(SaleEntity sale);
 }

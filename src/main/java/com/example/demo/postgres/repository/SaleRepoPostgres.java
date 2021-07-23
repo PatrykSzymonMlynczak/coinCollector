@@ -27,4 +27,5 @@ public interface SaleRepoPostgres extends JpaRepository<SaleEntity, Long> {
     Float getEarnedMoneyByWeek(
             @Param("dayStart")LocalDate dateStart,
             @Param("dayEnd")LocalDate dateEnd);
+
 }

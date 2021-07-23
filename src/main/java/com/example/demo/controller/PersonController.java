@@ -35,11 +35,11 @@ public class PersonController {
             @ApiResponse(code = 400, message = "Bad request")})
     @PostMapping("/{personName}")
     public PersonDto savePerson(@ApiParam(value = "Person Name", example = "Zamor")
-                                    String personName){
+                                    @PathVariable String personName){
         PersonDto person = new PersonDto(personName);
         personRepo.savePerson(personMapper.dtoToPerson(person));
         return person;
-    }
+    }//todo handle adding same person more than once
 
     @ApiOperation(value = "Endpoint allowing get all Persons")
     @ApiResponses(value = {
