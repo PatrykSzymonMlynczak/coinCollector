@@ -1,14 +1,10 @@
 pipeline {
-    agent {
-        docker {
-            image 'gradle:jdk11-openj9'
-            }
-        }
+    agent any
 
     stages {
         stage('Build') {
             steps {
-                sh 'gradle clean build'
+                echo 'Hello world'
             }
         }
     }
