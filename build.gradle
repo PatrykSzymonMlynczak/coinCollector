@@ -41,6 +41,10 @@ dependencies {
 
 }
 
+heroku {
+    appName = "coin-collector-postgres"
+}
+
 test {
     useJUnitPlatform()
 }
