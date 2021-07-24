@@ -26,7 +26,7 @@ public class ProductService implements ProductRepo {
 
     @Override
     public Product saveProduct(Product product) {
-        if(!productRepoPostgres.existsByNameAndMyPrice(product.getName(),product.getMyPrice())){
+        if(!productRepoPostgres.existsByNameAndPriceIgnoreCase(product.getName(),product.getMyPrice())){
             ProductEntity productEntity = productMapper.productToEntity(product);
             productRepoPostgres.save(productEntity);
             return product;
@@ -53,8 +53,8 @@ public class ProductService implements ProductRepo {
 
     @Override
     public Product getProductByNameAndMyPrice(String productName, Float myPrice) {
-        if(productRepoPostgres.existsByNameAndMyPrice(productName,myPrice)){
-            ProductEntity productEntity = productRepoPostgres.getByNameAndMyPrice(productName,myPrice);
+        if(productRepoPostgres.existsByNameAndPriceIgnoreCase(productName,myPrice)){
+            ProductEntity productEntity = productRepoPostgres.getByNameAndPriceIgnoreCase(productName,myPrice);
             return productMapper.entityToProduct(productEntity);
         }else throw new ProductNotExistException(productName, myPrice);
     }

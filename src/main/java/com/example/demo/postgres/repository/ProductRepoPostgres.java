@@ -8,15 +8,22 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ProductRepoPostgres extends JpaRepository<ProductEntity, Long> {
 
-    @Query(value = " SELECT * FROM product " +
-            "WHERE name = ?1 " +
-            "AND my_price = ?2",
-             nativeQuery = true)
-    ProductEntity getByNameAndMyPrice(String productName, Float price);
-    //could use Jpa Generated method "findBy.."
-    //todo -> selecting by * is bad practice ?
 
-    boolean existsByNameAndMyPrice(String productName, Float price);
+    //todo -> selecting by * is bad practice ?
+    @Query(value = " SELECT * FROM product " +
+                    "WHERE UPPER(name) = UPPER(?1) " +
+                    "AND my_price = ?2",
+                    nativeQuery = true)
+    ProductEntity getByNameAndPriceIgnoreCase(String productName, Float price);
+
+    @Query(value ="SELECT CASE WHEN EXISTS " +
+                    "(SELECT *"  +
+                    "FROM product " +
+                    "WHERE upper(name)=upper(?1) and my_price=?2) " +
+                    "THEN CAST(1 AS BIT) " +
+                    "ELSE CAST(0 AS BIT) " +
+                    "END", nativeQuery = true)
+    boolean existsByNameAndPriceIgnoreCase(String productName, Float price);
 
     void deleteByNameAndMyPrice(String name, Float price);
 

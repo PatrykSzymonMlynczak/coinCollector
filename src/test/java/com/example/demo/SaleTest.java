@@ -20,57 +20,36 @@ public class SaleTest {
     Person person;
 
     @Test
-    public void ccc(){
-        String str = "amoaaoma";
+    public void isPalindrom(){
+        String str = "abba";
 
         int right=str.length()-1;
         int left=0;
-        boolean isPalindrom = true;
-        do{
-            if (str.charAt(left) != str.charAt(right)) {
+        boolean isPalindrom = false;
+        while(left<=right && right>0){
+            if (str.charAt(left) != str.charAt(right) ) {
                 System.out.println(left + " != "+ right );
-                isPalindrom = false;
                 break;
-            }else {left++; right--;}
-        }while(left<=right);
-        System.out.println("Is "+str+" palindrome ? : "+isPalindrom);
-
-      //paindrom petla for:
-
-/*        int right=str.length()-1;
-        int left=0;
-        for (left =0; left <= right; left++){
-            if (str.charAt(left) != str.charAt(right)) {
-                System.out.println("to nie palindrom  -> " + str.charAt(left) + " != "+ str.charAt(right) );
-                break;
-            }else right--;
+            }else {
+                left++; right--;
+                isPalindrom = true;
+            }
         }
-        if (left>=right) System.out.println("Paindrom");*/
+        System.out.println("Is "+str+" palindrome ? : "+isPalindrom);
     }
 
     @Test
-    public void cccc(){
+    public void twoBiggestNumbersFromList(){
         List<Integer> tab = Arrays.asList(3,4,51,2,3,4,5);
         for (int i: tab ) {
             System.out.print(i +",");
         }
         tab.sort(Comparator.naturalOrder());
         System.out.println("two biggest numbers: " +tab.get(tab.size()-1)+" and "+ tab.get(tab.size()-2));
-
-
-
-/*        Integer tab2[] = {3,4,51,2,3,4,5};
-        Arrays.sort(tab2);
-
-        System.out.println("Sorted:");
-        for (int i: tab ) {
-            System.out.print(i +",");
-        }
-        System.out.println("two biggest numbers: " +tab2[tab2.length-1]+" and "+ tab2[tab2.length-2]);*/
     }
 
     @Test
-    public void anagram(){
+    public void isAnagram(){
 
         char[] first = "bebak".toCharArray();
         char[] second = "kebab".toCharArray();
@@ -78,17 +57,6 @@ public class SaleTest {
         Arrays.sort(second);
         if(Arrays.equals(first,second)) System.out.println("equal");
         else System.out.println("not equal");
-
-
-/*        for(char e : second.toCharArray()){
-            if(map.containsKey(e))
-                map.get(e)
-        }*/
-
-    }
-
-    public void fibonacci() {
-
     }
 
         @Test
