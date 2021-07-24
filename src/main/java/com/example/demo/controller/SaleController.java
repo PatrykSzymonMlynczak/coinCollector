@@ -28,30 +28,86 @@ public class SaleController {
 
     //todo separate endpoints
 
-    @ApiOperation(value = "Endpoint allowing to add new Sale")
+    @ApiOperation(value = "Endpoint allowing to add new Sale with precised Given Money")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully added ne Sale"),
             @ApiResponse(code = 400, message = "Bad request")})
-    @PostMapping({"/{productName}/{mySortPrice}/{quantity}/{personName}/{discount}",
-            "/{productName}/{mySortPrice}/{quantity}/{personName}",
-            "/{productName}/{mySortPrice}/{quantity}/{givenMoney}/{personName}/{discount}",
-            "/{productName}/{mySortPrice}/{quantity}/{givenMoney}/{personName}"
+    @PostMapping({"/{productName}/{mySortPrice}/{quantity}/{givenMoney}/{personName}"
     })
-    public SaleDto addSale(@PathVariable String productName,
-                           @PathVariable Float quantity,
-                           @ApiParam(value = "In case of making debt", example = "10")
-                                        @PathVariable(required = false) Float givenMoney,
-                           @PathVariable String personName,
-                           @ApiParam(value = "Discount can also can increase price, but must be negative)", example = "-10")
-                                        @PathVariable(required = false) Float discount,
+    public SaleDto addSale(@ApiParam(value = "Product Name, case insensitive", example = "Lemon Haze")
+                                @PathVariable String productName,
+                           @ApiParam(value = "Quantity (grams)", example = "5")
+                                @PathVariable Float quantity,
+                           @ApiParam(value = "In case of making debt", example = "50")
+                                @PathVariable Float givenMoney,
+                           @ApiParam(value = "Person Name", example = "Zamor")
+                                @PathVariable String personName,
                            @ApiParam(value = "Price per gram", example = "10")
-                                        @PathVariable Float mySortPrice)
-                                   {
-                                    /** Pricing for the same sort could be different,
-                                    * so there is need to distinguish it by price.*/
+                                @PathVariable Float mySortPrice) {
+        Sale sale = saleRepo
+                .saveSale(productName, quantity, personName, null, mySortPrice, givenMoney);
+        return saleToDtoMapper.saleToDto(sale);
+    }
 
+    @ApiOperation(value = "Endpoint allowing to add new Sale with precised Given Money, and Discount")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully added ne Sale"),
+            @ApiResponse(code = 400, message = "Bad request")})
+    @PostMapping({"/{productName}/{mySortPrice}/{quantity}/{givenMoney}/{personName}/{discount}"
+    })
+    public SaleDto addSale(@ApiParam(value = "Product Name, case insensitive", example = "Lemon Haze")
+                                @PathVariable String productName,
+                           @ApiParam(value = "Quantity (grams)", example = "5")
+                                @PathVariable Float quantity,
+                           @ApiParam(value = "In case of making debt", example = "50")
+                                @PathVariable Float givenMoney,
+                           @ApiParam(value = "Person Name", example = "Zamor")
+                                @PathVariable String personName,
+                           @ApiParam(value = "Discount can also can increase price, but must be negative)", example = "-10")
+                                @PathVariable Float discount,
+                           @ApiParam(value = "Price per gram", example = "10")
+                                @PathVariable Float mySortPrice) {
         Sale sale = saleRepo
                 .saveSale(productName, quantity, personName, discount, mySortPrice, givenMoney);
+        return saleToDtoMapper.saleToDto(sale);
+    }
+
+    @ApiOperation(value = "Endpoint allowing to add new Sale")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully added ne Sale with precised Discount"),
+            @ApiResponse(code = 400, message = "Bad request")})
+    @PostMapping({"/{productName}/{mySortPrice}/{quantity}/{personName}/{discount}",
+            "/{productName}/{mySortPrice}/{quantity}/{personName}" })
+    public SaleDto addSale(@ApiParam(value = "Product Name, case insensitive", example = "Lemon Haze")
+                                @PathVariable String productName,
+                           @ApiParam(value = "Quantity (grams)", example = "5")
+                                @PathVariable Float quantity,
+                           @ApiParam(value = "Person Name", example = "Zamor")
+                                @PathVariable String personName,
+                           @ApiParam(value = "Discount can also can increase price, but must be negative)", example = "-10")
+                                @PathVariable Float discount,
+                           @ApiParam(value = "Price per gram", example = "10")
+                                @PathVariable Float mySortPrice) {
+        Sale sale = saleRepo
+                .saveSale(productName, quantity, personName, discount, mySortPrice, null);
+        return saleToDtoMapper.saleToDto(sale);
+    }
+
+    @ApiOperation(value = "Endpoint allowing to add new Sale")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully added new Sale"),
+            @ApiResponse(code = 400, message = "Bad request")})
+    @PostMapping({"/{productName}/{mySortPrice}/{quantity}/{personName}" })
+    public SaleDto addSale(@ApiParam(value = "Product Name, case insensitive", example = "Lemon Haze")
+                                @PathVariable String productName,
+                           @ApiParam(value = "Quantity (grams)", example = "5")
+                                @PathVariable Float quantity,
+                           @ApiParam(value = "Person Name", example = "Zamor")
+                                @PathVariable String personName,
+                           @ApiParam(value = "Price per gram", example = "10")
+                                @PathVariable Float mySortPrice) {
+        Sale sale = saleRepo
+                .saveSale(productName, quantity, personName, null, mySortPrice, null);
         return saleToDtoMapper.saleToDto(sale);
     }
 
@@ -95,7 +151,6 @@ public class SaleController {
     @GetMapping("/date/{date}")
     public Float getEarnedMoneyByDay(@ApiParam(value = "format : yyyy-mm-dd" , example = "2021-07-25")
                                          @PathVariable String date){
-
         return saleRepo.getEarnedMoneyByDay(date);
     }
 
@@ -105,9 +160,9 @@ public class SaleController {
     @GetMapping("/period/{dateStart}/{dateEnd}")
     public Float getEarnedMoneyByWeek(
                                       @ApiParam(value = "format : yyyy-mm-dd", example = "2022-07-07")
-                                          @PathVariable String dateEnd,
+                                            @PathVariable String dateEnd,
                                       @ApiParam(value = "format : yyyy-mm-dd", example = "2021-07-07")
-                                      @PathVariable String dateStart){
+                                            @PathVariable String dateStart){
         return  saleRepo.getEarnedMoneyByWeek(dateStart,dateEnd);
     }
 

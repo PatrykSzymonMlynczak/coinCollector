@@ -18,6 +18,10 @@ import java.util.HashMap;
 @Qualifier("jsonFile")
 public class ProductRepoImpl implements ProductRepo, ApplicationRunner {
 
+    /**
+     * Pricing for the same sort could be different,
+     * so there is need to distinguish it by price.
+     * */
     private final HashMap<PriceNameId, Product> inMemoryProductMap = new HashMap<>();
     private final JsonFileManager jsonToFileManager;
 

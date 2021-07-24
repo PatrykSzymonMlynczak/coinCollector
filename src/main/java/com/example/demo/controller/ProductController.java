@@ -36,7 +36,6 @@ public class ProductController {
             @ApiResponse(code = 400, message = "Bad request")})
     @GetMapping
     public List<ProductDto> getAllProducts(){
-        //todo loadAllProducts is not implemented !!
         return sortPricingInMemoryManager.loadAllProducts().values()
                 .stream()
                 .map(productMapper::productToDto)
@@ -49,12 +48,13 @@ public class ProductController {
     @PostMapping("/{productName}/{myPrice}")
     public ProductDto addNewProduct(
                                     @ApiParam(value = "Product Name", example = "Lemon Haze")
-                                    @PathVariable String productName,
+                                            @PathVariable String productName,
                                     @ApiParam(value = "Price per gram", example = "10")
-                                    @PathVariable Float myPrice,
+                                            @PathVariable Float myPrice,
                                     @ApiParam(value = "quantity as a key, and price per gram as a value: " +
-                                            "\n example = {\"1\":20, \"5\":16}", example = "{\"1\":20, \"5\":16}")
-                                    @RequestBody TreeMap<Float,Float> priceQuantityMap)  {
+                                            "\n example = {\"1\":20, \"5\":16}",
+                                            example = "{\"1\":20, \"5\":16}")
+                                            @RequestBody TreeMap<Float,Float> priceQuantityMap)  {
         Product product = new Product(productName, priceQuantityMap, myPrice);
         return productMapper.productToDto(sortPricingInMemoryManager.saveProduct(product));
     }
@@ -65,9 +65,9 @@ public class ProductController {
             @ApiResponse(code = 400, message = "Bad request")})
     @DeleteMapping("/{productName}/{myPrice}")
     public void deleteProduct(@ApiParam(value = "Product Name", example = "Lemon Haze")
-                              @PathVariable String productName,
+                                    @PathVariable String productName,
                               @ApiParam(value = "Price per gram",example = "10")
-                              @PathVariable Float myPrice)  {
+                                    @PathVariable Float myPrice)  {
         sortPricingInMemoryManager.deleteProduct(productName,myPrice);
         //todo return value and handle exception
     }
