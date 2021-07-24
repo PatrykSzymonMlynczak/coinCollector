@@ -35,7 +35,7 @@ For more info check this : <br />
 
 
 ## Setup 
-To Deploy Application on your computer, you need Java 11+ and Maven:
+To Deploy Application on your computer, you need Java 11+ and Gradle:
 
 1. Pull the project
 3. Command Line:
