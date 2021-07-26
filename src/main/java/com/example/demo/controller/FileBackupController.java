@@ -1,11 +1,5 @@
 package com.example.demo.controller;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 import com.example.demo.fileManager.exception.JsonFileNotFoundException;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -15,9 +9,14 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.FileWriter;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @RestController
 public class FileBackupController {
@@ -52,14 +51,11 @@ public class FileBackupController {
     public String handleFileUpload(@PathVariable("fileName") String fileName,
                                       @RequestParam("file") MultipartFile file) {
             String uploadedJsonFile = "";
-            FileWriter fileWriter;
 
-            try {
+            try (FileWriter fileWriter = new FileWriter(fileName+".json", false)){
                 uploadedJsonFile = new String(file.getBytes());
-                fileWriter = new FileWriter(fileName+".json", false);
                 fileWriter.write(uploadedJsonFile);
                 fileWriter.flush();
-                fileWriter.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }

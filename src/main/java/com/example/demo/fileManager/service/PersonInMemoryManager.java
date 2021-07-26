@@ -1,6 +1,7 @@
 package com.example.demo.fileManager.service;
 
 import com.example.demo.businessLogic.person.Person;
+import com.example.demo.businessLogic.person.PersonNotExistsException;
 import com.example.demo.repositoryContract.PersonRepo;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Qualifier("jsonFile")
@@ -40,7 +42,9 @@ public class PersonInMemoryManager implements PersonRepo {
 
     @Override
     public Person getPerson(String name) {
-        return personArrayList.stream().filter(p -> p.getName().equals(name)).findAny().get();
+        Optional<Person> personOptional = personArrayList.stream().filter(p -> p.getName().equals(name)).findAny();
+        if(personOptional.isEmpty()) throw new PersonNotExistsException(name);
+        else return personOptional.get();
     }
 
     @Override
