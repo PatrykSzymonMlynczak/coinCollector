@@ -1,5 +1,7 @@
 package com.example.demo.exceptionAdvice;
 
+import com.example.demo.businessLogic.person.PersonAlreadyExistsException;
+import com.example.demo.businessLogic.person.PersonNotExistsException;
 import com.example.demo.businessLogic.product.exception.ProductAlreadyExistsException;
 import com.example.demo.businessLogic.sale.exception.ProductNotExistException;
 import com.example.demo.businessLogic.sale.exception.StartDateIsAfterEndDateException;
@@ -14,15 +16,16 @@ public class ExceptionAdvice {
 
     @ExceptionHandler({
              ProductNotExistException.class,
-            JsonFileNotFoundException.class})
+            JsonFileNotFoundException.class,
+            PersonNotExistsException.class})
     public ResponseEntity<ApiError> handleNotFoundException(RuntimeException exception){
         return buildResponseEntity(HttpStatus.NOT_FOUND, exception);
     }
 
     @ExceptionHandler({
             ProductAlreadyExistsException.class,
-            StartDateIsAfterEndDateException.class})
-
+            StartDateIsAfterEndDateException.class,
+            PersonAlreadyExistsException.class})
     public ResponseEntity<ApiError> handleException(RuntimeException exception){
         return buildResponseEntity(HttpStatus.CONFLICT, exception);
     }

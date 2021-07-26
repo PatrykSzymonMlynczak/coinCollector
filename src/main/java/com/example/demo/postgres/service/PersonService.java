@@ -1,6 +1,8 @@
 package com.example.demo.postgres.service;
 
 import com.example.demo.businessLogic.person.Person;
+import com.example.demo.businessLogic.person.PersonAlreadyExistsException;
+import com.example.demo.businessLogic.person.PersonNotExistsException;
 import com.example.demo.mapper.PersonMapper;
 import com.example.demo.postgres.entity.PersonEntity;
 import com.example.demo.postgres.repository.PersonRepoPostgres;
@@ -23,18 +25,26 @@ public class PersonService implements PersonRepo {
     @Override
     public Person savePerson(Person person) {
         PersonEntity personEntity = personMapper.personToEntity(person);
-        personRepoPostgres.save(personEntity);
-        return person;
+        if(!personRepoPostgres.existsByNameIgnoreCase(person.getName())) {
+            personRepoPostgres.save(personEntity);
+            return person;
+        }else throw new PersonAlreadyExistsException(person.getName());
     }
 
     @Override
     public Person getPerson(String name) {
-        PersonEntity personEntity = personRepoPostgres.findByName(name);
-        return personMapper.entityToPerson(personEntity);
+        if(personRepoPostgres.existsByNameIgnoreCase(name)) {
+            PersonEntity personEntity = personRepoPostgres.findByNameIgnoreCase(name);
+            return personMapper.entityToPerson(personEntity);
+        }else throw new PersonNotExistsException(name);
     }
 
     @Override
     public List<Person> getAllPerson() {
         return personRepoPostgres.findAll().stream().map(personMapper::entityToPerson).collect(Collectors.toList());
+    }
+
+    void updateDebt(Float debt, String name){
+        personRepoPostgres.updateDebt(debt,name);
     }
 }

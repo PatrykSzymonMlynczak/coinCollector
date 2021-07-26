@@ -26,13 +26,13 @@ public class SaleController {
     @Autowired
     private SaleMapper saleToDtoMapper;
 
-    //todo separate endpoints
+    //todo -> consider to make payload model and use @RequestBody
 
     @ApiOperation(value = "Endpoint allowing to add new Sale with precised Given Money")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully added ne Sale"),
             @ApiResponse(code = 400, message = "Bad request")})
-    @PostMapping({"/{productName}/{mySortPrice}/{quantity}/{givenMoney}/{personName}"
+    @PostMapping({"/debt/{productName}/{mySortPrice}/{quantity}/{givenMoney}/{personName}"
     })
     public SaleDto addSaleWithDebt(@ApiParam(value = "Product Name, case insensitive", example = "Lemon Haze")
                                 @PathVariable String productName,
@@ -53,7 +53,7 @@ public class SaleController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully added ne Sale"),
             @ApiResponse(code = 400, message = "Bad request")})
-    @PostMapping({"/{productName}/{mySortPrice}/{quantity}/{givenMoney}/{personName}/{discount}"
+    @PostMapping({"/debtAndDiscount/{productName}/{mySortPrice}/{quantity}/{givenMoney}/{personName}/{discount}"
     })
     public SaleDto addSaleWithDebtAndDiscount(@ApiParam(value = "Product Name, case insensitive", example = "Lemon Haze")
                                 @PathVariable String productName,
@@ -76,7 +76,7 @@ public class SaleController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully added ne Sale with precised Discount"),
             @ApiResponse(code = 400, message = "Bad request")})
-    @PostMapping({"/{productName}/{mySortPrice}/{quantity}/{personName}/{discount}"})
+    @PostMapping({"/discount/{productName}/{mySortPrice}/{quantity}/{personName}/{discount}"})
     public SaleDto addSaleWithDiscount(@ApiParam(value = "Product Name, case insensitive", example = "Lemon Haze")
                                 @PathVariable String productName,
                            @ApiParam(value = "Quantity (grams)", example = "5")

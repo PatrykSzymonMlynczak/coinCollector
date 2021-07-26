@@ -31,6 +31,8 @@ public class SaleService implements SaleRepo {
         Person person = personService.getPerson(personName);
         Sale sale = new Sale(product,quantity,person,discount,money);
 
+        personService.updateDebt(sale.getPerson().getDebt(), sale.getPerson().getName());
+
         SaleEntity saleEntity = saleMapper.saleToEntity(sale);
         saleRepoPostgres.save(saleEntity);
         return sale;
@@ -69,6 +71,5 @@ public class SaleService implements SaleRepo {
         LocalDate dateEnd = LocalDate.parse(dateEndString);
         return saleRepoPostgres.getEarnedMoneyByWeek(dateStart,dateEnd);
     }
-
 
 }
