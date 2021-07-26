@@ -2,6 +2,12 @@ pipeline {
     agent any
 
     stages {
+
+        stage('Build') {
+            steps {
+                bat './gradlew clean build'
+            }
+        }
         stage('Sonarqube') {
             environment {
                 scannerHome = tool 'SonarQubeScanner'
@@ -13,11 +19,6 @@ pipeline {
                 timeout(time: 10, unit: 'MINUTES') {
                     waitForQualityGate abortPipeline: true
                 }
-            }
-        }
-        stage('Build') {
-            steps {
-                bat './gradlew clean build'
             }
         }
         stage('Test') {
