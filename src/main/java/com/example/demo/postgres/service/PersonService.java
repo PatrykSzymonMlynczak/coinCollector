@@ -1,8 +1,8 @@
 package com.example.demo.postgres.service;
 
 import com.example.demo.businessLogic.person.Person;
-import com.example.demo.entity.PersonEntity;
 import com.example.demo.mapper.PersonMapper;
+import com.example.demo.postgres.entity.PersonEntity;
 import com.example.demo.postgres.repository.PersonRepoPostgres;
 import com.example.demo.repositoryContract.PersonRepo;
 import lombok.AllArgsConstructor;

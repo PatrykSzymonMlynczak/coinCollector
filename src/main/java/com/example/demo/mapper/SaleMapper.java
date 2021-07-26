@@ -2,7 +2,7 @@ package com.example.demo.mapper;
 
 import com.example.demo.businessLogic.sale.Sale;
 import com.example.demo.dto.SaleDto;
-import com.example.demo.entity.SaleEntity;
+import com.example.demo.postgres.entity.SaleEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 

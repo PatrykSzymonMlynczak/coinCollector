@@ -3,7 +3,7 @@ package com.example.demo.postgres.service;
 import com.example.demo.businessLogic.person.Person;
 import com.example.demo.businessLogic.product.Product;
 import com.example.demo.businessLogic.sale.Sale;
-import com.example.demo.entity.SaleEntity;
+import com.example.demo.postgres.entity.SaleEntity;
 import com.example.demo.mapper.SaleMapper;
 import com.example.demo.postgres.repository.SaleRepoPostgres;
 import com.example.demo.repositoryContract.SaleRepo;

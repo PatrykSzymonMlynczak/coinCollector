@@ -1,6 +1,6 @@
 package com.example.demo.postgres.repository;
 
-import com.example.demo.entity.SaleEntity;
+import com.example.demo.postgres.entity.SaleEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -21,7 +21,8 @@ public interface SaleRepoPostgres extends JpaRepository<SaleEntity, Long> {
     Float getTotalIncome();
 
     @Query(value = "select SUM(earned) from sale where day = :day", nativeQuery = true)
-    Float getEarnedMoneyByDay(@Param("day") LocalDate day);
+    Float getEarnedMoneyByDay(
+            @Param("day") LocalDate day);
 
     @Query(value = "select SUM(earned) from sale where day between :dayStart and :dayEnd", nativeQuery = true)
     Float getEarnedMoneyByWeek(

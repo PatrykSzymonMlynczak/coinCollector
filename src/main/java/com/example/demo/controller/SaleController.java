@@ -173,6 +173,6 @@ public class SaleController {
         return saleRepo.clearAllSales().stream()
                 .map(saleToDtoMapper::saleToDto)
                 .collect(Collectors.toList());
-    }
+    }//TODO -> NOT WORKING
 
 }
