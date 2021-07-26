@@ -9,9 +9,11 @@ pipeline {
             }
         }
         stage('SonarQube Analysis') {
-        withSonarQubeEnv() {
-          bat "./gradlew sonarqube"
-        }
+            steps{
+                withSonarQubeEnv() {
+                  bat "./gradlew sonarqube"
+                }
+            }
         }
         stage('Test') {
             steps {
