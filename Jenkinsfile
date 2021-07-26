@@ -14,7 +14,7 @@ pipeline {
             }
             steps {
                 withSonarQubeEnv('sonarqube') {
-                    bat "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=coinCollector -Dsonar.sources=. -Dsonar.java.binaries=build/classes"
+                    bat "${scannerHome}/bin/sonar-scanner -D sonar.login=admin -D sonar.password=admin -D sonar.projectKey=coinCollector -D sonar.sources=. -D sonar.java.binaries=build/classes"
                 }
                 timeout(time: 10, unit: 'MINUTES') {
                     waitForQualityGate abortPipeline: true
