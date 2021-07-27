@@ -79,7 +79,8 @@ public class DatabaseIntegrationTest {
     void shouldReturnZeroWhenDateIsInappropriate() {
 /*        Float earningsByDay = saleRepoPostgres.getEarnedMoneyByWeek(LocalDate.of(2020,07,26), LocalDate.of(2021,07,29));
         Assertions.assertEquals(0, earningsByDay);*/
-        //todo -> returning null
+        //todo -> returning null,
+        // making return Optional will break contract with jsonFile version
     }
 
     //PRODUCT
