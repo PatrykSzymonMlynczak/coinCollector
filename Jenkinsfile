@@ -8,7 +8,7 @@ pipeline {
                 bat './gradlew clean build'
             }
         }
-        stage('Sonarqube') {
+        /* stage('Sonarqube') {
             environment {
                 scannerHome = tool 'SonarQube'
             }
@@ -20,7 +20,7 @@ pipeline {
                     waitForQualityGate abortPipeline: true
                 }
             }
-        }
+        } */  //todo -> Timeout: Unresponsive server -> ? Docker Toolbox different host  ?
         stage('Test') {
             steps {
                 bat './gradlew test'

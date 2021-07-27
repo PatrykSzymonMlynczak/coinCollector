@@ -24,9 +24,12 @@ public interface SaleRepoPostgres extends JpaRepository<SaleEntity, Long> {
     Float getEarnedMoneyByDay(
             @Param("day") LocalDate day);
 
+
     @Query(value = "select SUM(earned) from sale where day between :dayStart and :dayEnd", nativeQuery = true)
     Float getEarnedMoneyByWeek(
             @Param("dayStart")LocalDate dateStart,
             @Param("dayEnd")LocalDate dateEnd);
+
+
 
 }
