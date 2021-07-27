@@ -13,7 +13,7 @@ import java.lang.annotation.Annotation;
 
 /**
  * Class is enabling injecting values
- * from application.properties
+ * from application-dev.properties
  * into @Qualifier
  **/
 @Component
