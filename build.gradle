@@ -48,9 +48,12 @@ heroku {
     appName = "coin-collector-postgres"
 }
 
+/**local configuration*/
 sonarqube {
     properties {
         property "sonar.projectKey", "coinCollector"
+        property "sonar.host.url", "http://localhost:9000"
+        property "sonar.login", "ccfd643602d4b7ee66ae6636ef6fe35dde6fab1d"
     }
 }
 

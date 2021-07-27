@@ -23,7 +23,7 @@ pipeline {
         } */  //todo -> Timeout: Unresponsive server -> ? Docker Toolbox different host  ?
         stage('Test') {
             steps {
-                bat './gradlew test'
+                bat './gradlew clean test'
             }
         }
         stage('deploy') {
