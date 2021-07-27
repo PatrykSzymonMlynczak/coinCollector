@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.jsonFileIntegrationTest;
 
 import com.example.demo.businessLogic.sale.Sale;
 import com.example.demo.dto.SaleDto;
@@ -33,7 +33,7 @@ import java.util.TreeMap;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@ActiveProfiles("test")
+@ActiveProfiles("jsonFileTest")
 public class IntegrationE2eTest {
 
     @Autowired

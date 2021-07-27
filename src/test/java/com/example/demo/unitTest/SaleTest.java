@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.unitTest;
 
 
 import com.example.demo.businessLogic.person.Person;
@@ -7,9 +7,6 @@ import com.example.demo.businessLogic.sale.Sale;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
 import java.util.TreeMap;
 
 //todo proper test names - should !
@@ -20,52 +17,11 @@ public class SaleTest {
     Person person;
 
     @Test
-    public void isPalindrom(){
-        String str = "abba";
-
-        int right=str.length()-1;
-        int left=0;
-        boolean isPalindrom = false;
-        while(left<=right && right>0){
-            if (str.charAt(left) != str.charAt(right) ) {
-                System.out.println(left + " != "+ right );
-                break;
-            }else {
-                left++; right--;
-                isPalindrom = true;
-            }
-        }
-        System.out.println("Is "+str+" palindrome ? : "+isPalindrom);
-    }
-
-    @Test
-    public void twoBiggestNumbersFromList(){
-        List<Integer> tab = Arrays.asList(3,4,51,2,3,4,5);
-        for (int i: tab ) {
-            System.out.print(i +",");
-        }
-        tab.sort(Comparator.naturalOrder());
-        System.out.println("two biggest numbers: " +tab.get(tab.size()-1)+" and "+ tab.get(tab.size()-2));
-    }
-
-    @Test
-    public void isAnagram(){
-
-        char[] first = "bebak".toCharArray();
-        char[] second = "kebab".toCharArray();
-        Arrays.sort(first);
-        Arrays.sort(second);
-        if(Arrays.equals(first,second)) System.out.println("equal");
-        else System.out.println("not equal");
-    }
-
-        @Test
     public void check_calculation_when_given_money_are_less_than_price(){
         //given
         quantityPriceMap.put(1F,20F);
         product = new Product("STANDARD",quantityPriceMap, 10F);
         person = new Person("Zamor");
-
 
         //when
         Sale newSale = new Sale(product,3F, person,0F,30F);
