@@ -8,16 +8,19 @@ pipeline {
                 bat './gradlew clean build'
             }
         }
-        stage('SonarQube Analysis') {
-          environment {
-            SCANNER_HOME = tool 'SonarQube'
-          }
-            steps{
-                withSonarQubeEnv() {
-                  bat "./gradlew sonarqube"
+        /* stage('Sonarqube') {
+            environment {
+                scannerHome = tool 'SonarQube'
+            }
+            steps {
+                withSonarQubeEnv('sonarqube') {
+                    bat "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=coinCollector -Dsonar.sources=. -Dsonar.java.binaries=build/classes"
+                }
+                timeout(time: 10, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
                 }
             }
-        }
+        } */  //todo -> Timeout: Unresponsive server -> ? Docker Toolbox different host  ?
         stage('Test') {
             steps {
                 bat './gradlew test'
