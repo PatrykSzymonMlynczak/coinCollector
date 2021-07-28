@@ -23,7 +23,6 @@ public class PersonController {
     PersonRepo personRepo;
 
     private final PersonMapper personMapper;
-
     @Autowired
     public PersonController(PersonMapper personMapper) {
         this.personMapper = personMapper;
