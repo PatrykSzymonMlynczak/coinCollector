@@ -4,6 +4,7 @@ import com.example.demo.postgres.entity.ProductEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public interface ProductRepoPostgres extends JpaRepository<ProductEntity, Long> {
@@ -26,6 +27,7 @@ public interface ProductRepoPostgres extends JpaRepository<ProductEntity, Long> 
                     "END", nativeQuery = true)
     boolean existsByNameAndPriceIgnoreCase(String productName, Float price);
 
+    @Transactional
     void deleteByNameAndMyPrice(String name, Float price);
 
 }

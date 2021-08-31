@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -170,9 +171,8 @@ public class SaleController {
             @ApiResponse(code = 200, message = "Successfully deleted all Sales")})
     @DeleteMapping("/all")
     public List<SaleDto> clearAllSales(){
-        return saleRepo.clearAllSales().stream()
-                .map(saleToDtoMapper::saleToDto)
-                .collect(Collectors.toList());
+        saleRepo.clearAllSales();
+        return new ArrayList<>();
     }//TODO -> NOT WORKING
 
 }

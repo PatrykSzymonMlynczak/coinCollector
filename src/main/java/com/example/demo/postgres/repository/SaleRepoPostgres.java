@@ -30,6 +30,6 @@ public interface SaleRepoPostgres extends JpaRepository<SaleEntity, Long> {
             @Param("dayStart")LocalDate dateStart,
             @Param("dayEnd")LocalDate dateEnd);
 
-
+    //todo delete By.. ?
 
 }

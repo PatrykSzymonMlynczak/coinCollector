@@ -72,4 +72,9 @@ public class SaleService implements SaleRepo {
         return saleRepoPostgres.getEarnedMoneyByWeek(dateStart,dateEnd);
     }
 
+    @Override
+    public List<Sale> clearAllSales() {
+        saleRepoPostgres.deleteAll();
+        return null;//todo
+    }
 }
