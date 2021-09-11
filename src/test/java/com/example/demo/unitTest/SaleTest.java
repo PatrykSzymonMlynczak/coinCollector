@@ -24,7 +24,7 @@ public class SaleTest {
         person = new Person("Zamor");
 
         //when
-        Sale newSale = new Sale(product,3F, person,0F,30F);
+        Sale newSale = new Sale(product,3F, person,0F,30F, "2021-09-09");
 
         //then
         Assertions.assertEquals(newSale.getIncome(),30F);
@@ -40,7 +40,7 @@ public class SaleTest {
         person = new Person("Zamor");
 
         //when
-        Sale newSale = new Sale(product,3F, person,20F,30F);
+        Sale newSale = new Sale(product,3F, person,20F,30F, "2021-09-09");
 
         //then
         Assertions.assertEquals(newSale.getIncome(),30F);
@@ -56,7 +56,7 @@ public class SaleTest {
         person = new Person("Zamor");
 
         //when
-        Sale newSale = new Sale(product,3F, person,null,null);
+        Sale newSale = new Sale(product,3F, person,null,null, "2021-09-09");
 
         //then
         Assertions.assertEquals(newSale.getIncome(),60F);
@@ -66,11 +66,11 @@ public class SaleTest {
     public void check_calculation_when_is_discount_and_given_money_are_null(){
         //given
         quantityPriceMap.put(1F,20F);
-        product = new Product("STANDARD",quantityPriceMap, 10F);
+        product = new Product("STANDARD",quantityPriceMap, 10F );
         person = new Person("Zamor");
 
         //when
-        Sale newSale = new Sale(product,3F, person,20F,null);
+        Sale newSale = new Sale(product,3F, person,20F,null, "2021-09-09");
 
         //then
         Assertions.assertEquals(newSale.getIncome(),40F);
@@ -86,8 +86,8 @@ public class SaleTest {
         person = new Person("Zamor");
 
         //when
-        Sale newSale = new Sale(product,3F, person,0F,30F);
-        Sale newSale2 = new Sale(product,3F, person,0F,30F);
+        Sale newSale = new Sale(product,3F, person,0F,30F, "2021-09-09");
+        Sale newSale2 = new Sale(product,3F, person,0F,30F, "2021-09-09");
 
         //then
         Assertions.assertEquals(person.getDebt(),-60F);
@@ -101,7 +101,7 @@ public class SaleTest {
         person = new Person("Zamor");
 
         //when
-        Sale newSale = new Sale(product,3F, person,0F,70F);
+        Sale newSale = new Sale(product,3F, person,0F,70F, "2021-09-09");
 
         //then
         Assertions.assertEquals(newSale.getIncome(),70F);
@@ -116,11 +116,11 @@ public class SaleTest {
         person = new Person("Zamor");
 
         //when - then
-        Sale newSale = new Sale(product,3F, person,0F,30F);
+        Sale newSale = new Sale(product,3F, person,0F,30F, "2021-09-09");
         Assertions.assertEquals(person.getDebt(),-30);
 
         //when - then
-        Sale newSale2 = new Sale(product,3F, person,0F,90F); //debt payed
+        Sale newSale2 = new Sale(product,3F, person,0F,90F, "2021-09-09"); //debt payed
         Assertions.assertEquals(person.getDebt(),0);
     }
 
@@ -132,7 +132,7 @@ public class SaleTest {
         person = new Person("Zamor");
 
         //when
-        Sale newSale = new Sale(product,3F, person,-10F,null);
+        Sale newSale = new Sale(product,3F, person,-10F,null, "2021-09-09");
 
         //then
         Assertions.assertEquals(person.getDebt(),0);
@@ -147,7 +147,7 @@ public class SaleTest {
         person = new Person("Zamor");
 
         //when
-        Sale newSale = new Sale(product,10F, person,null,null);
+        Sale newSale = new Sale(product,10F, person,null,null, "2021-09-09");
         //then
         Assertions.assertEquals(newSale.getIncome(), 100F);
     }
@@ -163,7 +163,7 @@ public class SaleTest {
         person = new Person("Zamor");
 
         //when
-        Sale newSale = new Sale(product,11F, person,null,null);
+        Sale newSale = new Sale(product,11F, person,null,null, "2021-09-09");
         //then
         Assertions.assertEquals(newSale.getIncome(), 110F);
     }
@@ -179,7 +179,7 @@ public class SaleTest {
         person = new Person("Zamor");
 
         //when
-        Sale newSale = new Sale(product,11F, person,null,null);
+        Sale newSale = new Sale(product,11F, person,null,null, "2021-09-09");
         //then
         Assertions.assertEquals(newSale.getIncome(), 110F);
     }

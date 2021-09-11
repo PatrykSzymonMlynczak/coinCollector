@@ -31,6 +31,7 @@ public class SaleEntity {
     private Float mySortPrice;
     private Float earned;
     private Float income;
+    private Float loss;
 
     public SaleEntity() {}
 

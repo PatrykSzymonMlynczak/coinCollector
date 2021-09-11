@@ -24,8 +24,9 @@ public class ProductEntity {
             joinColumns = {@JoinColumn(name = "product_id", referencedColumnName = "id")})
     @MapKeyColumn(name = "quantity")
     @Column(name = "price")
-    private Map<Float,Float> quantityPriceMap;
+    private Map<Float, Float> quantityPriceMap;
     private Float myPrice;
+    private Float totalSortAmount;
 
     public ProductEntity() {
     }

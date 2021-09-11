@@ -48,6 +48,12 @@ heroku {
     appName = "coin-collector-postgres"
 }
 
+flyway {
+    url = 'jdbc:postgresql://localhost:5432/prod'
+    user = 'postgres'
+    password = '1234'
+}
+
 /**local configuration*/
 sonarqube {
     properties {

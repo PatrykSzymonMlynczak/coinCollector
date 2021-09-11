@@ -11,4 +11,6 @@ public class ProductDto {
 
     private String name;
     private Float myPrice;
+    private Float totalSortAmount;
+
 }

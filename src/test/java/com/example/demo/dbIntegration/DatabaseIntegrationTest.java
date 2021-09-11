@@ -6,12 +6,11 @@ import com.example.demo.postgres.repository.PersonRepoPostgres;
 import com.example.demo.postgres.repository.ProductRepoPostgres;
 import com.example.demo.postgres.repository.SaleRepoPostgres;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.time.LocalDate;
@@ -19,7 +18,8 @@ import java.time.LocalDate;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@ActiveProfiles("postgresTest")
+@TestPropertySource(locations="classpath:application-postgresTest.properties")
+@Sql(scripts = "classpath:populateDb/insertData.sql")
 public class DatabaseIntegrationTest {
 
     @Autowired
@@ -30,11 +30,6 @@ public class DatabaseIntegrationTest {
 
     @Autowired
     SaleRepoPostgres saleRepoPostgres;
-
-    //todo -> ? flyway.migrate instead of sql ?
-    @BeforeEach
-    @Sql(scripts = "classpath:populateDb/insertData.sql")
-    void populateDatabase(){}
 
     //PERSON
     @Test
@@ -76,7 +71,7 @@ public class DatabaseIntegrationTest {
 
     @Test
     void shouldReturnZeroWhenDateIsInappropriate() {
-/*        Float earningsByDay = saleRepoPostgres.getEarnedMoneyByWeek(LocalDate.of(2020,07,26), LocalDate.of(2021,07,29));
+/*      Float earningsByDay = saleRepoPostgres.getEarnedMoneyByWeek(LocalDate.of(2020,07,26), LocalDate.of(2021,07,29));
         Assertions.assertEquals(0, earningsByDay);*/
         //todo -> returning null,
         // making return Optional will break contract with jsonFile version
@@ -85,19 +80,19 @@ public class DatabaseIntegrationTest {
     //PRODUCT
     @Test
     void shouldReturnProductIgnoringCase() {
-        ProductEntity productEntity = productRepoPostgres.getByNameAndPriceIgnoreCase("ak 47",10F);
+        ProductEntity productEntity = productRepoPostgres.getByNameIgnoreCase("ak 47");
         Assertions.assertEquals("AK 47",productEntity.getName());
     }
 
     @Test
     void shouldReturnProperPriceForOneGram() {
-        ProductEntity productEntity = productRepoPostgres.getByNameAndPriceIgnoreCase("ak 47",10F);
+        ProductEntity productEntity = productRepoPostgres.getByNameIgnoreCase("ak 47");
         Assertions.assertEquals(20,productEntity.getQuantityPriceMap().get(1F));
     }
 
     @Test
     void shouldReturnProperPriceForFiveGram() {
-        ProductEntity productEntity = productRepoPostgres.getByNameAndPriceIgnoreCase("ak 47",10F);
+        ProductEntity productEntity = productRepoPostgres.getByNameIgnoreCase("ak 47");
         Assertions.assertEquals(16,productEntity.getQuantityPriceMap().get(5F));
     }
 }
