@@ -34,6 +34,9 @@ public class ProductService implements ProductRepo {
         if (!productRepoPostgres.existsByNameIgnoreCase(productName)) throw new ProductNotExistException(productName);
 
         Float totalSortAmount = productRepoPostgres.getTotalSortAmount(productName);
+/*
+        if (totalSortAmount < 1 )
+*/
         if ((totalSortAmount - boughtQuantity) >= 0) {
             productRepoPostgres.reduceTotalSortAmount(productName, boughtQuantity);
         } else {

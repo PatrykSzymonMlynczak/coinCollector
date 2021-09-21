@@ -1,0 +1,8 @@
+ALTER TABLE product
+ADD COLUMN additionDate date;
+ALTER TABLE product
+ADD COLUMN endDate date;
+
+
+
+

@@ -12,5 +12,9 @@ public class ProductDto {
     private String name;
     private Float myPrice;
     private Float totalSortAmount;
+/*
+    private LocalDate additionDate;
+    private LocalDate endDate;
+*/
 
 }

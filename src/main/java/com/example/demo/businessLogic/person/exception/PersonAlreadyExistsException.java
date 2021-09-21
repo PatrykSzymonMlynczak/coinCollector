@@ -1,4 +1,4 @@
-package com.example.demo.businessLogic.person;
+package com.example.demo.businessLogic.person.exception;
 
 public class PersonAlreadyExistsException extends RuntimeException {
 

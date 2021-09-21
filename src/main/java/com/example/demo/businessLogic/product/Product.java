@@ -17,12 +17,20 @@ public class Product {
     private TreeMap<Float,Float> quantityPriceMap;
     private float myPrice;
     private float totalSortAmount;
+/*
+    private LocalDate additionDate;
+    private LocalDate endDate;
+*/
+
 
     public Product(String name, TreeMap<Float, Float> quantityPriceMap, float myPrice, float totalSortAmount) {
         this.name = name;
         this.quantityPriceMap = quantityPriceMap;
         this.myPrice = myPrice;
         this.totalSortAmount = totalSortAmount;
+/*
+        this.additionDate = LocalDate.now();
+*/
     }
 
     //just for tests -> todo

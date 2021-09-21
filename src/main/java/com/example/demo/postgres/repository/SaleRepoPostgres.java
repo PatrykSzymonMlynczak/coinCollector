@@ -14,6 +14,8 @@ import java.util.List;
 @Repository
 public interface SaleRepoPostgres extends JpaRepository<SaleEntity, Long> {
 
+    void deleteById(Long id);
+
     @Query(value = "select SUM(earned) from sale", nativeQuery = true)
     Float getTotalEarnings();
 

@@ -31,12 +31,13 @@ public interface SaleRepo {
 
     void deleteLastSale();
 
+    void deleteById(Long id);
+
     Sale getLastSale();
 
     List<Sale> getSalesByPeriod(String dateStart, String dateEnd);
 
     List<Sale> getSalesByDay(String date);
-
 
     default List<Sale> clearAllSales() {
         return new ArrayList<>();

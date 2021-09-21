@@ -42,7 +42,7 @@ public class SaleController {
                            @ApiParam(value = "Person Name")
                                 @PathVariable String personName,
                            @ApiParam(value = "Set date of transaction")
-                                   @PathVariable String date){
+                                @PathVariable(required = false) String date) {
     Sale sale = saleRepo
                 .saveSale(productName, quantity, personName, null, givenMoney, date);
         return saleToDtoMapper.saleToDto(sale);
@@ -64,7 +64,7 @@ public class SaleController {
                            @ApiParam(value = "Discount can also can increase price, but must be negative)")
                                 @PathVariable Float discount,
                            @ApiParam(value = "Discount can also can increase price, but must be negative)")
-                                @PathVariable String date) {
+                                @PathVariable(required = false) String date) {
         Sale sale = saleRepo
                 .saveSale(productName, quantity, personName, discount, givenMoney, date);
         return saleToDtoMapper.saleToDto(sale);
@@ -84,7 +84,7 @@ public class SaleController {
                            @ApiParam(value = "Discount can also can increase price, but must be negative)")
                                 @PathVariable Float discount,
                            @ApiParam(value = "Set date of transaction format : yyyy-mm-dd")
-                               @PathVariable String date) {
+                                @PathVariable(required = false) String date) {
         Sale sale = saleRepo
                 .saveSale(productName, quantity, personName, discount, null, date);
         return saleToDtoMapper.saleToDto(sale);
@@ -102,7 +102,7 @@ public class SaleController {
                            @ApiParam(value = "Person Name")
                                 @PathVariable String personName,
                            @ApiParam(value = "Set date of transaction format : yyyy-mm-dd")
-                               @PathVariable String date) {
+                               @PathVariable(required = false) String date) {
         Sale sale = saleRepo
                 .saveSale(productName, quantity, personName, null, null, date);
         return saleToDtoMapper.saleToDto(sale);
@@ -120,7 +120,7 @@ public class SaleController {
                            @ApiParam(value = "Person Name")
                            @PathVariable String personName,
                            @ApiParam(value = "Set date of transaction format : yyyy-mm-dd")
-                           @PathVariable String date) {
+                           @PathVariable(required = false) String date) {
         Sale sale = saleRepo
                 .saveSaleIgnoringSurplus(productName, quantity, personName, date);
         return saleToDtoMapper.saleToDto(sale);
@@ -198,7 +198,7 @@ public class SaleController {
             @ApiResponse(code = 200, message = "Successfully received all Sales by given day")})
     @GetMapping("/earnings/date/{date}")
     public Float getEarnedMoneyByDay(@ApiParam(value = "format : yyyy-mm-dd" )
-                                         @PathVariable String date){
+                                         @PathVariable(required = false) String date){
         return saleRepo.getEarnedMoneyByDay(date);
     }
 
@@ -208,7 +208,7 @@ public class SaleController {
     @GetMapping("/earnings/period/{dateStart}/{dateEnd}")
     public Float getEarnedMoneyByWeek(
                                       @ApiParam(value = "format : yyyy-mm-dd")
-                                            @PathVariable String dateEnd,
+                                            @PathVariable(required = false) String dateEnd,
                                       @ApiParam(value = "format : yyyy-mm-dd")
                                             @PathVariable String dateStart){
         return  saleRepo.getEarnedMoneyByPeriod(dateStart,dateEnd);
@@ -230,7 +230,7 @@ public class SaleController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully received all Sales in given time period")})
     @GetMapping("/period/{dateStart}/{dateEnd}")
-    public List<SaleDto> getSalesByPeriod(String dateStart, String dateEnd){
+    public List<SaleDto> getSalesByPeriod(@PathVariable String dateStart, @PathVariable String dateEnd){
         return saleRepo.getSalesByPeriod(dateStart, dateEnd).stream().map(saleToDtoMapper::saleToDto).collect(Collectors.toList());
     }
 
@@ -238,7 +238,7 @@ public class SaleController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully received all Sales in given time period")})
     @GetMapping("/date/{date}")
-    public List<SaleDto> getSalesByPeriod(String date){
+    public List<SaleDto> getSalesByPeriod(@PathVariable String date){
         return saleRepo.getSalesByDay(date).stream().map(saleToDtoMapper::saleToDto).collect(Collectors.toList());
     }
 
@@ -248,6 +248,14 @@ public class SaleController {
     @DeleteMapping("/all")
     public List<SaleDto> clearAllSales(){
         saleRepo.clearAllSales();
+        return new ArrayList<>();
+    }
+    @ApiOperation(value = "Endpoint allowing to delete all Sales")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully deleted all Sales")})
+    @DeleteMapping("/byId/{id}")
+    public List<SaleDto> deleteSaleById(@PathVariable Long id){
+        saleRepo.deleteById(id);
         return new ArrayList<>();
     }
 }

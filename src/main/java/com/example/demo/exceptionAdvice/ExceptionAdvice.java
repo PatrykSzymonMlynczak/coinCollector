@@ -1,7 +1,7 @@
 package com.example.demo.exceptionAdvice;
 
-import com.example.demo.businessLogic.person.PersonAlreadyExistsException;
-import com.example.demo.businessLogic.person.PersonNotExistsException;
+import com.example.demo.businessLogic.person.exception.PersonAlreadyExistsException;
+import com.example.demo.businessLogic.person.exception.PersonNotExistsException;
 import com.example.demo.businessLogic.product.exception.NotEnoughSortException;
 import com.example.demo.businessLogic.product.exception.ProductAlreadyExistsException;
 import com.example.demo.businessLogic.sale.exception.ProductNotExistException;

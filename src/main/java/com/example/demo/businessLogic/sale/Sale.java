@@ -2,6 +2,7 @@ package com.example.demo.businessLogic.sale;
 
 import com.example.demo.businessLogic.person.Person;
 import com.example.demo.businessLogic.product.Product;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,6 +15,7 @@ import java.util.TreeMap;
 
 
 @Data
+@AllArgsConstructor
 @NoArgsConstructor
 public class Sale implements Serializable {
 
@@ -40,15 +42,15 @@ public class Sale implements Serializable {
         this.quantity = quantity;
         this.person = person;
 
-        if(date == null){
+        if(date == null || date.equals("undefined")){
             this.transactionDate = LocalDate.now();
             this.transactionTime = LocalTime.now();
 
         }else {
             this.transactionDate = LocalDate.parse(date);
             this.transactionTime = LocalTime.of(0,0,0);
-
         }
+
         this.mySortPrice = product.getMyPrice();
         this.discount = (discount == null) ? 0F : discount;
         this.income = roundFloatToTwoDecimalPlaces(getIncomeByProductPricing(product.getQuantityPriceMap()));

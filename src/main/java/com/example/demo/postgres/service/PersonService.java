@@ -2,8 +2,8 @@ package com.example.demo.postgres.service;
 
 import com.example.demo.businessLogic.StaticProducts;
 import com.example.demo.businessLogic.person.Person;
-import com.example.demo.businessLogic.person.PersonAlreadyExistsException;
-import com.example.demo.businessLogic.person.PersonNotExistsException;
+import com.example.demo.businessLogic.person.exception.PersonAlreadyExistsException;
+import com.example.demo.businessLogic.person.exception.PersonNotExistsException;
 import com.example.demo.businessLogic.product.Product;
 import com.example.demo.businessLogic.sale.Sale;
 import com.example.demo.dto.SaleDto;

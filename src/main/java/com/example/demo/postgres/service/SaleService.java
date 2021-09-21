@@ -82,6 +82,16 @@ public class SaleService implements SaleRepo {
     }
 
     @Override
+    public void deleteById(Long id) {
+        SaleEntity saleEntity = saleRepoPostgres.getById(id);
+        Float quantity = saleEntity.getQuantity();
+        String  productName = saleEntity.getProduct().getName();
+        productService.revertTotalSortAmount(productName, quantity);
+
+        saleRepoPostgres.deleteById(id);
+    }
+
+    @Override
     public Sale getLastSale() {
         return saleMapper.entityToSale(saleRepoPostgres.getLastSale());
     }
@@ -129,14 +139,24 @@ public class SaleService implements SaleRepo {
 
     @Override
     public Float getEarnedMoneyByDay(String dateString) {
-        LocalDate date = LocalDate.parse(dateString);
+        LocalDate date;
+        if(dateString == null || dateString.equals("undefined")){
+            date = LocalDate.now();
+        }else{
+            date = LocalDate.parse(dateString);
+        }
         return saleRepoPostgres.getEarnedMoneyByDay(date);
     }
 
     @Override
     public Float getEarnedMoneyByPeriod(String dateStartString, String dateEndString) {
+        LocalDate dateEnd;
+        if(dateEndString == null || dateEndString.equals("undefined")){
+            dateEnd = LocalDate.now();
+        }else{
+            dateEnd = LocalDate.parse(dateEndString);
+        }
         LocalDate dateStart = LocalDate.parse(dateStartString);
-        LocalDate dateEnd = LocalDate.parse(dateEndString);
         return saleRepoPostgres.getEarnedMoneyByPeriod(dateStart,dateEnd);
     }
 

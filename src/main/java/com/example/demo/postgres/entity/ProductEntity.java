@@ -27,6 +27,8 @@ public class ProductEntity {
     private Map<Float, Float> quantityPriceMap;
     private Float myPrice;
     private Float totalSortAmount;
+/*    private LocalDate additionDate;
+    private LocalDate endDate;*/
 
     public ProductEntity() {
     }
