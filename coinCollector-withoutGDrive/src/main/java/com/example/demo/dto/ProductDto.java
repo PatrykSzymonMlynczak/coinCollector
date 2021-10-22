@@ -10,5 +10,6 @@ import lombok.NoArgsConstructor;
 public class ProductDto {
 
     private String name;
+    private TreeMap<Float,Float> quantityPriceMap;
     private Float myPrice;
 }

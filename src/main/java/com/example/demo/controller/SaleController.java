@@ -159,6 +159,17 @@ public class SaleController {
                 .collect(Collectors.toList());
     }
 
+    @ApiOperation(value = "Endpoint allowing to get Sales by person name")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully received all Sales")})
+    @GetMapping("/byPersonName/{name}")
+    public List<SaleDto> getByName(@PathVariable String name){
+        return saleRepo.loadAllSales().stream()
+                .filter(sale -> sale.getPerson().getName().equals(name))
+                .map(saleToDtoMapper::saleToDto)
+                .collect(Collectors.toList());
+    }
+
     @ApiOperation(value = "Endpoint allowing to get income from all Sales")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully received whole income")})
@@ -185,7 +196,7 @@ public class SaleController {
         return saleRepo.getTotalEarnings();
     }
 
-    @ApiOperation(value = "Endpoint allowing to get cost form all Sales")
+    @ApiOperation(value =49651+919+ "Endpoint allowing to get cost form all Sales")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully received cost of all Sales")})
     @GetMapping("/cost")
