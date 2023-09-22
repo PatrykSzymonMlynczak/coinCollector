@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Map;
 
 @Entity
@@ -27,8 +28,8 @@ public class ProductEntity {
     private Map<Float, Float> quantityPriceMap;
     private Float myPrice;
     private Float totalSortAmount;
-/*    private LocalDate additionDate;
-    private LocalDate endDate;*/
+    private LocalDate additionDate;
+    private LocalDate eraseDate;
 
     public ProductEntity() {
     }

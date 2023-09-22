@@ -7,9 +7,9 @@ import com.example.demo.businessLogic.sale.Sale;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
 import java.util.TreeMap;
 
-//todo proper test names - should !
 public class SaleTest {
 
     TreeMap<Float, Float> quantityPriceMap = new TreeMap<>();
@@ -182,5 +182,23 @@ public class SaleTest {
         Sale newSale = new Sale(product,11F, person,null,null, "2021-09-09");
         //then
         Assertions.assertEquals(newSale.getIncome(), 110F);
+    }
+
+
+    //todo
+    @Test
+    public void test(){
+        String date = null;
+
+        System.out.println(setNowDateIfNotExist(date));
+    }
+
+    private String setNowDateIfNotExist(String date) {
+        if(date == null || date.equals("undefined")){
+            return LocalDate.now().toString();
+
+        }else {
+            return date;
+        }
     }
 }

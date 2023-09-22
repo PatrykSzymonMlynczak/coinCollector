@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.TreeMap;
 
 @Data
@@ -15,9 +16,7 @@ public class ProductDto {
     private Float myPrice;
     private TreeMap<Float,Float> quantityPriceMap;
     private Float totalSortAmount;
-/*
     private LocalDate additionDate;
-    private LocalDate endDate;
-*/
+    private LocalDate eraseDate;
 
 }

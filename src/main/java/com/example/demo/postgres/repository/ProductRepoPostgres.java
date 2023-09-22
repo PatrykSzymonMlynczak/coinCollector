@@ -8,6 +8,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+
 @Repository
 public interface ProductRepoPostgres extends JpaRepository<ProductEntity, Long> {
 
@@ -31,8 +33,8 @@ public interface ProductRepoPostgres extends JpaRepository<ProductEntity, Long> 
 
     @Transactional
     @Modifying
-    @Query(value = "UPDATE PRODUCT SET total_sort_amount = 0 WHERE upper(name) = upper(:productName)", nativeQuery = true)
-    void eraseRestOfProduct(@Param("productName") String productName);
+    @Query(value = "UPDATE PRODUCT SET total_sort_amount = 0, erase_date = :eraseDate WHERE upper(name) = upper(:productName)", nativeQuery = true)
+    void eraseRestOfProduct(@Param("productName") String productName, @Param("eraseDate") LocalDate eraseDate );
 
 
         @Query(value = "SELECT CASE WHEN EXISTS " +

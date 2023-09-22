@@ -42,14 +42,7 @@ public class Sale implements Serializable {
         this.quantity = quantity;
         this.person = person;
 
-        if(date == null || date.equals("undefined")){
-            this.transactionDate = LocalDate.now();
-            this.transactionTime = LocalTime.now();
-
-        }else {
-            this.transactionDate = LocalDate.parse(date);
-            this.transactionTime = LocalTime.of(0,0,0);
-        }
+        setNowDateIfNotExist(date == null || date.equals("undefined"), date);
 
         this.mySortPrice = product.getMyPrice();
         this.discount = (discount == null) ? 0F : discount;
@@ -66,6 +59,17 @@ public class Sale implements Serializable {
         this.earned = roundFloatToTwoDecimalPlaces(income - (mySortPrice * quantity));
     }
 
+    private void setNowDateIfNotExist(boolean date, String date1) {
+        if(date){
+            this.transactionDate = LocalDate.now();
+            this.transactionTime = LocalTime.now();
+
+        }else {
+            this.transactionDate = LocalDate.parse(date1);
+            this.transactionTime = LocalTime.of(0,0,0);
+        }
+    }
+
     //Ignore surplus
     public Sale(Product product, Float quantity, Person person, String date) {
 
@@ -73,15 +77,7 @@ public class Sale implements Serializable {
         this.quantity = quantity;
         this.person = person;
 
-        if(date == null){
-            this.transactionDate = LocalDate.now();
-            this.transactionTime = LocalTime.now();
-
-        }else {
-            this.transactionDate = LocalDate.parse(date);
-            this.transactionTime = LocalTime.of(0,0,0);
-
-        }
+        setNowDateIfNotExist(date == null, date);
         this.mySortPrice = product.getMyPrice();
         this.discount = (discount == null) ? 0F : discount;
         this.income = getIncomeByProductPricingIgnoreSurplus(product.getQuantityPriceMap(), Math.round(quantity));

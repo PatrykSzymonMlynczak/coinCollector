@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.TreeMap;
 
 @Data
@@ -17,10 +18,9 @@ public class Product {
     private TreeMap<Float,Float> quantityPriceMap;
     private float myPrice;
     private float totalSortAmount;
-/*
+
     private LocalDate additionDate;
-    private LocalDate endDate;
-*/
+    private LocalDate eraseDate;
 
 
     public Product(String name, TreeMap<Float, Float> quantityPriceMap, float myPrice, float totalSortAmount) {
@@ -28,9 +28,7 @@ public class Product {
         this.quantityPriceMap = quantityPriceMap;
         this.myPrice = myPrice;
         this.totalSortAmount = totalSortAmount;
-/*
         this.additionDate = LocalDate.now();
-*/
     }
 
     //just for tests -> todo
