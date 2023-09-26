@@ -22,6 +22,8 @@ public class Sale implements Serializable {
     private Long id;
     //given data
     private Product product;
+    private float sortAmountBefore;
+
     private float quantity;
     private Person person;
 
@@ -36,9 +38,11 @@ public class Sale implements Serializable {
     private float income;
     private float loss;
 
-    public Sale(Product product, Float quantity, Person person, Float discount, Float givenMoney/*optional*/, String date) {
+    public Sale(Product product, Float quantity, Person person, Float discount, Float givenMoney, String date) {
 
         this.product = product;
+        //for now product is decreased by quantity
+        this.sortAmountBefore = product.getTotalSortAmount()+quantity;
         this.quantity = quantity;
         this.person = person;
 
@@ -48,7 +52,7 @@ public class Sale implements Serializable {
         this.discount = (discount == null) ? 0F : discount;
         this.income = roundFloatToTwoDecimalPlaces(getIncomeByProductPricing(product.getQuantityPriceMap()));
         if(givenMoney != null) {
-            /** when given money are smaller then price,
+            /** when given money are smaller than price,
               * decrease income and increase debt
               * when given money will be bigger, additional money will decrease debt or make surplus*/
             Float debt = income - givenMoney;

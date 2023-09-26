@@ -16,6 +16,7 @@ public class SaleDto {
 
     private Long id;
     private ProductDto product;
+    private float sortAmountBefore;
     private Float quantity;
     private PersonDto person;
     private Float discount;

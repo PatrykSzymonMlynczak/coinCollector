@@ -1,5 +1,6 @@
 package com.example.demo.postgres.entity;
 
+import com.example.demo.businessLogic.product.Product;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -17,6 +18,8 @@ public class SaleEntity {
 
     @OneToOne
     private ProductEntity product;
+    private float sortAmountBefore;
+
     private Float quantity;
 
     @OneToOne
