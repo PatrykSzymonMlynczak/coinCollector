@@ -5,16 +5,15 @@ import com.example.demo.businessLogic.sale.Sale;
 import com.example.demo.dto.SaleDto;
 import com.example.demo.mapper.SaleMapper;
 import com.example.demo.repositoryContract.SaleRepo;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,115 +29,115 @@ public class SaleController {
     private SaleMapper saleToDtoMapper;
 
 
-    @ApiOperation(value = "Endpoint allowing to add new Sale with precised Given Money")
+    @Operation(summary  = "Endpoint allowing to add new Sale with precised Given Money")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully added ne Sale"),
-            @ApiResponse(code = 400, message = "Bad request")})
+            @ApiResponse(responseCode = "200", description = "Successfully added ne Sale"),
+            @ApiResponse(responseCode = "400", description = "Bad request")})
     @PostMapping({"/debt/{productName}/{quantity}/{givenMoney}/{personName}/{date}"})
-    public SaleDto addSaleWithDebt(@ApiParam(value = "Product Name, case insensitive")
+    public SaleDto addSaleWithDebt(@Parameter(description = "Product Name, case insensitive")
                                    @PathVariable String productName,
-                                   @ApiParam(value = "Quantity (grams)")
+                                   @Parameter(description = "Quantity (grams)")
                                    @PathVariable Float quantity,
-                                   @ApiParam(value = "In case of making debt")
+                                   @Parameter(description = "In case of making debt")
                                    @PathVariable Float givenMoney,
-                                   @ApiParam(value = "Person Name")
+                                   @Parameter(description = "Person Name")
                                    @PathVariable String personName,
-                                   @ApiParam(value = "Set date of transaction")
+                                   @Parameter(description = "Set date of transaction")
                                    @PathVariable(required = false) String date) {
         Sale sale = saleRepo
                 .saveSale(productName, quantity, personName, null, givenMoney, date);
         return saleToDtoMapper.saleToDto(sale);
     }
 
-    @ApiOperation(value = "Endpoint allowing to add new Sale with precised Given Money, and Discount")
+    @Operation(summary  = "Endpoint allowing to add new Sale with precised Given Money, and Discount")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully added ne Sale"),
-            @ApiResponse(code = 400, message = "Bad request")})
+            @ApiResponse(responseCode = "200", description = "Successfully added ne Sale"),
+            @ApiResponse(responseCode = "400", description = "Bad request")})
     @PostMapping({"/debtAndDiscount/{productName}/{quantity}/{givenMoney}/{personName}/{discount}/{date}"})
-    public SaleDto addSaleWithDebtAndDiscount(@ApiParam(value = "Product Name, case insensitive")
+    public SaleDto addSaleWithDebtAndDiscount(@Parameter(description = "Product Name, case insensitive")
                                               @PathVariable String productName,
-                                              @ApiParam(value = "Quantity (grams)")
+                                              @Parameter(description = "Quantity (grams)")
                                               @PathVariable Float quantity,
-                                              @ApiParam(value = "In case of making debt")
+                                              @Parameter(description = "In case of making debt")
                                               @PathVariable Float givenMoney,
-                                              @ApiParam(value = "Person Name")
+                                              @Parameter(description = "Person Name")
                                               @PathVariable String personName,
-                                              @ApiParam(value = "Discount can also can increase price, but must be negative)")
+                                              @Parameter(description = "Discount can also can increase price, but must be negative)")
                                               @PathVariable Float discount,
-                                              @ApiParam(value = "Discount can also can increase price, but must be negative)")
+                                              @Parameter(description = "Discount can also can increase price, but must be negative)")
                                               @PathVariable(required = false) String date) {
         Sale sale = saleRepo
                 .saveSale(productName, quantity, personName, discount, givenMoney, date);
         return saleToDtoMapper.saleToDto(sale);
     }
 
-    @ApiOperation(value = "Endpoint allowing to add new Sale")
+    @Operation(summary  = "Endpoint allowing to add new Sale")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully added ne Sale with precised Discount"),
-            @ApiResponse(code = 400, message = "Bad request")})
+            @ApiResponse(responseCode = "200", description = "Successfully added ne Sale with precised Discount"),
+            @ApiResponse(responseCode = "400", description = "Bad request")})
     @PostMapping({"/discount/{productName}/{quantity}/{personName}/{discount}/{date}"})
-    public SaleDto addSaleWithDiscount(@ApiParam(value = "Product Name, case insensitive")
+    public SaleDto addSaleWithDiscount(@Parameter(description = "Product Name, case insensitive")
                                        @PathVariable String productName,
-                                       @ApiParam(value = "Quantity (grams)")
+                                       @Parameter(description = "Quantity (grams)")
                                        @PathVariable Float quantity,
-                                       @ApiParam(value = "Person Name")
+                                       @Parameter(description = "Person Name")
                                        @PathVariable String personName,
-                                       @ApiParam(value = "Discount can also can increase price, but must be negative)")
+                                       @Parameter(description = "Discount can also can increase price, but must be negative)")
                                        @PathVariable Float discount,
-                                       @ApiParam(value = "Set date of transaction format : yyyy-mm-dd")
+                                       @Parameter(description = "Set date of transaction format : yyyy-mm-dd")
                                        @PathVariable(required = false) String date) {
         Sale sale = saleRepo
                 .saveSale(productName, quantity, personName, discount, null, date);
         return saleToDtoMapper.saleToDto(sale);
     }
 
-    @ApiOperation(value = "Endpoint allowing to add new Sale")
+    @Operation(summary  = "Endpoint allowing to add new Sale")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully added new Sale"),
-            @ApiResponse(code = 400, message = "Bad request")})
+            @ApiResponse(responseCode = "200", description = "Successfully added new Sale"),
+            @ApiResponse(responseCode = "400", description = "Bad request")})
     @PostMapping({"/{productName}/{quantity}/{personName}/{date}"})
-    public SaleDto addSale(@ApiParam(value = "Product Name, case insensitive")
+    public SaleDto addSale(@Parameter(description = "Product Name, case insensitive")
                            @PathVariable String productName,
-                           @ApiParam(value = "Quantity (grams)")
+                           @Parameter(description = "Quantity (grams)")
                            @PathVariable Float quantity,
-                           @ApiParam(value = "Person Name")
+                           @Parameter(description = "Person Name")
                            @PathVariable String personName,
-                           @ApiParam(value = "Set date of transaction format : yyyy-mm-dd")
+                           @Parameter(description = "Set date of transaction format : yyyy-mm-dd")
                            @PathVariable(required = false) String date) {
         Sale sale = saleRepo
                 .saveSale(productName, quantity, personName, null, null, date);
         return saleToDtoMapper.saleToDto(sale);
     }
 
-    @ApiOperation(value = "Endpoint allowing to add new Sale ignoring surplus")
+    @Operation(summary  = "Endpoint allowing to add new Sale ignoring surplus")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully added new Sale"),
-            @ApiResponse(code = 400, message = "Bad request")})
+            @ApiResponse(responseCode = "200", description = "Successfully added new Sale"),
+            @ApiResponse(responseCode = "400", description = "Bad request")})
     @PostMapping({"ignoreSurplus/{productName}/{quantity}/{personName}/{date}"})
-    public SaleDto addSaleIgnoreSurplus(@ApiParam(value = "Product Name, case insensitive") @PathVariable String productName,
-                                        @ApiParam(value = "Quantity (grams)") @PathVariable Float quantity,
-                                        @ApiParam(value = "Person Name") @PathVariable String personName,
-                                        @ApiParam(value = "Set date of transaction format : yyyy-mm-dd") @PathVariable(required = false) String date) {
+    public SaleDto addSaleIgnoreSurplus(@Parameter(description = "Product Name, case insensitive") @PathVariable String productName,
+                                        @Parameter(description = "Quantity (grams)") @PathVariable Float quantity,
+                                        @Parameter(description = "Person Name") @PathVariable String personName,
+                                        @Parameter(description = "Set date of transaction format : yyyy-mm-dd", required = false) @PathVariable(required = false) String date) {
         Sale sale = saleRepo
                 .saveSaleIgnoringSurplus(productName, quantity, personName, date);
         return saleToDtoMapper.saleToDto(sale);
     }
 
-    @ApiOperation(value = "Endpoint allowing check price for given quantity")
+    @Operation(summary  = "Endpoint allowing check price for given quantity")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully added new Sale"),
-            @ApiResponse(code = 400, message = "Bad request")})
+            @ApiResponse(responseCode = "200", description = "Successfully added new Sale"),
+            @ApiResponse(responseCode = "400", description = "Bad request")})
     @PostMapping({"priceCheckout/{productName}/{quantity}"})
-    public Float priceCheckout(@ApiParam(value = "Product Name, case insensitive")
+    public Float priceCheckout(@Parameter(description = "Product Name, case insensitive")
                                @PathVariable String productName,
-                               @ApiParam(value = "Quantity (grams)")
+                               @Parameter(description = "Quantity (grams)")
                                @PathVariable Float quantity) {
         return saleRepo.priceCheckout(productName, quantity);
     }
 
-    @ApiOperation(value = "Endpoint allowing to get all Sales")
+    @Operation(summary  = "Endpoint allowing to get all Sales")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully received all Sales")})
+            @ApiResponse(responseCode = "200", description = "Successfully received all Sales")})
     @GetMapping("/all")
     public List<SaleDto> getAllSales() {
         return saleRepo.loadAllSales().stream()
@@ -146,9 +145,9 @@ public class SaleController {
                 .collect(Collectors.toList());
     }
 
-    @ApiOperation(value = "Endpoint allowing to get Sales without debt payments")
+    @Operation(summary  = "Endpoint allowing to get Sales without debt payments")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully received all Sales")})
+            @ApiResponse(responseCode = "200", description = "Successfully received all Sales")})
     @GetMapping("/withoutDebtPayments")
     public List<SaleDto> getSalesWithoutDebtPayments() {
         return saleRepo.loadAllSales().stream()
@@ -157,9 +156,9 @@ public class SaleController {
                 .collect(Collectors.toList());
     }
 
-    @ApiOperation(value = "Endpoint allowing to get Sales by person name")
+    @Operation(summary  = "Endpoint allowing to get Sales by person name")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully received all Sales")})
+            @ApiResponse(responseCode = "200", description = "Successfully received all Sales")})
     @GetMapping("/byPersonName/{name}")
     public List<SaleDto> getByName(@PathVariable String name) {
         return saleRepo.loadAllSales().stream()
@@ -168,9 +167,9 @@ public class SaleController {
                 .collect(Collectors.toList());
     }
 
-    @ApiOperation(value = "Endpoint allowing to get income from all Sales")
+    @Operation(summary  = "Endpoint allowing to get income from all Sales")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully received whole income")})
+            @ApiResponse(responseCode = "200", description = "Successfully received whole income")})
     @GetMapping("/income")
     public Float getIncome() {
         return saleRepo.getTotalIncome();
@@ -186,44 +185,44 @@ public class SaleController {
         return saleRepo.getEarningsWithSpecifiedProductName(name);
     }
 
-    @ApiOperation(value = "Endpoint allowing to get earned money from all Sales")
+    @Operation(summary  = "Endpoint allowing to get earned money from all Sales")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully received all earned money")})
+            @ApiResponse(responseCode = "200", description = "Successfully received all earned money")})
     @GetMapping("/earnings")
     public Float getTotalEarnings() {
         return saleRepo.getTotalEarnings();
     }
 
-    @ApiOperation(value = 49651 + 919 + "Endpoint allowing to get cost form all Sales")
+    @Operation(summary  = 49651 + 919 + "Endpoint allowing to get cost form all Sales")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully received cost of all Sales")})
+            @ApiResponse(responseCode = "200", description = "Successfully received cost of all Sales")})
     @GetMapping("/cost")
     public Float getTotalCost() {
         return saleRepo.getTotalCost();
     }
 
-    @ApiOperation(value = "Endpoint allowing to get earnings by day")
+    @Operation(summary  = "Endpoint allowing to get earnings by day")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully received all Sales by given day")})
+            @ApiResponse(responseCode = "200", description = "Successfully received all Sales by given day")})
     @GetMapping("/earnings/date/{date}")
-    public Float getEarnedMoneyByDay(@ApiParam(value = "format : yyyy-mm-dd")
+    public Float getEarnedMoneyByDay(@Parameter(description = "format : yyyy-mm-dd")
                                      @PathVariable(required = false) String date) {
         return saleRepo.getEarnedMoneyByDay(setNowDateIfNotExist(date));
     }
 
-    @ApiOperation(value = "Endpoint allowing to get earnings from given time period")
+    @Operation(summary  = "Endpoint allowing to get earnings from given time period")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully received all Sales in given time period")})
+            @ApiResponse(responseCode = "200", description = "Successfully received all Sales in given time period")})
     @GetMapping("/earnings/period/{dateStart}/{dateEnd}")
     public Float getEarnedMoneyByWeek(
-            @ApiParam(value = "format : yyyy-mm-dd")
+            @Parameter(description = "format : yyyy-mm-dd")
             @PathVariable String dateStart,
-            @ApiParam(value = "format : yyyy-mm-dd")
+            @Parameter(description = "format : yyyy-mm-dd")
             @PathVariable(required = false) String dateEnd) {
         return saleRepo.getEarnedMoneyByPeriod(dateStart, setNowDateIfNotExist(dateEnd));
     }
 
-    @ApiOperation(value = "Endpoint allowing to delete last sale")
+    @Operation(summary  = "Endpoint allowing to delete last sale")
     @DeleteMapping("/last")
     public SaleDto deleteLastSale() {
         saleRepo.deleteLastSale();
@@ -235,37 +234,37 @@ public class SaleController {
         return saleToDtoMapper.saleToDto(saleRepo.getLastSale());
     }
 
-    @ApiOperation(value = "Endpoint allowing to get all Sales from given time period")
+    @Operation(summary  = "Endpoint allowing to get all Sales from given time period")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully received all Sales in given time period")})
+            @ApiResponse(responseCode = "200", description = "Successfully received all Sales in given time period")})
     @GetMapping("/period/{dateStart}/{dateEnd}")
     public List<SaleDto> getSalesByPeriod(@PathVariable String dateStart,
-                                          @ApiParam(value = "Set date of transaction ") @PathVariable(required = false) String dateEnd) {
+                                          @Parameter(description = "Set date of transaction ") @PathVariable(required = false) String dateEnd) {
 
 
         return saleRepo.getSalesByPeriod(dateStart, setNowDateIfNotExist(dateEnd)).stream().map(saleToDtoMapper::saleToDto).collect(Collectors.toList());
     }
 
-    @ApiOperation(value = "Endpoint allowing to get all Sales in precised day")
+    @Operation(summary  = "Endpoint allowing to get all Sales in precised day")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully received all Sales in given time period")})
+            @ApiResponse(responseCode = "200", description = "Successfully received all Sales in given time period")})
     @GetMapping("/date/{date}")
-    public List<SaleDto> getSalesByPeriod(@ApiParam(value = "Set date of transaction format : yyyy-mm-dd") @PathVariable String date) {
+    public List<SaleDto> getSalesByPeriod(@Parameter(description = "Set date of transaction format : yyyy-mm-dd") @PathVariable String date) {
         return saleRepo.getSalesByDay(setNowDateIfNotExist(date)).stream().map(saleToDtoMapper::saleToDto).collect(Collectors.toList());
     }
 
-    @ApiOperation(value = "Endpoint allowing to delete all Sales")
+    @Operation(summary  = "Endpoint allowing to delete all Sales")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully deleted all Sales")})
+            @ApiResponse(responseCode = "200", description = "Successfully deleted all Sales")})
     @DeleteMapping("/all")
     public List<SaleDto> clearAllSales() {
         saleRepo.clearAllSales();
         return new ArrayList<>();
     }
 
-    @ApiOperation(value = "Endpoint allowing to delete all Sales")
+    @Operation(summary  = "Endpoint allowing to delete all Sales")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully deleted all Sales")})
+            @ApiResponse(responseCode = "200", description = "Successfully deleted all Sales")})
     @DeleteMapping("/byId/{id}")
     public List<SaleDto> deleteSaleById(@PathVariable Long id) {
         saleRepo.deleteById(id);

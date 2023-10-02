@@ -4,10 +4,11 @@ import com.example.demo.businessLogic.person.Person;
 import com.example.demo.dto.PersonDto;
 import com.example.demo.mapper.PersonMapper;
 import com.example.demo.repositoryContract.PersonRepo;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,19 +28,19 @@ public class PersonController {
         this.personMapper = personMapper;
     }
 
-    @ApiOperation(value = "Endpoint allowing to add new Person")
+    @Operation(summary  = "Endpoint allowing to add new Person")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully added new Person"),
-            @ApiResponse(code = 400, message = "Bad request")})
+            @ApiResponse(responseCode  = "200", description = "Successfully added new Person"),
+            @ApiResponse(responseCode  = "400", description = "Bad request")})
     @PostMapping("/{personName}")
-    public PersonDto savePerson(@ApiParam(value = "Person Name", example = "Zamor")
+    public PersonDto savePerson(@Parameter(description = "Person Name", example = "Zamor")
                                     @PathVariable String personName){
         PersonDto person = new PersonDto(personName);
         personRepo.savePerson(personMapper.dtoToPerson(person));
         return person;
     }//todo handle adding same person more than once
 
-    @ApiOperation(value = "Endpoint updating debt, not changing total earnings")
+    @Operation(summary  = "Endpoint updating debt, not changing total earnings")
     @PutMapping("/updateDebt")
     public PersonDto updateDebt(Float debt, String name){
         //todo ignore case
@@ -69,10 +70,10 @@ public class PersonController {
                 .filter(person -> person.getDebt() != 0).mapToDouble(Person::getDebt).sum();
     }
 
-    @ApiOperation(value = "Endpoint allowing get all Persons")
+    @Operation(summary  = "Endpoint allowing get all Persons")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully received all Persons"),
-            @ApiResponse(code = 400, message = "Bad request")})
+            @ApiResponse(responseCode  = "200", description = "Successfully received all Persons"),
+            @ApiResponse(responseCode  = "400", description = "Bad request")})
     @GetMapping
     public List<PersonDto> getAllPersons(){
         return personRepo.getAllPerson()

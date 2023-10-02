@@ -11,7 +11,7 @@ VALUES((SELECT id from product WHERE name='Lemon Haze'),20,1),
 ((SELECT id from product WHERE name='AK 47'),16,5);
 
 
-INSERT INTO sale(loss,discount,earned,income,my_sort_price,quantity,day,moment,person_id,product_id)
+INSERT INTO sale(sort_amount_before,loss,discount,earned,income,my_sort_price,quantity,day,moment,person_id,product_id)
 VALUES
-(0,20,0,50,10,5,'2021-07-26','15:29:02',(SELECT id from person WHERE name='Zamor'),(SELECT id from product WHERE name='Lemon Haze')),
-(0,-10,40,90,10,5,'2021-07-26','16:04:35',(SELECT id from person WHERE name='Oltman'),(SELECT id from product WHERE name='AK 47'));
+(50,0,20,0,50,10,5,'2021-07-26','15:29:02',(SELECT id from person WHERE name='Zamor'),(SELECT id from product WHERE name='Lemon Haze')),
+(50,0,-10,40,90,10,5,'2021-07-26','16:04:35',(SELECT id from person WHERE name='Oltman'),(SELECT id from product WHERE name='AK 47'));
