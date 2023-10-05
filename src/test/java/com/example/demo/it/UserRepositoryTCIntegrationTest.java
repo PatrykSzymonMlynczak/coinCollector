@@ -1,10 +1,17 @@
 package com.example.demo.it;
 
+import com.example.demo.businessLogic.product.exception.NotEnoughSortException;
+import com.example.demo.controller.PersonController;
+import com.example.demo.controller.ProductController;
+import com.example.demo.controller.SaleController;
 import com.example.demo.dto.SaleDto;
+import com.example.demo.postgres.entity.ProductEntity;
+import com.example.demo.postgres.entity.SaleEntity;
 import com.example.demo.postgres.repository.PersonRepoPostgres;
 import com.example.demo.postgres.repository.ProductRepoPostgres;
 import com.example.demo.postgres.repository.SaleRepoPostgres;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.Rule;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,6 +20,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -28,20 +36,26 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import java.time.LocalDate;
+import java.util.Map;
 import java.util.TreeMap;
 
-@RunWith(SpringRunner.class)
+import static com.google.common.truth.Truth.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+//@RunWith(SpringRunner.class)
 @SpringBootTest
 @Testcontainers
 @TestPropertySource(locations = "classpath:application-test.properties")
 //contextConfiguration as alternative or dynamic
-@Sql(scripts = "classpath:populateDb/insertData.sql")
+@Sql(scripts = "classpath:populateDb/insertData.sql")//todo changename
 @AutoConfigureMockMvc
 public class UserRepositoryTCIntegrationTest {
 
     @Container
-    public static PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres:11.1")
-            .withDatabaseName("integration-tests-db")
+    @ServiceConnection
+    public static PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres:9.6.12")
+            .withDatabaseName("db")
             .withUsername("sa")
             .withPassword("sa");
 
@@ -50,8 +64,6 @@ public class UserRepositoryTCIntegrationTest {
         registry.add("spring.datasource.url", () -> String.format("jdbc:tc:postgresql://localhost:%s/%s", postgreSQLContainer.getFirstMappedPort(), postgreSQLContainer.getDatabaseName()));
         registry.add("spring.datasource.username", postgreSQLContainer::getUsername);
         registry.add("spring.datasource.password", postgreSQLContainer::getPassword);
-        registry.add("spring.datasource.driver-class-name", () -> "org.testcontainers.jdbc.ContainerDatabaseDriver");
-        registry.add("spring.jpa.hibernate.ddl-auto", () -> "create");
     }
 
     @Autowired
@@ -70,24 +82,70 @@ public class UserRepositoryTCIntegrationTest {
     SaleRepoPostgres saleRepoPostgres;
 
 
+    @Autowired
+    SaleController saleController;
+
+    @Autowired
+    ProductController productController;
+
+    @Autowired
+    PersonController personController;
+
+
     @BeforeEach
     public void setupProduct() throws Exception {
-
-        postgreSQLContainer.start();
-
-        TreeMap<Float, Float> map = new TreeMap<>();
-        map.put(1F, 5F);
-        String json = objectMapper.writeValueAsString(map);
-        mockMvc.perform(MockMvcRequestBuilders
-                .post("/product/{productName}/{myPrice}", "test", "10")
-                .contentType(MediaType.APPLICATION_JSON).content(json));
     }
 
     @AfterEach
     public void clearDB() {
+        saleRepoPostgres.deleteAll();
         personRepoPostgres.deleteAll();
         productRepoPostgres.deleteAll();
-        saleRepoPostgres.deleteAll();
+    }
+
+
+    @Test
+    public void should() {
+        String productNameStandard = "Standard";
+        String person = "Ada";
+        personController.savePerson(person);
+        personController.savePerson("person");
+
+        TreeMap<Float, Float> priceMapStandard = new TreeMap<>();
+        priceMapStandard.put(1F, 50F);
+        priceMapStandard.put(5F, 40F);
+        priceMapStandard.put(10F, 40F);
+        productController.addNewProduct(productNameStandard, 28F, 100F, priceMapStandard);
+
+
+        //WHEN
+        saleController.addSale(productNameStandard, 88F, person, null);
+
+
+        //should decrease amount
+        ProductEntity productEntity = productRepoPostgres.getByNameIgnoreCase(productNameStandard);
+        assertThat(productEntity.getTotalSortAmount()).isEqualTo(12);
+
+        //should calcualte money
+        assertThat(saleRepoPostgres.getEarnedMoneyByDay(LocalDate.now())).isEqualTo(3520 - 2464);
+        assertThat(saleRepoPostgres.getTotalIncome()).isEqualTo(3520);
+        assertThat(saleRepoPostgres.getTotalCost()).isEqualTo(2464);
+
+
+        //should throw exception and calculate lack
+        NotEnoughSortException exception = assertThrows(NotEnoughSortException.class, () -> {
+            saleController.addSale(productNameStandard, 13F, person, null);
+        });
+        assertThat(exception.getMessage()).isEqualTo("You can't sell it cause You have not enough sort:Standard lack: 1.0");
+
+        //WHEN
+        saleController.addSale(productNameStandard, 12F, person, null);
+
+        //should erase product //todo erase while product is 0 value
+        ProductEntity product = productRepoPostgres.getByNameIgnoreCase("standard");
+        assertThat(product.getTotalSortAmount()).isEqualTo(0);
+        assertThat(product.getEraseDate()).isEqualTo(LocalDate.now());
+
     }
 
     @Test
