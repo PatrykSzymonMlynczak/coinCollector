@@ -38,7 +38,7 @@ public class PersonController {
         PersonDto person = new PersonDto(personName);
         personRepo.savePerson(personMapper.dtoToPerson(person));
         return person;
-    }//todo handle adding same person more than once
+    }
 
     @Operation(summary  = "Endpoint updating debt, not changing total earnings")
     @PutMapping("/updateDebt")

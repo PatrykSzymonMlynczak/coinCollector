@@ -113,13 +113,13 @@ public class SaleController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully added new Sale"),
             @ApiResponse(responseCode = "400", description = "Bad request")})
-    @PostMapping({"ignoreSurplus/{productName}/{quantity}/{personName}/{date}"})
-    public SaleDto addSaleIgnoreSurplus(@Parameter(description = "Product Name, case insensitive") @PathVariable String productName,
-                                        @Parameter(description = "Quantity (grams)") @PathVariable Float quantity,
-                                        @Parameter(description = "Person Name") @PathVariable String personName,
-                                        @Parameter(description = "Set date of transaction format : yyyy-mm-dd", required = false) @PathVariable(required = false) String date) {
+    @PostMapping({"notIgnoreSurplus/{productName}/{quantity}/{personName}/{date}"})
+    public SaleDto addSaleAndNotIgnoreSurplus(@Parameter(description = "Product Name, case insensitive") @PathVariable String productName,
+                                              @Parameter(description = "Quantity (grams)") @PathVariable Float quantity,
+                                              @Parameter(description = "Person Name") @PathVariable String personName,
+                                              @Parameter(description = "Set date of transaction format : yyyy-mm-dd", required = false) @PathVariable(required = false) String date) {
         Sale sale = saleRepo
-                .saveSaleIgnoringSurplus(productName, quantity, personName, date);
+                .saveSaleNotIgnoringSurplus(productName, quantity, personName, date);
         return saleToDtoMapper.saleToDto(sale);
     }
 

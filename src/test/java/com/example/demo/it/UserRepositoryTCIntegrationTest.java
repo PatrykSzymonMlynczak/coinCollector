@@ -6,17 +6,13 @@ import com.example.demo.controller.ProductController;
 import com.example.demo.controller.SaleController;
 import com.example.demo.dto.SaleDto;
 import com.example.demo.postgres.entity.ProductEntity;
-import com.example.demo.postgres.entity.SaleEntity;
 import com.example.demo.postgres.repository.PersonRepoPostgres;
 import com.example.demo.postgres.repository.ProductRepoPostgres;
 import com.example.demo.postgres.repository.SaleRepoPostgres;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Rule;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -27,7 +23,6 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -37,7 +32,6 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDate;
-import java.util.Map;
 import java.util.TreeMap;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -48,7 +42,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @Testcontainers
 @TestPropertySource(locations = "classpath:application-test.properties")
 //contextConfiguration as alternative or dynamic
-@Sql(scripts = "classpath:populateDb/insertData.sql")//todo changename
+@Sql(scripts = "classpath:database/fixCreatedSchema.sql")
 @AutoConfigureMockMvc
 public class UserRepositoryTCIntegrationTest {
 
@@ -92,10 +86,6 @@ public class UserRepositoryTCIntegrationTest {
     PersonController personController;
 
 
-    @BeforeEach
-    public void setupProduct() throws Exception {
-    }
-
     @AfterEach
     public void clearDB() {
         saleRepoPostgres.deleteAll();
@@ -105,7 +95,7 @@ public class UserRepositoryTCIntegrationTest {
 
 
     @Test
-    public void should() {
+    public void scenarioWithStandardAddSale() {
         String productNameStandard = "Standard";
         String person = "Ada";
         personController.savePerson(person);
@@ -117,10 +107,8 @@ public class UserRepositoryTCIntegrationTest {
         priceMapStandard.put(10F, 40F);
         productController.addNewProduct(productNameStandard, 28F, 100F, priceMapStandard);
 
-
         //WHEN
         saleController.addSale(productNameStandard, 88F, person, null);
-
 
         //should decrease amount
         ProductEntity productEntity = productRepoPostgres.getByNameIgnoreCase(productNameStandard);
@@ -141,10 +129,38 @@ public class UserRepositoryTCIntegrationTest {
         //WHEN
         saleController.addSale(productNameStandard, 12F, person, null);
 
-        //should erase product //todo erase while product is 0 value
+        //should erase product
         ProductEntity product = productRepoPostgres.getByNameIgnoreCase("standard");
         assertThat(product.getTotalSortAmount()).isEqualTo(0);
         assertThat(product.getEraseDate()).isEqualTo(LocalDate.now());
+
+    }
+
+    @Test
+    public void scenarioWithAddSaleIgnoringSurplus() {
+        String productNameStandard = "Standard";
+        String person = "Ada";
+        personController.savePerson(person);
+        personController.savePerson("person");
+
+        TreeMap<Float, Float> priceMapStandard = new TreeMap<>();
+        priceMapStandard.put(1F, 50F);
+        priceMapStandard.put(5F, 40F);
+        priceMapStandard.put(10F, 40F);
+        productController.addNewProduct(productNameStandard, 28F, 100F, priceMapStandard);
+
+        //WHEN
+        saleController.addSale(productNameStandard, 12.86F, person, null);
+
+        //quantity should not be rounded :
+        ProductEntity productEntity = productRepoPostgres.getByNameIgnoreCase(productNameStandard);
+        assertThat(productEntity.getTotalSortAmount()).isEqualTo(87.14F);
+
+
+        //should calculate properly earnings taking care of "gratis rests"
+        assertThat(saleRepoPostgres.getEarnedMoneyByDay(LocalDate.now())).isEqualTo(119.92f);
+        assertThat(saleRepoPostgres.getTotalIncome()).isEqualTo(480f);
+        assertThat(saleRepoPostgres.getTotalCost()).isWithin(0.009f).of(360.08f);
 
     }
 

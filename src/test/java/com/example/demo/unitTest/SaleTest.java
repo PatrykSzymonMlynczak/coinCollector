@@ -188,9 +188,9 @@ public class SaleTest {
     //todo
     @Test
     public void test(){
-        String date = null;
-
-        System.out.println(setNowDateIfNotExist(date));
+        float f =12.01f;
+        System.out.println((int)Math.floor(f));
+        System.out.println((int)f);
     }
 
     private String setNowDateIfNotExist(String date) {

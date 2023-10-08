@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Locale;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,10 +36,19 @@ public class ProductService implements ProductRepo {
 
         Float totalSortAmount = productRepoPostgres.getTotalSortAmount(productName);
 
-        if ((totalSortAmount - boughtQuantity) >= 0) {
+        Float reamingAmount = (totalSortAmount - boughtQuantity);
+        if (reamingAmount >= 0) {
             productRepoPostgres.reduceTotalSortAmount(productName, boughtQuantity);
+            setEraseDateIfThereIsNoMoreProduct(productName, reamingAmount);
         } else {
-            throw new NotEnoughSortException(productName,boughtQuantity-totalSortAmount);
+            throw new NotEnoughSortException(productName, boughtQuantity - totalSortAmount);
+        }
+    }
+
+    private void setEraseDateIfThereIsNoMoreProduct(String productName, Float reamingAmount) {
+        if (reamingAmount == 0) {
+            //don't pay attention to method name - aim is to set date
+            productRepoPostgres.eraseRestOfProduct(productName, LocalDate.now());
         }
     }
 
@@ -75,7 +83,7 @@ public class ProductService implements ProductRepo {
         } else throw new ProductNotExistException(productName);
     }
 
-    public boolean existsByNameIgnoreCase(String productName){
+    public boolean existsByNameIgnoreCase(String productName) {
         return productRepoPostgres.existsByNameIgnoreCase(productName);
     }
 

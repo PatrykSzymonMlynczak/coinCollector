@@ -9,7 +9,7 @@ public interface SaleRepo {
 
     Sale saveSale(String product, Float quantity, String personName, Float discount, Float money, String date);
 
-    Sale saveSaleIgnoringSurplus(String productName, Float quantity, String personName, String date);
+    Sale saveSaleNotIgnoringSurplus(String productName, Float quantity, String personName, String date);
 
     Float getEarningsWithoutSpecifiedProductName(String name);
 

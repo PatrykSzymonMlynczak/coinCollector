@@ -41,13 +41,13 @@ public class SaleService implements SaleRepo {
     }
 
     @Override
-    public Sale saveSaleIgnoringSurplus(String productName, Float quantity, String personName, String date) {
+    public Sale saveSaleNotIgnoringSurplus(String productName, Float quantity, String personName, String date) {
         Person person = personService.getPerson(personName);
 
         productService.reduceTotalSortAmount(productName, quantity);
         Product product = productService.getProductByName(productName);
 
-        Sale sale = new Sale(product,quantity,person, date);
+        Sale sale = Sale.createSaleNotIgnoringSurplus(product,quantity,person, null,null, date);
 
         personService.updateDebt(sale.getPerson().getDebt(), sale.getPerson().getName());
 

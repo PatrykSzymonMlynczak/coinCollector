@@ -31,7 +31,6 @@ public class Product {
         this.additionDate = LocalDate.now();
     }
 
-    //just for tests -> todo
     public Product(String name, TreeMap<Float, Float> quantityPriceMap, float myPrice) {
         this.name = name;
         this.quantityPriceMap = quantityPriceMap;
