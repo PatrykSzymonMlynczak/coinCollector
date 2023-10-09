@@ -183,22 +183,4 @@ public class SaleTest {
         //then
         Assertions.assertEquals(newSale.getIncome(), 110F);
     }
-
-
-    //todo
-    @Test
-    public void test(){
-        float f =12.01f;
-        System.out.println((int)Math.floor(f));
-        System.out.println((int)f);
-    }
-
-    private String setNowDateIfNotExist(String date) {
-        if(date == null || date.equals("undefined")){
-            return LocalDate.now().toString();
-
-        }else {
-            return date;
-        }
-    }
 }

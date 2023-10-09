@@ -37,11 +37,9 @@ import java.util.TreeMap;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-//@RunWith(SpringRunner.class)
 @SpringBootTest
 @Testcontainers
 @TestPropertySource(locations = "classpath:application-test.properties")
-//contextConfiguration as alternative or dynamic
 @Sql(scripts = "classpath:database/fixCreatedSchema.sql")
 @AutoConfigureMockMvc
 public class UserRepositoryTCIntegrationTest {
