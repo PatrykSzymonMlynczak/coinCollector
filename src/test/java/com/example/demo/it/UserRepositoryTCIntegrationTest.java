@@ -56,6 +56,7 @@ public class UserRepositoryTCIntegrationTest {
         registry.add("spring.datasource.url", () -> String.format("jdbc:tc:postgresql://localhost:%s/%s", postgreSQLContainer.getFirstMappedPort(), postgreSQLContainer.getDatabaseName()));
         registry.add("spring.datasource.username", postgreSQLContainer::getUsername);
         registry.add("spring.datasource.password", postgreSQLContainer::getPassword);
+
     }
 
     @Autowired
