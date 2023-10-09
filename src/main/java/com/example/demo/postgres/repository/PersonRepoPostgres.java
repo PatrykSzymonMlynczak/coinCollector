@@ -21,10 +21,19 @@ public interface PersonRepoPostgres extends JpaRepository<PersonEntity, Long> {
 
     @Transactional
     @Modifying
-    @Query(value = "UPDATE person SET debt = :debt WHERE name = :name", nativeQuery = true)
+    @Query(value = "UPDATE person SET debt = :debt WHERE upper(name) = upper(:name)", nativeQuery = true)
     void updateDebt(
             @Param("debt") Float debt,
             @Param("name") String name);
+
+
+    @Transactional
+    @Modifying
+    @Query(value = "UPDATE person SET debt = (debt + :payedMoney) WHERE upper(name) = upper(:name)", nativeQuery = true)
+    void reduceDebt(
+            @Param("payedMoney") Float payedMoney,
+            @Param("name") String name);
+
 
     List<PersonEntity> findAll();
 
@@ -37,5 +46,6 @@ public interface PersonRepoPostgres extends JpaRepository<PersonEntity, Long> {
             "END", nativeQuery = true)
     boolean existsByNameIgnoreCase(
             @Param("name") String name);
+
 
 }

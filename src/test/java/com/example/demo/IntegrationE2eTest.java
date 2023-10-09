@@ -1,10 +1,7 @@
-package com.example.demo.jsonFileIntegrationTest;
+package com.example.demo;
 
-import com.example.demo.businessLogic.sale.Sale;
 import com.example.demo.dto.SaleDto;
-import com.example.demo.fileManager.JsonFileManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,18 +10,16 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import java.util.List;
 import java.util.TreeMap;
 
 
 /**
- *  //todo
+ * //todo
  * In case of standard Integration tests
  * FileManager should be mocked and tested separately
  * but I decided to simplify that process and do it at once
@@ -33,7 +28,6 @@ import java.util.TreeMap;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@ActiveProfiles("jsonFileTest")
 public class IntegrationE2eTest {
 
     @Autowired
@@ -42,19 +36,11 @@ public class IntegrationE2eTest {
     @Autowired
     ObjectMapper objectMapper;
 
-    @Autowired
-    JsonFileManager jsonFileManager;
-
-    @AfterEach
-    public void clean(){
-        jsonFileManager.clearAllSales();
-        jsonFileManager.clearAllProducts();
-    }
 
     @BeforeEach
     public void setupProduct() throws Exception {
-        TreeMap<Float,Float> map = new TreeMap<>();
-        map.put(1F,5F);
+        TreeMap<Float, Float> map = new TreeMap<>();
+        map.put(1F, 5F);
         String json = objectMapper.writeValueAsString(map);
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/product/{productName}/{myPrice}", "test", "10")
@@ -66,7 +52,7 @@ public class IntegrationE2eTest {
         //given
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/sale/{productName}/{mySortPrice}/{quantity}/{personName}/{discount}",
-                                    "test",      "10",      "1",        "Zamor",    null));
+                        "test", "10", "1", "Zamor", null));
         //when
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/sale/all"))
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
@@ -74,34 +60,40 @@ public class IntegrationE2eTest {
         SaleDto[] sales = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), SaleDto[].class);
 
         //then
-        Assertions.assertEquals("Zamor",sales[0].getPerson().getName());
-        Assertions.assertEquals(1F,sales[0].getQuantity());
+        Assertions.assertEquals("Zamor", sales[0].getPerson().getName());
+        Assertions.assertEquals(1F, sales[0].getQuantity());
     }
 
     @Test
     public void should_return_proper_values_after_sale_POST() throws Exception {
-        //given
 
         //when
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .post("/person/{personName}",
+                                "Zamor"))
+                .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
+                .andReturn();
+
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
-                .post("/sale/{productName}/{mySortPrice}/{quantity}/{personName}/{discount}",
-                                    "test",      "10",      "1",        "Zamor",    null))
+                        .post("/sale/{productName}/{mySortPrice}/{quantity}/{personName}/{discount}",
+                                "test", "10", "1", "Zamor", null))
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
                 .andReturn();
 
         //then
         SaleDto sale = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), SaleDto.class);
-        Assertions.assertEquals("Zamor",sale.getPerson().getName());
-        Assertions.assertEquals(1,sale.getQuantity());
-        Assertions.assertEquals(10,sale.getProduct().getMyPrice());
+        Assertions.assertEquals("Zamor", sale.getPerson().getName());
+        Assertions.assertEquals(1, sale.getQuantity());
+        Assertions.assertEquals(10, sale.getProduct().getMyPrice());
     }
 
-    @Test
+/*    @Test
     public void should_save_sale_to_file_E2E() throws Exception {
         //when
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
-                .post("/sale/{productName}/{mySortPrice}/{quantity}/{personName}/{discount}",
-                        "test",      "10",      "1",        "Zamor",    null))
+                        .post("/sale/{productName}/{mySortPrice}/{quantity}/{personName}/{discount}",
+                                "test",      "10",      "1",        "Zamor",    null))
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
                 .andReturn();
         SaleDto newSale = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), SaleDto.class);
@@ -110,40 +102,40 @@ public class IntegrationE2eTest {
         List<Sale> salesFromFile = jsonFileManager.readSaleListFromFile();
         Assertions.assertEquals(salesFromFile.get(0).getPerson().getName(),newSale.getPerson().getName());
         Assertions.assertEquals(salesFromFile.get(0).getTransactionDate(),newSale.getTransactionDate());
-    }
+    }*/
 
     @Test
     public void should_throw_sort_not_exist_exception() throws Exception {
         //when
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
-                .post("/sale/{productName}/{mySortPrice}/{quantity}/{personName}/{discount}",
-                                    "test",      "1",      "1",        "Zamor",    null))
+                        .post("/sale/{productName}/{mySortPrice}/{quantity}/{personName}/{discount}",
+                                "test", "1", "1", "Zamor", null))
                 .andExpect(MockMvcResultMatchers.status().is(HttpStatus.NOT_FOUND.value()))
                 .andReturn();
         String actualMessage = mvcResult.getResolvedException().getMessage();
 
         //then
-        Assertions.assertEquals("You can't add sale because Sort not exists: "+"test"+" price: "+"1.0",actualMessage);
+        Assertions.assertEquals("You can't add sale because Sort not exists: " + "test" + " price: " + "1.0", actualMessage);
 
     }
 
     @Test
     public void should_throw_sort_already_exists_exception() throws Exception {
         //given
-        TreeMap<Float,Float> map = new TreeMap<>();
-        map.put(1F,5F);
+        TreeMap<Float, Float> map = new TreeMap<>();
+        map.put(1F, 5F);
         String json = objectMapper.writeValueAsString(map);
 
         //when
-        MvcResult mvcResult =mockMvc.perform(MockMvcRequestBuilders
-                .post("/product/{productName}/{myPrice}", "test", "10")
-                .contentType(MediaType.APPLICATION_JSON).content(json))
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+                        .post("/product/{productName}/{myPrice}", "test", "10")
+                        .contentType(MediaType.APPLICATION_JSON).content(json))
                 .andExpect(MockMvcResultMatchers.status().is(HttpStatus.CONFLICT.value()))
                 .andReturn();
         String actualMessage = mvcResult.getResolvedException().getMessage();
 
         //then
-        Assertions.assertEquals("You can't add sort pricing because it already exists: "+"test"+" price: "+"10.0",
+        Assertions.assertEquals("You can't add sort pricing because it already exists: " + "test" + " price: " + "10.0",
                 actualMessage);
 
     }

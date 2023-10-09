@@ -3,20 +3,19 @@ package com.example.demo.postgres.service;
 import com.example.demo.businessLogic.person.Person;
 import com.example.demo.businessLogic.product.Product;
 import com.example.demo.businessLogic.sale.Sale;
-import com.example.demo.postgres.entity.SaleEntity;
 import com.example.demo.mapper.SaleMapper;
+import com.example.demo.postgres.entity.SaleEntity;
 import com.example.demo.postgres.repository.SaleRepoPostgres;
 import com.example.demo.repositoryContract.SaleRepo;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@Qualifier("postgres")
 @AllArgsConstructor
 public class SaleService implements SaleRepo {
 
@@ -26,10 +25,13 @@ public class SaleService implements SaleRepo {
     private final SaleMapper saleMapper;
 
     @Override
-    public Sale saveSale(String productName, Float quantity, String personName, Float discount, Float mySortPrice, Float money) {
-        Product product = productService.getProductByNameAndMyPrice(productName,mySortPrice);
+    public Sale saveSale(String productName, Float quantity, String personName, Float discount, Float money, String date) {
         Person person = personService.getPerson(personName);
-        Sale sale = new Sale(product,quantity,person,discount,money);
+
+        productService.reduceTotalSortAmount(productName, quantity);
+        Product product = productService.getProductByName(productName);
+
+        Sale sale = new Sale(product,quantity,person,discount,money, date);
 
         personService.updateDebt(sale.getPerson().getDebt(), sale.getPerson().getName());
 
@@ -39,9 +41,85 @@ public class SaleService implements SaleRepo {
     }
 
     @Override
+    public Sale saveSaleNotIgnoringSurplus(String productName, Float quantity, String personName, String date) {
+        Person person = personService.getPerson(personName);
+
+        productService.reduceTotalSortAmount(productName, quantity);
+        Product product = productService.getProductByName(productName);
+
+        Sale sale = Sale.createSaleNotIgnoringSurplus(product,quantity,person, null,null, date);
+
+        personService.updateDebt(sale.getPerson().getDebt(), sale.getPerson().getName());
+
+        SaleEntity saleEntity = saleMapper.saleToEntity(sale);
+        saleRepoPostgres.save(saleEntity);
+        return sale;
+    }
+
+    @Override
+    public Float getEarningsWithoutSpecifiedProductName(String name) {
+        return saleRepoPostgres.getEarningsWithoutSpecifiedProductName(name);
+    }
+
+    @Override
+    public Float getEarningsWithSpecifiedProductName(String name) {
+        return saleRepoPostgres.getEarningsWithSpecifiedProductName(name);
+    }
+
+    @Override
+    public Float priceCheckout(String productName, Float quantity) {
+        Product product = productService.getProductByName(productName);
+        return new Sale(product,quantity).getIncome();
+    }
+
+    @Override
+    public void deleteLastSale() {
+        Float lastQuantity = saleRepoPostgres.getLastSale().getQuantity();
+        String  lastProductName = saleRepoPostgres.getLastSale().getProduct().getName();
+        productService.revertTotalSortAmount(lastProductName, lastQuantity);
+
+        saleRepoPostgres.deleteLastSale();
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        SaleEntity saleEntity = saleRepoPostgres.getById(id);
+        Float quantity = saleEntity.getQuantity();
+        String  productName = saleEntity.getProduct().getName();
+        productService.revertTotalSortAmount(productName, quantity);
+
+        saleRepoPostgres.deleteById(id);
+    }
+
+    @Override
+    public Sale getLastSale() {
+        return saleMapper.entityToSale(saleRepoPostgres.getLastSale());
+    }
+
+    @Override
+    public List<Sale> getSalesByPeriod(String dateStartString, String dateEndString) {
+        LocalDate dateStart = LocalDate.parse(dateStartString);
+        LocalDate dateEnd = LocalDate.parse(dateEndString);
+        return saleRepoPostgres.getSalesByPeriod(dateStart, dateEnd).stream()
+                .map(saleMapper::entityToSale)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Sale> getSalesByDay(String dateString) {
+        LocalDate date = LocalDate.parse(dateString);
+
+        return saleRepoPostgres.getSalesByDay(date).stream()
+                .map(saleMapper::entityToSale)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public List<Sale> loadAllSales() {
         List<SaleEntity> saleEntities = saleRepoPostgres.findAll();
-        return saleEntities.stream().map(saleMapper::entityToSale).collect(Collectors.toList());
+        return saleEntities.stream()
+                .map(saleMapper::entityToSale)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -61,20 +139,35 @@ public class SaleService implements SaleRepo {
 
     @Override
     public Float getEarnedMoneyByDay(String dateString) {
-        LocalDate date = LocalDate.parse(dateString);
+        LocalDate date;
+        if(dateString == null || dateString.equals("undefined")){
+            date = LocalDate.now();
+        }else{
+            date = LocalDate.parse(dateString);
+        }
         return saleRepoPostgres.getEarnedMoneyByDay(date);
     }
 
     @Override
-    public Float getEarnedMoneyByWeek(String dateStartString, String dateEndString) {
+    public Float getEarnedMoneyByPeriod(String dateStartString, String dateEndString) {
+        LocalDate dateEnd;
+        if(dateEndString == null || dateEndString.equals("undefined")){
+            dateEnd = LocalDate.now();
+        }else{
+            dateEnd = LocalDate.parse(dateEndString);
+        }
         LocalDate dateStart = LocalDate.parse(dateStartString);
-        LocalDate dateEnd = LocalDate.parse(dateEndString);
-        return saleRepoPostgres.getEarnedMoneyByWeek(dateStart,dateEnd);
+        return saleRepoPostgres.getEarnedMoneyByPeriod(dateStart,dateEnd);
     }
 
     @Override
     public List<Sale> clearAllSales() {
+        saleRepoPostgres.findAll().stream().forEach(sale -> {
+            Float lastQuantity = sale.getQuantity();
+            String  lastProductName = sale.getProduct().getName();
+            productService.revertTotalSortAmount(lastProductName, lastQuantity);
+        });
         saleRepoPostgres.deleteAll();
-        return null;//todo
+        return new ArrayList<>();
     }
 }

@@ -14,7 +14,9 @@ import java.time.LocalTime;
 @AllArgsConstructor
 public class SaleDto {
 
+    private Long id;
     private ProductDto product;
+    private float sortAmountBefore;
     private Float quantity;
     private PersonDto person;
     private Float discount;
@@ -22,5 +24,6 @@ public class SaleDto {
     private LocalDate transactionDate;
     private LocalTime transactionTime;
     private Float income;
+
 
 }

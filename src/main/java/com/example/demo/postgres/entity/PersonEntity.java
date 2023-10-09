@@ -1,9 +1,14 @@
 package com.example.demo.postgres.entity;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
@@ -11,6 +16,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Table(name = "person")
 public class PersonEntity implements Serializable {
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
