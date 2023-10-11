@@ -1,6 +1,9 @@
 package com.example.demo.it;
 
 import com.example.demo.businessLogic.product.exception.NotEnoughSortException;
+import com.example.demo.businessLogic.product.exception.ProductAlreadyExistsException;
+import com.example.demo.businessLogic.sale.Sale;
+import com.example.demo.businessLogic.sale.exception.ProductNotExistException;
 import com.example.demo.controller.PersonController;
 import com.example.demo.controller.ProductController;
 import com.example.demo.controller.SaleController;
@@ -32,6 +35,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.TreeMap;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -95,11 +99,10 @@ public class UserRepositoryTCIntegrationTest {
 
     @Test
     public void scenarioWithStandardAddSale() {
-        String productNameStandard = "Standard";
         String person = "Ada";
         personController.savePerson(person);
-        personController.savePerson("person");
 
+        String productNameStandard = "Standard";
         TreeMap<Float, Float> priceMapStandard = new TreeMap<>();
         priceMapStandard.put(1F, 50F);
         priceMapStandard.put(5F, 40F);
@@ -137,11 +140,10 @@ public class UserRepositoryTCIntegrationTest {
 
     @Test
     public void scenarioWithAddSaleIgnoringSurplus() {
-        String productNameStandard = "Standard";
         String person = "Ada";
         personController.savePerson(person);
-        personController.savePerson("person");
 
+        String productNameStandard = "Standard";
         TreeMap<Float, Float> priceMapStandard = new TreeMap<>();
         priceMapStandard.put(1F, 50F);
         priceMapStandard.put(5F, 40F);
@@ -163,97 +165,36 @@ public class UserRepositoryTCIntegrationTest {
 
     }
 
-   /* @Test
-    public void should_return_sale_after_sale_GET() throws Exception {
-        //given
-        mockMvc.perform(MockMvcRequestBuilders
-                .post("/sale/{productName}/{mySortPrice}/{quantity}/{personName}/{discount}",
-                        "test", "10", "1", "Zamor", null));
-        //when
-        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/sale/all"))
-                .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
-                .andReturn();
-        SaleDto[] sales = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), SaleDto[].class);
-
-        //then
-        Assertions.assertEquals("Zamor", sales[0].getPerson().getName());
-        Assertions.assertEquals(1F, sales[0].getQuantity());
-    }
-
-    @Test
-    public void should_return_proper_values_after_sale_POST() throws Exception {
-
-        //when
-
-        mockMvc.perform(MockMvcRequestBuilders
-                        .post("/person/{personName}",
-                                "Zamor"))
-                .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
-                .andReturn();
-
-        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
-                        .post("/sale/{productName}/{mySortPrice}/{quantity}/{personName}/{discount}",
-                                "test", "10", "1", "Zamor", null))
-                .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
-                .andReturn();
-
-        //then
-        SaleDto sale = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), SaleDto.class);
-        Assertions.assertEquals("Zamor", sale.getPerson().getName());
-        Assertions.assertEquals(1, sale.getQuantity());
-        Assertions.assertEquals(10, sale.getProduct().getMyPrice());
-    }
-
-*//*    @Test
-    public void should_save_sale_to_file_E2E() throws Exception {
-        //when
-        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
-                        .post("/sale/{productName}/{mySortPrice}/{quantity}/{personName}/{discount}",
-                                "test",      "10",      "1",        "Zamor",    null))
-                .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
-                .andReturn();
-        SaleDto newSale = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), SaleDto.class);
-
-        //then
-        List<Sale> salesFromFile = jsonFileManager.readSaleListFromFile();
-        Assertions.assertEquals(salesFromFile.get(0).getPerson().getName(),newSale.getPerson().getName());
-        Assertions.assertEquals(salesFromFile.get(0).getTransactionDate(),newSale.getTransactionDate());
-    }*//*
 
     @Test
     public void should_throw_sort_not_exist_exception() throws Exception {
-        //when
-        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
-                        .post("/sale/{productName}/{mySortPrice}/{quantity}/{personName}/{discount}",
-                                "test", "1", "1", "Zamor", null))
-                .andExpect(MockMvcResultMatchers.status().is(HttpStatus.NOT_FOUND.value()))
-                .andReturn();
-        String actualMessage = mvcResult.getResolvedException().getMessage();
+        String person = "Ada";
+        personController.savePerson(person);
+        personController.savePerson("person");
 
-        //then
-        Assertions.assertEquals("You can't add sale because Sort not exists: " + "test" + " price: " + "1.0", actualMessage);
-
+        //WHEN
+        Exception exception = assertThrows(ProductNotExistException.class, () ->
+                saleController.addSale("productNameStandard", 12.86F, person, null)
+        );
+        assertThat(exception.getMessage()).isEqualTo("You can't add sale because Sort not exists: productNameStandard");
     }
 
+
+    //todo -> should be possible to add new product - composite key name+date
     @Test
     public void should_throw_sort_already_exists_exception() throws Exception {
-        //given
-        TreeMap<Float, Float> map = new TreeMap<>();
-        map.put(1F, 5F);
-        String json = objectMapper.writeValueAsString(map);
+        String productNameStandard = "Standard";
+        TreeMap<Float, Float> priceMapStandard = new TreeMap<>();
+        priceMapStandard.put(1F, 50F);
+        priceMapStandard.put(5F, 40F);
+        priceMapStandard.put(10F, 40F);
 
-        //when
-        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
-                        .post("/product/{productName}/{myPrice}", "test", "10")
-                        .contentType(MediaType.APPLICATION_JSON).content(json))
-                .andExpect(MockMvcResultMatchers.status().is(HttpStatus.CONFLICT.value()))
-                .andReturn();
-        String actualMessage = mvcResult.getResolvedException().getMessage();
+        productController.addNewProduct(productNameStandard, 28F, 100F, priceMapStandard);
 
-        //then
-        Assertions.assertEquals("You can't add sort pricing because it already exists: " + "test" + " price: " + "10.0",
-                actualMessage);
-
-    }*/
+        //WHEN
+        Exception exception = assertThrows(ProductAlreadyExistsException.class, () ->
+                productController.addNewProduct(productNameStandard, 30F, 100F, priceMapStandard)
+        );
+    }
 
 }
