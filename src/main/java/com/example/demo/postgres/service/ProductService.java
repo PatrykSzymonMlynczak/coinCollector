@@ -7,7 +7,6 @@ import com.example.demo.businessLogic.sale.exception.ProductNotExistException;
 import com.example.demo.mapper.ProductMapper;
 import com.example.demo.postgres.entity.ProductEntity;
 import com.example.demo.postgres.repository.ProductRepoPostgres;
-import com.example.demo.repositoryContract.ProductRepo;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,12 +16,12 @@ import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
-public class ProductService implements ProductRepo {
+public class ProductService {
 
     private final ProductRepoPostgres productRepoPostgres;
     private final ProductMapper productMapper;
 
-    @Override
+    
     public Product saveProduct(Product product) {
         if (!productRepoPostgres.existsByNameIgnoreCase(product.getName())) {
             ProductEntity productEntity = productMapper.productToEntity(product);
@@ -70,7 +69,7 @@ public class ProductService implements ProductRepo {
      * For sake of compatibility with JsonFile version
      * must be provided map with Price-Name identifiers as a key
      **/
-    @Override
+    
     public List<Product> loadAllProducts() {
         List<ProductEntity> productEntities = productRepoPostgres.findAll();
         return productEntities.stream().map(productMapper::entityToProduct).collect(Collectors.toList());
@@ -87,7 +86,7 @@ public class ProductService implements ProductRepo {
         return productRepoPostgres.existsByNameIgnoreCase(productName);
     }
 
-    @Override
+    
     public void deleteProduct(String product) {
         productRepoPostgres.deleteByName(product);
     }

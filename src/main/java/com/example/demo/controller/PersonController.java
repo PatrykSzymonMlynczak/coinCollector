@@ -3,7 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.businessLogic.person.Person;
 import com.example.demo.dto.PersonDto;
 import com.example.demo.mapper.PersonMapper;
-import com.example.demo.repositoryContract.PersonRepo;
+import com.example.demo.postgres.service.PersonService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 public class PersonController {
 
     @Autowired
-    PersonRepo personRepo;
+    PersonService personService;
 
     private final PersonMapper personMapper;
     @Autowired
@@ -36,7 +36,7 @@ public class PersonController {
     public PersonDto savePerson(@Parameter(description = "Person Name", example = "Zamor")
                                     @PathVariable String personName){
         PersonDto person = new PersonDto(personName);
-        personRepo.savePerson(personMapper.dtoToPerson(person));
+        personService.savePerson(personMapper.dtoToPerson(person));
         return person;
     }
 
@@ -44,21 +44,21 @@ public class PersonController {
     @PutMapping("/updateDebt")
     public PersonDto updateDebt(Float debt, String name){
         //todo ignore case
-        personRepo.updateDebt(debt,name);
+        personService.updateDebt(debt,name);
         //todo handle total money -> make req to saleService with position "debt payed"
-        return personMapper.personToDto(personRepo.getPerson(name));
+        return personMapper.personToDto(personService.getPerson(name));
     }
 
     @PutMapping("/payDebt")
     public PersonDto payDebt(Float debt, String name){
-        personRepo.payDebt(debt,name);
+        personService.payDebt(debt,name);
         //todo handle total money -> make req to saleService with position "debt payed"
-        return personMapper.personToDto(personRepo.getPerson(name));
+        return personMapper.personToDto(personService.getPerson(name));
     }
 
     @GetMapping("/allDebt")
     public List<PersonDto> getDebts(){
-        return personRepo.getAllPerson().stream()
+        return personService.getAllPerson().stream()
                 .filter(person -> person.getDebt() != 0)
                 .map(personMapper::personToDto)
                 .collect(Collectors.toList());
@@ -66,7 +66,7 @@ public class PersonController {
 
     @GetMapping("/collectDebt")
     public Double collectDebt(){
-        return personRepo.getAllPerson().stream()
+        return personService.getAllPerson().stream()
                 .filter(person -> person.getDebt() != 0).mapToDouble(Person::getDebt).sum();
     }
 
@@ -76,7 +76,7 @@ public class PersonController {
             @ApiResponse(responseCode  = "400", description = "Bad request")})
     @GetMapping
     public List<PersonDto> getAllPersons(){
-        return personRepo.getAllPerson()
+        return personService.getAllPerson()
                 .stream()
                 .map(personMapper::personToDto)
                 .collect(Collectors.toList());

@@ -3,7 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.businessLogic.product.Product;
 import com.example.demo.dto.ProductDto;
 import com.example.demo.mapper.ProductMapper;
-import com.example.demo.repositoryContract.ProductRepo;
+import com.example.demo.repositoryContract.ProductService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -27,12 +27,11 @@ import java.util.stream.Collectors;
 public class ProductController {
 
     @Autowired
-    private ProductRepo sortPricingInMemoryManager;
+    private ProductService productService;
 
     @Autowired
     private ProductMapper productMapper;
 
-    //todo method for retrieving single product
     //todo api response for exceptions
 
     @Operation(summary  = "Endpoint allowing get all Products")
@@ -41,7 +40,7 @@ public class ProductController {
             @ApiResponse(responseCode  = "400", description = "Bad request")})
     @GetMapping
     public List<ProductDto> getAllProducts() {
-        return sortPricingInMemoryManager.loadAllProducts()
+        return productService.loadAllProducts()
                 .stream()
                 .map(productMapper::productToDto)
                 .collect(Collectors.toList());
@@ -64,20 +63,20 @@ public class ProductController {
                     example = "{\"1\":20, \"5\":16}")
             @RequestBody TreeMap<Float, Float> priceQuantityMap) {
         Product product = new Product(productName, priceQuantityMap, myPrice, totalSortAmount);
-        return productMapper.productToDto(sortPricingInMemoryManager.saveProduct(product));
+        return productMapper.productToDto(productService.saveProduct(product));
     }
 
     @Operation(summary  = "Endpoint erasing remaining sort amount")
     @DeleteMapping("/erase/{productName}")
     public void eraseRestOfProduct(@Parameter(description = "Product Name", example = "Lemon Haze")
                                    @PathVariable String productName){
-        sortPricingInMemoryManager.eraseRestOfProduct(productName);
+        productService.eraseRestOfProduct(productName);
     }
 
     @Operation(summary  = "Endpoint retrieving amount of rest sort")
     @GetMapping("/totalAmount")
     public Float getTotalAmount(String productName){
-        return sortPricingInMemoryManager.getTotalAmount(productName);
+        return productService.getTotalAmount(productName);
     }
 
 
@@ -88,7 +87,7 @@ public class ProductController {
     @DeleteMapping("/{productName}")
     public void deleteProduct(@Parameter(description = "Product Name", example = "Lemon Haze")
                               @PathVariable String productName) {
-        sortPricingInMemoryManager.deleteProduct(productName);
+        productService.deleteProduct(productName);
         //todo return value and handle exception
     }
 

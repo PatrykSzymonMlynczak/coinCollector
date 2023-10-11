@@ -40,6 +40,35 @@ public class Sale implements Serializable {
     private float income;
     private float loss;
 
+    /**
+     * when money not given - not earned
+     * */
+    public static Sale createManualSale(Product product, Float quantity, Person person, Float manualPrice, Float givenMoney, String date){
+        float income = manualPrice;
+        float mySortPrice = product.getMyPrice();
+        if(givenMoney != null) {
+            /** when given money are smaller than price,
+             * decrease income and increase debt
+             * when given money will be bigger, additional money will decrease debt or make surplus*/
+            Float debt = manualPrice - givenMoney;
+            person.increaseDebt(debt);
+            income -= debt;
+        }
+
+        return Sale.builder()
+                .product(product)
+                .sortAmountBefore(product.getTotalSortAmount()+quantity)
+                .quantity(quantity)
+                .person(person)
+                .transactionDate(date == null || date.equals("undefined") ? LocalDate.now() : LocalDate.parse(date))
+                .mySortPrice(mySortPrice)
+                .income(income)
+                .loss(0f)
+                .earned(roundFloatToTwoDecimalPlaces(income - (mySortPrice * quantity)))
+                .sortAmountBefore(product.getTotalSortAmount()+quantity)
+                .build();
+    }
+
     public static Sale createSaleNotIgnoringSurplus(Product product, Float quantity, Person person, Float discount, Float givenMoney, String date) {
         float income = roundFloatToTwoDecimalPlaces(getIncomeByProductPricing(product.getQuantityPriceMap(), quantity, discount));
         float mySortPrice = product.getMyPrice();
@@ -61,9 +90,9 @@ public class Sale implements Serializable {
                 .discount( (discount == null) ? 0F : discount)
                 .income(income)
                 .mySortPrice(mySortPrice)
-                .discount((discount == null) ? 0F : discount)
                 .loss(0f)
                 .earned(roundFloatToTwoDecimalPlaces(income - (mySortPrice * quantity)))
+                .sortAmountBefore(product.getTotalSortAmount()+quantity)
                 .build();
     }
 
@@ -78,8 +107,6 @@ public class Sale implements Serializable {
         }
     }
 
-    //Ignore surplus
-    //todo static constructors to describe what is going on ?
     public Sale(Product product, Float quantity, Person person, Float discount, Float givenMoney, String date){
 
         this.product = product;
@@ -111,13 +138,10 @@ public class Sale implements Serializable {
     }
 
     //for price checkout
-    public Sale(Product product, Float quantity) {
-        this.discount = 0f;
-        this.product = product;
-        this.quantity = quantity;
-        this.income = getIncomeByProductPricing(product.getQuantityPriceMap(), quantity, discount);
-        this.mySortPrice = product.getMyPrice();
-        this.earned = income - (mySortPrice * quantity);
+    public static Sale priceCheckoutSale(Product product, Float quantity) {
+        return Sale.builder()
+                .income(getIncomeByProductPricing(product.getQuantityPriceMap(), quantity, 0f))
+                .build();
     }
 
     //In case of payed debt
@@ -130,8 +154,7 @@ public class Sale implements Serializable {
         this.transactionTime = LocalTime.now();
         this.transactionDate = LocalDate.now();
         this.mySortPrice = 0f;
-        this.discount = (discount == null) ? 0F : discount;
-        this.income = getIncomeByProductPricing(product.getQuantityPriceMap(), quantity, discount);
+        this.discount = 0F;
         this.person.reduceDebt(payedMoney);
         this.income = payedMoney;
         this.earned = payedMoney;

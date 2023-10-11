@@ -17,21 +17,36 @@ import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
-public class SaleService implements SaleRepo {
+public class SaleService {
 
     private final SaleRepoPostgres saleRepoPostgres;
     private final PersonService personService;
     private final ProductService productService;
     private final SaleMapper saleMapper;
 
-    @Override
+    public Sale saveManualSale(String productName, Float quantity, String personName, Float givenMoney, Float manualPrice, String date) {
+        Person person = personService.getPerson(personName);
+
+        productService.reduceTotalSortAmount(productName, quantity);
+        Product product = productService.getProductByName(productName);
+
+        Sale sale = Sale.createManualSale(product, quantity, person, manualPrice, givenMoney, date);
+
+        personService.updateDebt(sale.getPerson().getDebt(), sale.getPerson().getName());
+
+        SaleEntity saleEntity = saleMapper.saleToEntity(sale);
+        saleRepoPostgres.save(saleEntity);
+        return sale;
+    }
+
+
     public Sale saveSale(String productName, Float quantity, String personName, Float discount, Float money, String date) {
         Person person = personService.getPerson(personName);
 
         productService.reduceTotalSortAmount(productName, quantity);
         Product product = productService.getProductByName(productName);
 
-        Sale sale = new Sale(product,quantity,person,discount,money, date);
+        Sale sale = new Sale(product, quantity, person, discount, money, date);
 
         personService.updateDebt(sale.getPerson().getDebt(), sale.getPerson().getName());
 
@@ -40,14 +55,14 @@ public class SaleService implements SaleRepo {
         return sale;
     }
 
-    @Override
+
     public Sale saveSaleNotIgnoringSurplus(String productName, Float quantity, String personName, String date) {
         Person person = personService.getPerson(personName);
 
         productService.reduceTotalSortAmount(productName, quantity);
         Product product = productService.getProductByName(productName);
 
-        Sale sale = Sale.createSaleNotIgnoringSurplus(product,quantity,person, null,null, date);
+        Sale sale = Sale.createSaleNotIgnoringSurplus(product, quantity, person, null, null, date);
 
         personService.updateDebt(sale.getPerson().getDebt(), sale.getPerson().getName());
 
@@ -56,47 +71,47 @@ public class SaleService implements SaleRepo {
         return sale;
     }
 
-    @Override
+
     public Float getEarningsWithoutSpecifiedProductName(String name) {
         return saleRepoPostgres.getEarningsWithoutSpecifiedProductName(name);
     }
 
-    @Override
+
     public Float getEarningsWithSpecifiedProductName(String name) {
         return saleRepoPostgres.getEarningsWithSpecifiedProductName(name);
     }
 
-    @Override
+
     public Float priceCheckout(String productName, Float quantity) {
         Product product = productService.getProductByName(productName);
-        return new Sale(product,quantity).getIncome();
+        return Sale.priceCheckoutSale(product, quantity).getIncome();
     }
 
-    @Override
+
     public void deleteLastSale() {
         Float lastQuantity = saleRepoPostgres.getLastSale().getQuantity();
-        String  lastProductName = saleRepoPostgres.getLastSale().getProduct().getName();
+        String lastProductName = saleRepoPostgres.getLastSale().getProduct().getName();
         productService.revertTotalSortAmount(lastProductName, lastQuantity);
 
         saleRepoPostgres.deleteLastSale();
     }
 
-    @Override
+
     public void deleteById(Long id) {
         SaleEntity saleEntity = saleRepoPostgres.getById(id);
         Float quantity = saleEntity.getQuantity();
-        String  productName = saleEntity.getProduct().getName();
+        String productName = saleEntity.getProduct().getName();
         productService.revertTotalSortAmount(productName, quantity);
 
         saleRepoPostgres.deleteById(id);
     }
 
-    @Override
+
     public Sale getLastSale() {
         return saleMapper.entityToSale(saleRepoPostgres.getLastSale());
     }
 
-    @Override
+
     public List<Sale> getSalesByPeriod(String dateStartString, String dateEndString) {
         LocalDate dateStart = LocalDate.parse(dateStartString);
         LocalDate dateEnd = LocalDate.parse(dateEndString);
@@ -105,7 +120,7 @@ public class SaleService implements SaleRepo {
                 .collect(Collectors.toList());
     }
 
-    @Override
+
     public List<Sale> getSalesByDay(String dateString) {
         LocalDate date = LocalDate.parse(dateString);
 
@@ -114,7 +129,7 @@ public class SaleService implements SaleRepo {
                 .collect(Collectors.toList());
     }
 
-    @Override
+
     public List<Sale> loadAllSales() {
         List<SaleEntity> saleEntities = saleRepoPostgres.findAll();
         return saleEntities.stream()
@@ -122,49 +137,49 @@ public class SaleService implements SaleRepo {
                 .collect(Collectors.toList());
     }
 
-    @Override
+
     public Float getTotalEarnings() {
         return saleRepoPostgres.getTotalEarnings();
     }
 
-    @Override
+
     public Float getTotalCost() {
         return saleRepoPostgres.getTotalCost();
     }
 
-    @Override
+
     public Float getTotalIncome() {
         return saleRepoPostgres.getTotalIncome();
     }
 
-    @Override
+
     public Float getEarnedMoneyByDay(String dateString) {
         LocalDate date;
-        if(dateString == null || dateString.equals("undefined")){
+        if (dateString == null || dateString.equals("undefined")) {
             date = LocalDate.now();
-        }else{
+        } else {
             date = LocalDate.parse(dateString);
         }
         return saleRepoPostgres.getEarnedMoneyByDay(date);
     }
 
-    @Override
+
     public Float getEarnedMoneyByPeriod(String dateStartString, String dateEndString) {
         LocalDate dateEnd;
-        if(dateEndString == null || dateEndString.equals("undefined")){
+        if (dateEndString == null || dateEndString.equals("undefined")) {
             dateEnd = LocalDate.now();
-        }else{
+        } else {
             dateEnd = LocalDate.parse(dateEndString);
         }
         LocalDate dateStart = LocalDate.parse(dateStartString);
-        return saleRepoPostgres.getEarnedMoneyByPeriod(dateStart,dateEnd);
+        return saleRepoPostgres.getEarnedMoneyByPeriod(dateStart, dateEnd);
     }
 
-    @Override
+
     public List<Sale> clearAllSales() {
         saleRepoPostgres.findAll().stream().forEach(sale -> {
             Float lastQuantity = sale.getQuantity();
-            String  lastProductName = sale.getProduct().getName();
+            String lastProductName = sale.getProduct().getName();
             productService.revertTotalSortAmount(lastProductName, lastQuantity);
         });
         saleRepoPostgres.deleteAll();

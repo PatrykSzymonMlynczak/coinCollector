@@ -5,6 +5,7 @@ import com.example.demo.dto.SaleDto;
 
 import java.util.List;
 
+@Deprecated
 public interface PersonRepo {
 
     Person savePerson(Person person);

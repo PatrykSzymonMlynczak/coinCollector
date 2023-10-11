@@ -5,9 +5,12 @@ import com.example.demo.businessLogic.sale.Sale;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated
 public interface SaleRepo {
 
     Sale saveSale(String product, Float quantity, String personName, Float discount, Float money, String date);
+
+    Sale saveManualSale(String productName, Float quantity, String personName, Float givenMoney, Float manualPrice, String date);
 
     Sale saveSaleNotIgnoringSurplus(String productName, Float quantity, String personName, String date);
 
