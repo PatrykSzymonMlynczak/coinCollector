@@ -5,7 +5,7 @@ import com.example.demo.businessLogic.product.Product;
 import java.util.List;
 
 @Deprecated
-public interface ProductService {
+public interface ProductRepo {
 
     Product saveProduct(Product product);
     Product getProductByName(String productName);

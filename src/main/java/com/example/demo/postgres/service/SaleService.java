@@ -6,7 +6,6 @@ import com.example.demo.businessLogic.sale.Sale;
 import com.example.demo.mapper.SaleMapper;
 import com.example.demo.postgres.entity.SaleEntity;
 import com.example.demo.postgres.repository.SaleRepoPostgres;
-import com.example.demo.repositoryContract.SaleRepo;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

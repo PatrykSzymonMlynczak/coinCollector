@@ -3,7 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.businessLogic.product.Product;
 import com.example.demo.dto.ProductDto;
 import com.example.demo.mapper.ProductMapper;
-import com.example.demo.repositoryContract.ProductService;
+import com.example.demo.postgres.service.ProductService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 public class ProductController {
 
     @Autowired
-    private ProductService productService;
+    private ProductService productRepo;
 
     @Autowired
     private ProductMapper productMapper;
@@ -40,7 +40,7 @@ public class ProductController {
             @ApiResponse(responseCode  = "400", description = "Bad request")})
     @GetMapping
     public List<ProductDto> getAllProducts() {
-        return productService.loadAllProducts()
+        return productRepo.loadAllProducts()
                 .stream()
                 .map(productMapper::productToDto)
                 .collect(Collectors.toList());
@@ -63,20 +63,20 @@ public class ProductController {
                     example = "{\"1\":20, \"5\":16}")
             @RequestBody TreeMap<Float, Float> priceQuantityMap) {
         Product product = new Product(productName, priceQuantityMap, myPrice, totalSortAmount);
-        return productMapper.productToDto(productService.saveProduct(product));
+        return productMapper.productToDto(productRepo.saveProduct(product));
     }
 
     @Operation(summary  = "Endpoint erasing remaining sort amount")
     @DeleteMapping("/erase/{productName}")
     public void eraseRestOfProduct(@Parameter(description = "Product Name", example = "Lemon Haze")
                                    @PathVariable String productName){
-        productService.eraseRestOfProduct(productName);
+        productRepo.eraseRestOfProduct(productName);
     }
 
     @Operation(summary  = "Endpoint retrieving amount of rest sort")
     @GetMapping("/totalAmount")
     public Float getTotalAmount(String productName){
-        return productService.getTotalAmount(productName);
+        return productRepo.getTotalAmount(productName);
     }
 
 
@@ -87,7 +87,7 @@ public class ProductController {
     @DeleteMapping("/{productName}")
     public void deleteProduct(@Parameter(description = "Product Name", example = "Lemon Haze")
                               @PathVariable String productName) {
-        productService.deleteProduct(productName);
+        productRepo.deleteProduct(productName);
         //todo return value and handle exception
     }
 
