@@ -70,7 +70,8 @@ public class Sale implements Serializable {
     }
 
     public static Sale createSaleNotIgnoringSurplus(Product product, Float quantity, Person person, Float discount, Float givenMoney, String date) {
-        float income = roundFloatToTwoDecimalPlaces(getIncomeByProductPricing(product.getQuantityPriceMap(), quantity, discount));
+        discount = (discount == null) ? 0F : discount;
+        float income = roundFloatToTwoDecimalPlaces(getIncomeByProductPricingNotIgnoreSurplus(product.getQuantityPriceMap(), quantity, discount));
         float mySortPrice = product.getMyPrice();
         if(givenMoney != null) {
             /** when given money are smaller than price,
@@ -87,7 +88,7 @@ public class Sale implements Serializable {
                 .person(person)
                 .transactionDate(date == null || date.equals("undefined") ? LocalDate.now() : LocalDate.parse(date))
                 .mySortPrice(product.getMyPrice())
-                .discount( (discount == null) ? 0F : discount)
+                .discount(discount)
                 .income(income)
                 .mySortPrice(mySortPrice)
                 .loss(0f)
@@ -140,7 +141,7 @@ public class Sale implements Serializable {
     //for price checkout
     public static Sale priceCheckoutSale(Product product, Float quantity) {
         return Sale.builder()
-                .income(getIncomeByProductPricing(product.getQuantityPriceMap(), quantity, 0f))
+                .income(getIncomeByProductPricingNotIgnoreSurplus(product.getQuantityPriceMap(), quantity, 0f))
                 .build();
     }
 
@@ -160,7 +161,7 @@ public class Sale implements Serializable {
         this.earned = payedMoney;
     }
 
-    private static Float getIncomeByProductPricing(TreeMap<Float, Float> sortPricingMap, float quantity, float discount){
+    private static Float getIncomeByProductPricingNotIgnoreSurplus(TreeMap<Float, Float> sortPricingMap, float quantity, float discount){
         Float pricePerSale = 0F;
 
         Float previousQuantity= 0F;

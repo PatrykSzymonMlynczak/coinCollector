@@ -165,9 +165,90 @@ public class UserRepositoryTCIntegrationTest {
 
     }
 
+    @Test
+    public void scenarioWithAddSaleNOTIgnoringSurplus() {
+        String person = "Ada";
+        personController.savePerson(person);
+
+        String productNameStandard = "Standard";
+        TreeMap<Float, Float> priceMapStandard = new TreeMap<>();
+        priceMapStandard.put(1F, 50F);
+        priceMapStandard.put(5F, 40F);
+        priceMapStandard.put(10F, 40F);
+        productController.addNewProduct(productNameStandard, 28F, 100F, priceMapStandard);
+
+        //WHEN
+        saleController.addSaleAndNotIgnoreSurplus(productNameStandard, 12.86F, person, null);
+
+        //quantity should not be rounded :
+        ProductEntity productEntity = productRepoPostgres.getByNameIgnoreCase(productNameStandard);
+        assertThat(productEntity.getTotalSortAmount()).isEqualTo(87.14F);
+
+
+        //should calculate properly earnings
+        assertThat(saleRepoPostgres.getEarnedMoneyByDay(LocalDate.now())).isEqualTo(154.32f);
+        assertThat(saleRepoPostgres.getTotalIncome()).isEqualTo(514.4f);
+        assertThat(saleRepoPostgres.getTotalCost()).isWithin(0.009f).of(360.08f);
+
+    }
 
     @Test
-    public void should_throw_sort_not_exist_exception() throws Exception {
+    public void shouldAddManualSale() {
+        String person = "Ada";
+        personController.savePerson(person);
+
+        String productNameStandard = "Standard";
+        TreeMap<Float, Float> priceMapStandard = new TreeMap<>();
+        priceMapStandard.put(1F, 50F);
+        priceMapStandard.put(5F, 40F);
+        priceMapStandard.put(10F, 40F);
+        productController.addNewProduct(productNameStandard, 28F, 100F, priceMapStandard);
+
+        //WHEN
+        saleController.addManualSale(productNameStandard, 12.86F, 480F,480F, person, null);
+
+        //quantity should not be rounded :
+        ProductEntity productEntity = productRepoPostgres.getByNameIgnoreCase(productNameStandard);
+        assertThat(productEntity.getTotalSortAmount()).isEqualTo(87.14F);
+
+
+        //should calculate properly earnings taking care of "gratis rests"
+        assertThat(saleRepoPostgres.getEarnedMoneyByDay(LocalDate.now())).isEqualTo(119.92f);
+        assertThat(saleRepoPostgres.getTotalIncome()).isEqualTo(480f);
+        assertThat(saleRepoPostgres.getTotalCost()).isWithin(0.009f).of(360.08f);
+
+    }
+
+    @Test
+    public void shouldReturnCorrectPriceAndNOTaddSale() {
+        String person = "Ada";
+        personController.savePerson(person);
+
+        String productNameStandard = "Standard";
+        TreeMap<Float, Float> priceMapStandard = new TreeMap<>();
+        priceMapStandard.put(1F, 50F);
+        priceMapStandard.put(5F, 40F);
+        priceMapStandard.put(10F, 40F);
+        productController.addNewProduct(productNameStandard, 28F, 100F, priceMapStandard);
+
+        //WHEN
+        Float calculatedPrice = saleController.priceCheckout(productNameStandard, 12.86F);
+        assertThat(calculatedPrice).isWithin(0.1f).of(514.4f);
+
+        //quantity should not be rounded :
+        ProductEntity productEntity = productRepoPostgres.getByNameIgnoreCase(productNameStandard);
+        assertThat(productEntity.getTotalSortAmount()).isEqualTo(100F);
+
+        //should calculate properly earnings taking care of "gratis rests"
+        assertThat(saleRepoPostgres.getEarnedMoneyByDay(LocalDate.now())).isEqualTo(null);
+        assertThat(saleRepoPostgres.getTotalIncome()).isEqualTo(null);
+        assertThat(saleRepoPostgres.getTotalCost()).isEqualTo(null);
+    }
+
+
+//calcuate should
+    @Test
+    public void should_throw_sort_not_exist_exception() {
         String person = "Ada";
         personController.savePerson(person);
         personController.savePerson("person");
