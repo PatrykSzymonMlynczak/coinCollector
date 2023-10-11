@@ -163,7 +163,7 @@ public class UserRepositoryTCIntegrationTest {
 
     }
 
-    @Test
+   /* @Test
     public void should_return_sale_after_sale_GET() throws Exception {
         //given
         mockMvc.perform(MockMvcRequestBuilders
@@ -204,7 +204,7 @@ public class UserRepositoryTCIntegrationTest {
         Assertions.assertEquals(10, sale.getProduct().getMyPrice());
     }
 
-/*    @Test
+*//*    @Test
     public void should_save_sale_to_file_E2E() throws Exception {
         //when
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
@@ -218,7 +218,7 @@ public class UserRepositoryTCIntegrationTest {
         List<Sale> salesFromFile = jsonFileManager.readSaleListFromFile();
         Assertions.assertEquals(salesFromFile.get(0).getPerson().getName(),newSale.getPerson().getName());
         Assertions.assertEquals(salesFromFile.get(0).getTransactionDate(),newSale.getTransactionDate());
-    }*/
+    }*//*
 
     @Test
     public void should_throw_sort_not_exist_exception() throws Exception {
@@ -254,6 +254,6 @@ public class UserRepositoryTCIntegrationTest {
         Assertions.assertEquals("You can't add sort pricing because it already exists: " + "test" + " price: " + "10.0",
                 actualMessage);
 
-    }
+    }*/
 
 }

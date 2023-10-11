@@ -48,5 +48,3 @@ public class AutowireCandidateResolverConfigurer implements BeanFactoryPostProce
         bf.setAutowireCandidateResolver(new EnvironmentAwareQualifierAnnotationAutowireCandidateResolver());
     }
 }
-
-

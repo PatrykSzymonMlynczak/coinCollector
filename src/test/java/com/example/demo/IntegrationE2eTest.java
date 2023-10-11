@@ -19,7 +19,7 @@ import java.util.TreeMap;
 
 
 /**
- * //todo
+ *
  * In case of standard Integration tests
  * FileManager should be mocked and tested separately
  * but I decided to simplify that process and do it at once
