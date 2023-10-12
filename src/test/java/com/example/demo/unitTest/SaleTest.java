@@ -28,7 +28,7 @@ public class SaleTest {
         //then
         Assertions.assertEquals(newSale.getIncome(),30F);
         Assertions.assertEquals(newSale.getEarned(),0F);
-        Assertions.assertEquals(person.getDebt(),-30F);
+        Assertions.assertEquals(person.getDebt(),30F);
     }
 
     @Test
@@ -44,7 +44,7 @@ public class SaleTest {
         //then
         Assertions.assertEquals(newSale.getIncome(),30F);
         Assertions.assertEquals(newSale.getEarned(),0F);
-        Assertions.assertEquals(person.getDebt(),-10F);
+        Assertions.assertEquals(person.getDebt(),10F);
     }
 
     @Test
@@ -89,7 +89,7 @@ public class SaleTest {
         Sale newSale2 = new Sale(product,3F, person,0F,30F, "2021-09-09");
 
         //then
-        Assertions.assertEquals(person.getDebt(),-60F);
+        Assertions.assertEquals(person.getDebt(),60F);
     }
 
     @Test
@@ -116,7 +116,7 @@ public class SaleTest {
 
         //when - then
         Sale newSale = new Sale(product,3F, person,0F,30F, "2021-09-09");
-        Assertions.assertEquals(person.getDebt(),-30);
+        Assertions.assertEquals(person.getDebt(),30);
 
         //when - then
         Sale newSale2 = new Sale(product,3F, person,0F,90F, "2021-09-09"); //debt payed

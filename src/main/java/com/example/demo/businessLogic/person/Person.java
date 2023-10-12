@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 /**
- * debt is stored as negative number
+ * debt is stored as positive number
  * additional money will decrease debt or make surplus
  * */
 @Data
@@ -22,11 +22,11 @@ public class Person implements Serializable {
     }
 
     public void increaseDebt(Float debt){
-        this.debt -= debt;
+        this.debt += debt;
     }
 
     public Person reduceDebt(Float returnedMoney){
-        this.debt += returnedMoney;
+        this.debt -= returnedMoney;
         return this;
     }
 }
