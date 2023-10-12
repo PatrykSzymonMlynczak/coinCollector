@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
@@ -34,10 +35,10 @@ public class ProductController {
 
     //todo api response for exceptions
 
-    @Operation(summary  = "Endpoint allowing get all Products")
+    @Operation(summary = "Endpoint allowing get all Products")
     @ApiResponses(value = {
-            @ApiResponse(responseCode  = "200", description = "Successfully received all Products"),
-            @ApiResponse(responseCode  = "400", description = "Bad request")})
+            @ApiResponse(responseCode = "200", description = "Successfully received all Products"),
+            @ApiResponse(responseCode = "400", description = "Bad request")})
     @GetMapping
     public List<ProductDto> getAllProducts() {
         return productRepo.loadAllProducts()
@@ -46,10 +47,10 @@ public class ProductController {
                 .collect(Collectors.toList());
     }
 
-    @Operation(summary  = "Endpoint allowing to add new Product")
+    @Operation(summary = "Endpoint allowing to add new Product")
     @ApiResponses(value = {
-            @ApiResponse(responseCode  = "200", description = "Successfully added new Product"),
-            @ApiResponse(responseCode  = "400", description = "Bad request")})
+            @ApiResponse(responseCode = "200", description = "Successfully added new Product"),
+            @ApiResponse(responseCode = "400", description = "Bad request")})
     @PostMapping("/{productName}/{myPrice}/{totalSortAmount}")
     public ProductDto addNewProduct(
             @Parameter(description = "Product Name", example = "Lemon Haze")
@@ -66,28 +67,30 @@ public class ProductController {
         return productMapper.productToDto(productRepo.saveProduct(product));
     }
 
-    @Operation(summary  = "Endpoint erasing remaining sort amount")
+    @Operation(summary = "Endpoint erasing remaining sort amount")
     @DeleteMapping("/erase/{productName}")
     public void eraseRestOfProduct(@Parameter(description = "Product Name", example = "Lemon Haze")
-                                   @PathVariable String productName){
+                                   @PathVariable String productName) {
         productRepo.eraseRestOfProduct(productName);
     }
 
-    @Operation(summary  = "Endpoint retrieving amount of rest sort")
+    @Operation(summary = "Endpoint retrieving amount of rest sort")
     @GetMapping("/totalAmount")
-    public Float getTotalAmount(String productName){
+    public Float getTotalAmount(String productName) {
         return productRepo.getTotalAmount(productName);
     }
 
 
-    @Operation(summary  = "Endpoint allowing to delete particular Product - ONLY WHEN ITS NOT SOLD ANY ONCE")
+    @Operation(summary = "Endpoint allowing to delete particular Product - ONLY WHEN ITS NOT SOLD ANY ONCE")
     @ApiResponses(value = {
-            @ApiResponse(responseCode  = "200", description = "Successfully deleted product"),
-            @ApiResponse(responseCode  = "400", description = "Bad request")})
+            @ApiResponse(responseCode = "200", description = "Successfully deleted product"),
+            @ApiResponse(responseCode = "400", description = "Bad request")})
     @DeleteMapping("/{productName}")
     public void deleteProduct(@Parameter(description = "Product Name", example = "Lemon Haze")
-                              @PathVariable String productName) {
-        productRepo.deleteProduct(productName);
+                              @PathVariable String productName,
+                              @Parameter(description = "format : yyyy-mm-dd")
+                              @PathVariable String date) {
+        productRepo.deleteProductByNameAndAdditionDate(productName, LocalDate.parse(date));
         //todo return value and handle exception
     }
 

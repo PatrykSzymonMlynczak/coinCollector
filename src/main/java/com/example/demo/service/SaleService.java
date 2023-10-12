@@ -39,7 +39,6 @@ public class SaleService {
         return sale;
     }
 
-
     public Sale saveSale(String productName, Float quantity, String personName, Float discount, Float money, String date) {
         Person person = personService.getPerson(personName);
 
@@ -54,7 +53,6 @@ public class SaleService {
         saleRepoPostgres.save(saleEntity);
         return sale;
     }
-
 
     public Sale saveSaleNotIgnoringSurplus(String productName, Float quantity, String personName, String date) {
         Person person = personService.getPerson(personName);
@@ -71,22 +69,18 @@ public class SaleService {
         return sale;
     }
 
-
     public Float getEarningsWithoutSpecifiedProductName(String name) {
         return saleRepoPostgres.getEarningsWithoutSpecifiedProductName(name);
     }
-
 
     public Float getEarningsWithSpecifiedProductName(String name) {
         return saleRepoPostgres.getEarningsWithSpecifiedProductName(name);
     }
 
-
     public Float priceCheckout(String productName, Float quantity) {
         Product product = productService.getProductByName(productName);
         return Sale.priceCheckoutSale(product, quantity).getIncome();
     }
-
 
     public void deleteLastSale() {
         Float lastQuantity = saleRepoPostgres.getLastSale().getQuantity();
@@ -95,7 +89,6 @@ public class SaleService {
 
         saleRepoPostgres.deleteLastSale();
     }
-
 
     public void deleteById(Long id) {
         SaleEntity saleEntity = saleRepoPostgres.getReferenceById(id);
@@ -108,11 +101,9 @@ public class SaleService {
         saleRepoPostgres.deleteById(id);
     }
 
-
     public Sale getLastSale() {
         return saleMapper.entityToSale(saleRepoPostgres.getLastSale());
     }
-
 
     public List<Sale> getSalesByPeriod(String dateStartString, String dateEndString) {
         LocalDate dateStart = LocalDate.parse(dateStartString);
@@ -122,7 +113,6 @@ public class SaleService {
                 .collect(Collectors.toList());
     }
 
-
     public List<Sale> getSalesByDay(String dateString) {
         LocalDate date = LocalDate.parse(dateString);
 
@@ -131,14 +121,12 @@ public class SaleService {
                 .collect(Collectors.toList());
     }
 
-
     public List<Sale> loadAllSales() {
         List<SaleEntity> saleEntities = saleRepoPostgres.findAll();
         return saleEntities.stream()
                 .map(saleMapper::entityToSale)
                 .collect(Collectors.toList());
     }
-
 
     public Float getTotalEarnings() {
         return saleRepoPostgres.getTotalEarnings();

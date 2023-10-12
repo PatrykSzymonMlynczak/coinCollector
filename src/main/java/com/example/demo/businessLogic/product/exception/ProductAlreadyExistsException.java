@@ -4,5 +4,5 @@ public class ProductAlreadyExistsException extends RuntimeException {
 
     public static final String MESSAGE = "You can't add product because it already exists: ";
 
-    public ProductAlreadyExistsException(String productName, Float price) { super(MESSAGE + productName +" price: "+ price); }
+    public ProductAlreadyExistsException(String productName, Float price, String date) { super(MESSAGE + productName +" price: "+ price + "date: "+ date); }
 }
