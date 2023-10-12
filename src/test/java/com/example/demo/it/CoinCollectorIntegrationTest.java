@@ -253,7 +253,7 @@ public class CoinCollectorIntegrationTest {
         productController.addNewProduct(productNameStandard, 28F, 100F, priceMapStandard);
 
         saleController.addSaleWithDebt(productNameStandard, 5f, 150f, person, null);
-        assertThat(personRepoPostgres.findByNameIgnoreCase(person).getDebt()).isEqualTo(-50);
+        assertThat(personRepoPostgres.findByNameIgnoreCase(person).getDebt()).isEqualTo(50);
 
         ProductEntity productEntity = productRepoPostgres.getByNameIgnoreCase(productNameStandard);
         assertThat(productEntity.getTotalSortAmount()).isEqualTo(95f);
@@ -277,7 +277,7 @@ public class CoinCollectorIntegrationTest {
         productController.addNewProduct(productNameStandard, 28F, 100F, priceMapStandard);
 
         saleController.addSaleWithDebtAndDiscount(productNameStandard, 5f, 150f, person, 10f, null);
-        assertThat(personRepoPostgres.findByNameIgnoreCase(person).getDebt()).isEqualTo(-40);
+        assertThat(personRepoPostgres.findByNameIgnoreCase(person).getDebt()).isEqualTo(40);
 
         ProductEntity productEntity = productRepoPostgres.getByNameIgnoreCase(productNameStandard);
         assertThat(productEntity.getTotalSortAmount()).isEqualTo(95f);
@@ -301,13 +301,13 @@ public class CoinCollectorIntegrationTest {
         productController.addNewProduct(productNameStandard, 28F, 100F, priceMapStandard);
 
         saleController.addSaleWithDebt(productNameStandard, 5f, 160f, person, null);
-        assertThat(personRepoPostgres.findByNameIgnoreCase(person).getDebt()).isEqualTo(-40);
+        assertThat(personRepoPostgres.findByNameIgnoreCase(person).getDebt()).isEqualTo(40);
         assertThat(saleRepoPostgres.getEarnedMoneyByDay(LocalDate.now())).isEqualTo(20);
         assertThat(saleRepoPostgres.getTotalIncome()).isEqualTo(160);
 
 
         personController.payDebt(30f, "ada");
-        assertThat(personRepoPostgres.findByNameIgnoreCase(person).getDebt()).isEqualTo(-10);
+        assertThat(personRepoPostgres.findByNameIgnoreCase(person).getDebt()).isEqualTo(10);
         assertThat(saleRepoPostgres.getEarnedMoneyByDay(LocalDate.now())).isEqualTo(50);
         assertThat(saleRepoPostgres.getTotalIncome()).isEqualTo(190);
     }
@@ -527,17 +527,17 @@ public class CoinCollectorIntegrationTest {
 
         saleController.addSaleWithDebt(productNameStandard, 5f, 150f, person, null);
         saleController.addSaleWithDebt(productNameStandard, 5f, 150f, person, null);
-        assertThat(personRepoPostgres.findByNameIgnoreCase(person).getDebt()).isEqualTo(-100);
+        assertThat(personRepoPostgres.findByNameIgnoreCase(person).getDebt()).isEqualTo(100);
 
         assertThat(personController.getDebts()).hasSize(1);
-        assertThat(personController.getDebts().get(0).getDebt()).isEqualTo(-100);
+        assertThat(personController.getDebts().get(0).getDebt()).isEqualTo(100);
         assertThat(personController.getDebts().get(0).getName()).isEqualTo(person);
 
         personController.payDebt(50f, person);
-        assertThat(personRepoPostgres.findByNameIgnoreCase(person).getDebt()).isEqualTo(-50);
+        assertThat(personRepoPostgres.findByNameIgnoreCase(person).getDebt()).isEqualTo(50);
 
         personController.payDebt(100f, person);
-        assertThat(personRepoPostgres.findByNameIgnoreCase(person).getDebt()).isEqualTo(50);
+        assertThat(personRepoPostgres.findByNameIgnoreCase(person).getDebt()).isEqualTo(-50);
     }
 
     @Test
@@ -553,7 +553,7 @@ public class CoinCollectorIntegrationTest {
         productController.addNewProduct(productNameStandard, 28F, 100F, priceMapStandard);
 
         saleController.addSaleWithDebt(productNameStandard, 10f, 280f, person, null);
-        assertThat(personRepoPostgres.findByNameIgnoreCase(person).getDebt()).isEqualTo(-120);
+        assertThat(personRepoPostgres.findByNameIgnoreCase(person).getDebt()).isEqualTo(120);
 
         personController.setDebt(0f, person);
         assertThat(personRepoPostgres.findByNameIgnoreCase(person).getDebt()).isEqualTo(0);
@@ -595,7 +595,7 @@ public class CoinCollectorIntegrationTest {
         saleController.addSaleWithDebt(productNameStandard, 5f, 100f, person2, null);
         saleController.addSaleWithDebt(productNameStandard, 5f, 50f, person3, null);
 
-        assertThat(personController.collectDebt()).isEqualTo(-300);
+        assertThat(personController.collectDebt()).isEqualTo(300);
     }
 
 

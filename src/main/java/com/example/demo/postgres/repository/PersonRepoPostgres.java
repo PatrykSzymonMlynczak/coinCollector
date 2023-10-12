@@ -29,7 +29,7 @@ public interface PersonRepoPostgres extends JpaRepository<PersonEntity, Long> {
 
     @Transactional
     @Modifying
-    @Query(value = "UPDATE person SET debt = (debt + :payedMoney) WHERE upper(name) = upper(:name)", nativeQuery = true)
+    @Query(value = "UPDATE person SET debt = (debt - :payedMoney) WHERE upper(name) = upper(:name)", nativeQuery = true)
     void reduceDebt(
             @Param("payedMoney") Float payedMoney,
             @Param("name") String name);
