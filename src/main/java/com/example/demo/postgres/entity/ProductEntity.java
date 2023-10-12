@@ -11,6 +11,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.MapKeyColumn;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -20,14 +21,16 @@ import java.util.Map;
 @Entity
 @Data
 @AllArgsConstructor
-@Table(name = "product")
+@Table(name = "product", uniqueConstraints = {
+        @UniqueConstraint(name = "UniqueByNameAndDate", columnNames = {"name", "additionDate"})
+})
 public class ProductEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true)//todo
+    @Column
     private String name;
 
     @ElementCollection(fetch = FetchType.EAGER)

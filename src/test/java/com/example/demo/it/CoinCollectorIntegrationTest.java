@@ -56,7 +56,6 @@ public class CoinCollectorIntegrationTest {
         registry.add("spring.datasource.url", () -> String.format("jdbc:tc:postgresql://localhost:%s/%s", postgreSQLContainer.getFirstMappedPort(), postgreSQLContainer.getDatabaseName()));
         registry.add("spring.datasource.username", postgreSQLContainer::getUsername);
         registry.add("spring.datasource.password", postgreSQLContainer::getPassword);
-
     }
 
     @Autowired
@@ -201,7 +200,7 @@ public class CoinCollectorIntegrationTest {
         productController.addNewProduct(productNameStandard, 28F, 100F, priceMapStandard);
 
         //WHEN
-        saleController.addManualSale(productNameStandard, 12.86F, 480F,480F, person, null);
+        saleController.addManualSale(productNameStandard, 12.86F, 480F, 480F, person, null);
 
         //quantity should not be rounded :
         ProductEntity productEntity = productRepoPostgres.getByNameIgnoreCase(productNameStandard);
@@ -242,7 +241,7 @@ public class CoinCollectorIntegrationTest {
     }
 
     @Test
-    void shouldIncreaseDebtWhileGivenMoneyAreLess(){
+    void shouldIncreaseDebtWhileGivenMoneyAreLess() {
         String person = "Ada";
         personController.savePerson(person);
 
@@ -253,7 +252,7 @@ public class CoinCollectorIntegrationTest {
         priceMapStandard.put(10F, 40F);
         productController.addNewProduct(productNameStandard, 28F, 100F, priceMapStandard);
 
-        saleController.addSaleWithDebt(productNameStandard,5f,150f, person,null);
+        saleController.addSaleWithDebt(productNameStandard, 5f, 150f, person, null);
         assertThat(personRepoPostgres.findByNameIgnoreCase(person).getDebt()).isEqualTo(-50);
 
         ProductEntity productEntity = productRepoPostgres.getByNameIgnoreCase(productNameStandard);
@@ -266,7 +265,7 @@ public class CoinCollectorIntegrationTest {
     }
 
     @Test
-    void shouldIncreaseDebtAndCalculateDiscountWhileGivenMoneyAreLessAndDiscountIsGiven(){
+    void shouldIncreaseDebtAndCalculateDiscountWhileGivenMoneyAreLessAndDiscountIsGiven() {
         String person = "Ada";
         personController.savePerson(person);
 
@@ -277,7 +276,7 @@ public class CoinCollectorIntegrationTest {
         priceMapStandard.put(10F, 40F);
         productController.addNewProduct(productNameStandard, 28F, 100F, priceMapStandard);
 
-        saleController.addSaleWithDebtAndDiscount(productNameStandard,5f,150f, person, 10f,null);
+        saleController.addSaleWithDebtAndDiscount(productNameStandard, 5f, 150f, person, 10f, null);
         assertThat(personRepoPostgres.findByNameIgnoreCase(person).getDebt()).isEqualTo(-40);
 
         ProductEntity productEntity = productRepoPostgres.getByNameIgnoreCase(productNameStandard);
@@ -290,7 +289,7 @@ public class CoinCollectorIntegrationTest {
     }
 
     @Test
-    void shouldPayDebtAndIncreaseIncomeAndEarnings(){
+    void shouldPayDebtAndIncreaseIncomeAndEarnings() {
         String person = "Ada";
         personController.savePerson(person);
 
@@ -301,20 +300,20 @@ public class CoinCollectorIntegrationTest {
         priceMapStandard.put(10F, 40F);
         productController.addNewProduct(productNameStandard, 28F, 100F, priceMapStandard);
 
-        saleController.addSaleWithDebt(productNameStandard,5f,160f, person, null);
+        saleController.addSaleWithDebt(productNameStandard, 5f, 160f, person, null);
         assertThat(personRepoPostgres.findByNameIgnoreCase(person).getDebt()).isEqualTo(-40);
         assertThat(saleRepoPostgres.getEarnedMoneyByDay(LocalDate.now())).isEqualTo(20);
         assertThat(saleRepoPostgres.getTotalIncome()).isEqualTo(160);
 
 
-        personController.payDebt(30f,"ada");
+        personController.payDebt(30f, "ada");
         assertThat(personRepoPostgres.findByNameIgnoreCase(person).getDebt()).isEqualTo(-10);
         assertThat(saleRepoPostgres.getEarnedMoneyByDay(LocalDate.now())).isEqualTo(50);
         assertThat(saleRepoPostgres.getTotalIncome()).isEqualTo(190);
     }
 
     @Test
-    void testGetSalesAndDeleteSales(){
+    void testGetSalesAndDeleteSales() {
         String person = "Ada";
         personController.savePerson(person);
 
@@ -366,7 +365,7 @@ public class CoinCollectorIntegrationTest {
     }
 
     @Test
-    void testGetMethods(){
+    void testGetMethods() {
         String person = "Ada";
         personController.savePerson(person);
 
@@ -380,26 +379,26 @@ public class CoinCollectorIntegrationTest {
 
 
         //WHEN
-        saleController.addManualSale(productNameStandard, 12F, 480F,480F, person, null);
-        saleController.addSale(productNameStandard, 2F, person,null);
-        saleController.addSale("another", 1F, person,null);
+        saleController.addManualSale(productNameStandard, 12F, 480F, 480F, person, null);
+        saleController.addSale(productNameStandard, 2F, person, null);
+        saleController.addSale("another", 1F, person, null);
 
 
-        assertThat(saleController.getIncome()).isEqualTo(580+50);
-        assertThat(saleController.getTotalCost()).isEqualTo(392+28);
-        assertThat(saleController.getEarnedMoneyByDay(null)).isEqualTo(188+22);
-        assertThat(saleController.getTotalEarnings()).isEqualTo(188+22);
+        assertThat(saleController.getIncome()).isEqualTo(580 + 50);
+        assertThat(saleController.getTotalCost()).isEqualTo(392 + 28);
+        assertThat(saleController.getEarnedMoneyByDay(null)).isEqualTo(188 + 22);
+        assertThat(saleController.getTotalEarnings()).isEqualTo(188 + 22);
 
-        assertThat(saleRepoPostgres.getEarnedMoneyByDay(LocalDate.now())).isEqualTo(188+22);
-        assertThat(saleRepoPostgres.getTotalIncome()).isEqualTo(580+50);
-        assertThat(saleRepoPostgres.getTotalCost()).isEqualTo(392+28);
+        assertThat(saleRepoPostgres.getEarnedMoneyByDay(LocalDate.now())).isEqualTo(188 + 22);
+        assertThat(saleRepoPostgres.getTotalIncome()).isEqualTo(580 + 50);
+        assertThat(saleRepoPostgres.getTotalCost()).isEqualTo(392 + 28);
 
         assertThat(saleController.getEarningsWithoutSpecifiedProductName("another")).isEqualTo(188);
         assertThat(saleController.getEarningsWithSpecifiedProductName("another")).isEqualTo(22);
     }
 
     @Test
-    void testEarningByPeriods(){
+    void testEarningByPeriods() {
         String person = "Ada";
         personController.savePerson(person);
 
@@ -411,11 +410,11 @@ public class CoinCollectorIntegrationTest {
         productController.addNewProduct(productNameStandard, 0F, 100F, priceMapStandard);
 
         //WHEN
-        saleController.addSale(productNameStandard, 1F, person,"2023-09-01");
-        saleController.addSale(productNameStandard, 1F, person,"2023-09-02");
-        saleController.addSale(productNameStandard, 1F, person,"2023-09-03");
-        saleController.addSale(productNameStandard, 1F, person,"2023-10-01");
-        saleController.addSale(productNameStandard, 1F, person,"2023-10-02");
+        saleController.addSale(productNameStandard, 1F, person, "2023-09-01");
+        saleController.addSale(productNameStandard, 1F, person, "2023-09-02");
+        saleController.addSale(productNameStandard, 1F, person, "2023-09-03");
+        saleController.addSale(productNameStandard, 1F, person, "2023-10-01");
+        saleController.addSale(productNameStandard, 1F, person, "2023-10-02");
 
         assertThat(saleController.getEarnedMoneyByDay("2023-09-01")).isEqualTo(50);
         assertThat(saleController.getEarnedMoneyByWeek("2023-09-01", null)).isEqualTo(250);
@@ -424,7 +423,7 @@ public class CoinCollectorIntegrationTest {
     }
 
     @Test
-    void tesSalesByPeriods(){
+    void tesSalesByPeriods() {
         String person = "Ada";
         personController.savePerson(person);
 
@@ -436,11 +435,11 @@ public class CoinCollectorIntegrationTest {
         productController.addNewProduct(productNameStandard, 0F, 100F, priceMapStandard);
 
         //WHEN
-        saleController.addSale(productNameStandard, 1F, person,"2023-09-01");
-        saleController.addSale(productNameStandard, 1F, person,"2023-09-02");
-        saleController.addSale(productNameStandard, 1F, person,"2023-09-03");
-        saleController.addSale(productNameStandard, 1F, person,"2023-10-01");
-        saleController.addSale(productNameStandard, 1F, person,"2023-10-02");
+        saleController.addSale(productNameStandard, 1F, person, "2023-09-01");
+        saleController.addSale(productNameStandard, 1F, person, "2023-09-02");
+        saleController.addSale(productNameStandard, 1F, person, "2023-09-03");
+        saleController.addSale(productNameStandard, 1F, person, "2023-10-01");
+        saleController.addSale(productNameStandard, 1F, person, "2023-10-02");
 
         assertThat(saleController.getSalesByPeriod("2023-09-01")).hasSize(1);
         assertThat(saleController.getSalesByPeriod("2023-09-01", null)).hasSize(5);
@@ -449,7 +448,7 @@ public class CoinCollectorIntegrationTest {
     }
 
     @Test
-    void shouldCalculateDiscount(){
+    void shouldCalculateDiscount() {
         String person = "Ada";
         personController.savePerson(person);
 
@@ -460,7 +459,7 @@ public class CoinCollectorIntegrationTest {
         priceMapStandard.put(10F, 40F);
         productController.addNewProduct(productNameStandard, 28F, 100F, priceMapStandard);
 
-        saleController.addSaleWithDiscount(productNameStandard,5f, person, 10f,null);
+        saleController.addSaleWithDiscount(productNameStandard, 5f, person, 10f, null);
         assertThat(personRepoPostgres.findByNameIgnoreCase(person).getDebt()).isEqualTo(0);
 
         //should calculate properly earnings taking care of "gratis rests"
@@ -470,7 +469,7 @@ public class CoinCollectorIntegrationTest {
     }
 
     @Test
-    void testProducts(){
+    void testProducts() {
         String productNameStandard = "Standard";
         String second = "second";
         String third = "third";
@@ -493,7 +492,7 @@ public class CoinCollectorIntegrationTest {
     }
 
     @Test
-    void testDeletingProducts() {
+    void shouldThrowExceptionWhileDeletingSoldProduct() {
         String person = "Ada";
         personController.savePerson(person);
 
@@ -509,13 +508,13 @@ public class CoinCollectorIntegrationTest {
         productController.addNewProduct(second, 28F, 100F, priceMapStandard);
         productController.addNewProduct(third, 28F, 100F, priceMapStandard);
 
-        saleController.addSale(third,10f ,person, null);
+        saleController.addSale(third, 10f, person, null);
 
-        assertThrows(DataIntegrityViolationException.class, () -> productController.deleteProduct(third));
+        assertThrows(DataIntegrityViolationException.class, () -> productController.deleteProduct(third, LocalDate.now().toString()));
     }
 
     @Test
-    void shouldPayDebtAndGatDebt(){
+    void shouldPayDebtAndGatDebt() {
         String person = "Ada";
         personController.savePerson(person);
 
@@ -526,8 +525,8 @@ public class CoinCollectorIntegrationTest {
         priceMapStandard.put(10F, 40F);
         productController.addNewProduct(productNameStandard, 28F, 100F, priceMapStandard);
 
-        saleController.addSaleWithDebt(productNameStandard,5f,150f, person,null);
-        saleController.addSaleWithDebt(productNameStandard,5f,150f, person,null);
+        saleController.addSaleWithDebt(productNameStandard, 5f, 150f, person, null);
+        saleController.addSaleWithDebt(productNameStandard, 5f, 150f, person, null);
         assertThat(personRepoPostgres.findByNameIgnoreCase(person).getDebt()).isEqualTo(-100);
 
         assertThat(personController.getDebts()).hasSize(1);
@@ -542,7 +541,7 @@ public class CoinCollectorIntegrationTest {
     }
 
     @Test
-    void shouldSetDebtWithoutChangingEarnings(){
+    void shouldSetDebtWithoutChangingEarnings() {
         String person = "Ada";
         personController.savePerson(person);
 
@@ -553,7 +552,7 @@ public class CoinCollectorIntegrationTest {
         priceMapStandard.put(10F, 40F);
         productController.addNewProduct(productNameStandard, 28F, 100F, priceMapStandard);
 
-        saleController.addSaleWithDebt(productNameStandard,10f,280f, person,null);
+        saleController.addSaleWithDebt(productNameStandard, 10f, 280f, person, null);
         assertThat(personRepoPostgres.findByNameIgnoreCase(person).getDebt()).isEqualTo(-120);
 
         personController.setDebt(0f, person);
@@ -577,7 +576,7 @@ public class CoinCollectorIntegrationTest {
 
 
     @Test
-    void shouldCollectDebt(){
+    void shouldCollectDebt() {
         String person = "Ada";
         personController.savePerson(person);
         String person2 = "Ada2";
@@ -592,15 +591,15 @@ public class CoinCollectorIntegrationTest {
         priceMapStandard.put(10F, 40F);
         productController.addNewProduct(productNameStandard, 28F, 100F, priceMapStandard);
 
-        saleController.addSaleWithDebt(productNameStandard,5f,150f, person,null);
-        saleController.addSaleWithDebt(productNameStandard,5f,100f, person2,null);
-        saleController.addSaleWithDebt(productNameStandard,5f,50f, person3,null);
+        saleController.addSaleWithDebt(productNameStandard, 5f, 150f, person, null);
+        saleController.addSaleWithDebt(productNameStandard, 5f, 100f, person2, null);
+        saleController.addSaleWithDebt(productNameStandard, 5f, 50f, person3, null);
 
         assertThat(personController.collectDebt()).isEqualTo(-300);
     }
 
 
-        @Test
+    @Test
     public void should_throw_product_not_exist_exception() {
         String person = "Ada";
         personController.savePerson(person);
@@ -644,8 +643,6 @@ public class CoinCollectorIntegrationTest {
         assertThat(exception.getMessage()).isEqualTo("You can't add sale because person not exists: person");
     }
 
-
-    //todo -> should be possible to add new product - composite key name+date
     @Test
     public void should_throw_product_already_exists_exception() throws Exception {
         String productNameStandard = "Standard";
@@ -656,10 +653,32 @@ public class CoinCollectorIntegrationTest {
 
         productController.addNewProduct(productNameStandard, 28F, 100F, priceMapStandard);
 
-        //WHEN
-        Exception exception = assertThrows(ProductAlreadyExistsException.class, () ->
+        assertThrows(ProductAlreadyExistsException.class, () ->
                 productController.addNewProduct(productNameStandard, 30F, 100F, priceMapStandard)
         );
+    }
+
+    @Test
+    public void shouldAddProductWithTheSameNameButDifferentDate() {
+        String productNameStandard = "Standard";
+        TreeMap<Float, Float> priceMapStandard = new TreeMap<>();
+        priceMapStandard.put(1F, 50F);
+        priceMapStandard.put(5F, 40F);
+        priceMapStandard.put(10F, 40F);
+
+        productRepoPostgres.save(
+                new ProductEntity(null,
+                        productNameStandard,
+                        priceMapStandard,
+                        28f,
+                        100f,
+                        LocalDate.of(2023, 10, 11),
+                        null)
+        );
+
+        productController.addNewProduct(productNameStandard, 28F, 100F, priceMapStandard);
+
+        assertThat(productRepoPostgres.findAll()).hasSize(2);
     }
 
 }

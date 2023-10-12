@@ -21,13 +21,14 @@ public class ProductService {
     private final ProductRepoPostgres productRepoPostgres;
     private final ProductMapper productMapper;
 
-    
+
     public Product saveProduct(Product product) {
-        if (!productRepoPostgres.existsByNameIgnoreCase(product.getName())) {
+        if (!productRepoPostgres.existsByNameAndAdditionDate(product.getName(), product.getAdditionDate())) {
             ProductEntity productEntity = productMapper.productToEntity(product);
             productRepoPostgres.save(productEntity);
             return product;
-        } else throw new ProductAlreadyExistsException(product.getName(), product.getMyPrice());
+        } else
+            throw new ProductAlreadyExistsException(product.getName(), product.getMyPrice(), product.getAdditionDate().toString());
     }
 
     public void reduceTotalSortAmount(String productName, Float boughtQuantity) {
@@ -69,7 +70,7 @@ public class ProductService {
      * For sake of compatibility with JsonFile version
      * must be provided map with Price-Name identifiers as a key
      **/
-    
+
     public List<Product> loadAllProducts() {
         List<ProductEntity> productEntities = productRepoPostgres.findAll();
         return productEntities.stream().map(productMapper::entityToProduct).collect(Collectors.toList());
@@ -86,8 +87,8 @@ public class ProductService {
         return productRepoPostgres.existsByNameIgnoreCase(productName);
     }
 
-    
-    public void deleteProduct(String product) {
-        productRepoPostgres.deleteByName(product);
+    public void deleteProductByNameAndAdditionDate(String product, LocalDate additionDate) {
+        productRepoPostgres.deleteByNameAndAdditionDate(product, additionDate);
     }
+
 }

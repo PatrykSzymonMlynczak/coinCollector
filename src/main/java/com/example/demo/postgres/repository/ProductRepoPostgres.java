@@ -34,10 +34,10 @@ public interface ProductRepoPostgres extends JpaRepository<ProductEntity, Long> 
     @Transactional
     @Modifying
     @Query(value = "UPDATE PRODUCT SET total_sort_amount = 0, erase_date = :eraseDate WHERE upper(name) = upper(:productName)", nativeQuery = true)
-    void eraseRestOfProduct(@Param("productName") String productName, @Param("eraseDate") LocalDate eraseDate );
+    void eraseRestOfProduct(@Param("productName") String productName, @Param("eraseDate") LocalDate eraseDate);
 
 
-        @Query(value = "SELECT CASE WHEN EXISTS " +
+    @Query(value = "SELECT CASE WHEN EXISTS " +
             "(SELECT *" +
             "FROM product " +
             "WHERE upper(name)=upper(:productName)) " +
@@ -46,7 +46,12 @@ public interface ProductRepoPostgres extends JpaRepository<ProductEntity, Long> 
             "END", nativeQuery = true)
     boolean existsByNameIgnoreCase(@Param("productName") String productName);
 
+    boolean existsByNameAndAdditionDate(String name, LocalDate date);
+
     @Transactional
     void deleteByName(String name);
+
+    @Transactional
+    void deleteByNameAndAdditionDate(String name, LocalDate date);
 
 }
