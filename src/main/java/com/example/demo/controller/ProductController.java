@@ -3,7 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.businessLogic.product.Product;
 import com.example.demo.dto.ProductDto;
 import com.example.demo.mapper.ProductMapper;
-import com.example.demo.postgres.service.ProductService;
+import com.example.demo.service.ProductService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -80,7 +80,7 @@ public class ProductController {
     }
 
 
-    @Operation(summary  = "Endpoint allowing to delete particular Product")
+    @Operation(summary  = "Endpoint allowing to delete particular Product - ONLY WHEN ITS NOT SOLD ANY ONCE")
     @ApiResponses(value = {
             @ApiResponse(responseCode  = "200", description = "Successfully deleted product"),
             @ApiResponse(responseCode  = "400", description = "Bad request")})

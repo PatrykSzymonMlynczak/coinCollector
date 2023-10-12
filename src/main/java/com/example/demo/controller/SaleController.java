@@ -4,7 +4,7 @@ import com.example.demo.businessLogic.StaticProducts;
 import com.example.demo.businessLogic.sale.Sale;
 import com.example.demo.dto.SaleDto;
 import com.example.demo.mapper.SaleMapper;
-import com.example.demo.postgres.service.SaleService;
+import com.example.demo.service.SaleService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -198,15 +198,19 @@ public class SaleController {
         return saleService.getTotalIncome();
     }
 
-    @GetMapping("/cleanEarnings")
-    public Float getEarningsWithoutSpecifiedProductName(String name) {
-        return saleService.getEarningsWithoutSpecifiedProductName(name);
+
+    @Operation(summary = "Endpoint allowing to get earnings without specific product")
+    @GetMapping("/earnings/without/{product}")
+    public Float getEarningsWithoutSpecifiedProductName(@PathVariable String product) {
+        return saleService.getEarningsWithoutSpecifiedProductName(product);
     }
 
-    @GetMapping("/earningsByProduct")
-    public Float getEarningsWithSpecifiedProductName(String name) {
-        return saleService.getEarningsWithSpecifiedProductName(name);
+    @Operation(summary = "Endpoint allowing to get earnings by specific product")
+    @GetMapping("/earnings/{product}")
+    public Float getEarningsWithSpecifiedProductName(@PathVariable String product) {
+        return saleService.getEarningsWithSpecifiedProductName(product);
     }
+
 
     @Operation(summary = "Endpoint allowing to get earned money from all Sales")
     @ApiResponses(value = {

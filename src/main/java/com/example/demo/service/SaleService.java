@@ -1,5 +1,6 @@
-package com.example.demo.postgres.service;
+package com.example.demo.service;
 
+import com.example.demo.businessLogic.StaticProducts;
 import com.example.demo.businessLogic.person.Person;
 import com.example.demo.businessLogic.product.Product;
 import com.example.demo.businessLogic.sale.Sale;
@@ -31,7 +32,7 @@ public class SaleService {
 
         Sale sale = Sale.createManualSale(product, quantity, person, manualPrice, givenMoney, date);
 
-        personService.updateDebt(sale.getPerson().getDebt(), sale.getPerson().getName());
+        personService.setDebt(sale.getPerson().getDebt(), sale.getPerson().getName());
 
         SaleEntity saleEntity = saleMapper.saleToEntity(sale);
         saleRepoPostgres.save(saleEntity);
@@ -47,7 +48,7 @@ public class SaleService {
 
         Sale sale = new Sale(product, quantity, person, discount, money, date);
 
-        personService.updateDebt(sale.getPerson().getDebt(), sale.getPerson().getName());
+        personService.setDebt(sale.getPerson().getDebt(), sale.getPerson().getName());
 
         SaleEntity saleEntity = saleMapper.saleToEntity(sale);
         saleRepoPostgres.save(saleEntity);
@@ -63,7 +64,7 @@ public class SaleService {
 
         Sale sale = Sale.createSaleNotIgnoringSurplus(product, quantity, person, null, null, date);
 
-        personService.updateDebt(sale.getPerson().getDebt(), sale.getPerson().getName());
+        personService.setDebt(sale.getPerson().getDebt(), sale.getPerson().getName());
 
         SaleEntity saleEntity = saleMapper.saleToEntity(sale);
         saleRepoPostgres.save(saleEntity);
@@ -97,10 +98,12 @@ public class SaleService {
 
 
     public void deleteById(Long id) {
-        SaleEntity saleEntity = saleRepoPostgres.getById(id);
-        Float quantity = saleEntity.getQuantity();
+        SaleEntity saleEntity = saleRepoPostgres.getReferenceById(id);
         String productName = saleEntity.getProduct().getName();
-        productService.revertTotalSortAmount(productName, quantity);
+        if(!productName.equals(StaticProducts.PAY_DEBT.name())) {
+            Float quantity = saleEntity.getQuantity();
+            productService.revertTotalSortAmount(productName, quantity);
+        }
 
         saleRepoPostgres.deleteById(id);
     }

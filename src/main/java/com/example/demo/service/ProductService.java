@@ -1,4 +1,4 @@
-package com.example.demo.postgres.service;
+package com.example.demo.service;
 
 import com.example.demo.businessLogic.product.Product;
 import com.example.demo.businessLogic.product.exception.NotEnoughSortException;
@@ -33,7 +33,7 @@ public class ProductService {
     public void reduceTotalSortAmount(String productName, Float boughtQuantity) {
         if (!productRepoPostgres.existsByNameIgnoreCase(productName)) throw new ProductNotExistException(productName);
 
-        Float totalSortAmount = productRepoPostgres.getTotalSortAmount(productName);
+        Float totalSortAmount = productRepoPostgres.getTotalAmount(productName);
 
         Float reamingAmount = (totalSortAmount - boughtQuantity);
         if (reamingAmount >= 0) {
@@ -58,7 +58,7 @@ public class ProductService {
     }
 
     public Float getTotalAmount(String productName) {
-        return productRepoPostgres.getTotalSortAmount(productName);
+        return productRepoPostgres.getTotalAmount(productName);
     }
 
     public void eraseRestOfProduct(String productName) {

@@ -29,7 +29,7 @@ public interface ProductRepoPostgres extends JpaRepository<ProductEntity, Long> 
     @Query(value = " SELECT total_sort_amount FROM product " +
             "WHERE UPPER(name) = UPPER(?1) ",
             nativeQuery = true)
-    Float getTotalSortAmount(String productName);
+    Float getTotalAmount(String productName);
 
     @Transactional
     @Modifying

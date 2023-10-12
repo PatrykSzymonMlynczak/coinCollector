@@ -3,7 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.businessLogic.person.Person;
 import com.example.demo.dto.PersonDto;
 import com.example.demo.mapper.PersonMapper;
-import com.example.demo.postgres.service.PersonService;
+import com.example.demo.service.PersonService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -40,15 +40,16 @@ public class PersonController {
         return person;
     }
 
-    @Operation(summary  = "Endpoint updating debt, not changing total earnings")
+    @Operation(summary  = "Endpoint updating debt,!!! NOT changing total earnings")
     @PutMapping("/updateDebt")
-    public PersonDto updateDebt(Float debt, String name){
+    public PersonDto setDebt(Float debt, String name){
         //todo ignore case
-        personService.updateDebt(debt,name);
+        personService.setDebt(debt,name);
         //todo handle total money -> make req to saleService with position "debt payed"
         return personMapper.personToDto(personService.getPerson(name));
     }
 
+    @Operation(summary  = "Endpoint for debt payment")
     @PutMapping("/payDebt")
     public PersonDto payDebt(Float debt, String name){
         personService.payDebt(debt,name);

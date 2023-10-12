@@ -1,4 +1,4 @@
-package com.example.demo.postgres.service;
+package com.example.demo.service;
 
 import com.example.demo.businessLogic.StaticProducts;
 import com.example.demo.businessLogic.person.Person;
@@ -14,7 +14,6 @@ import com.example.demo.postgres.entity.PersonEntity;
 import com.example.demo.postgres.repository.PersonRepoPostgres;
 import com.example.demo.postgres.repository.ProductRepoPostgres;
 import com.example.demo.postgres.repository.SaleRepoPostgres;
-import com.example.demo.repositoryContract.PersonRepo;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -54,7 +53,7 @@ public class PersonService {
         return personRepoPostgres.findAll().stream().map(personMapper::entityToPerson).collect(Collectors.toList());
     }
 
-    public void updateDebt(Float debt, String name){
+    public void setDebt(Float debt, String name){
         personRepoPostgres.updateDebt(debt,name);
     }
 
