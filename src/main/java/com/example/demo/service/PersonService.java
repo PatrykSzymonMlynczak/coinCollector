@@ -1,4 +1,4 @@
-package com.example.demo.postgres.service;
+package com.example.demo.service;
 
 import com.example.demo.businessLogic.StaticProducts;
 import com.example.demo.businessLogic.person.Person;
@@ -14,7 +14,6 @@ import com.example.demo.postgres.entity.PersonEntity;
 import com.example.demo.postgres.repository.PersonRepoPostgres;
 import com.example.demo.postgres.repository.ProductRepoPostgres;
 import com.example.demo.postgres.repository.SaleRepoPostgres;
-import com.example.demo.repositoryContract.PersonRepo;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +22,7 @@ import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
-public class PersonService implements PersonRepo {
+public class PersonService {
 
     private final PersonRepoPostgres personRepoPostgres;
     private final SaleRepoPostgres saleRepoPostgres;
@@ -32,7 +31,7 @@ public class PersonService implements PersonRepo {
     private final SaleMapper saleMapper;
     private final ProductMapper productMapper;
 
-    @Override
+    
     public Person savePerson(Person person) {
         PersonEntity personEntity = personMapper.personToEntity(person);
         if(!personRepoPostgres.existsByNameIgnoreCase(person.getName())) {
@@ -41,7 +40,7 @@ public class PersonService implements PersonRepo {
         }else throw new PersonAlreadyExistsException(person.getName());
     }
 
-    @Override
+    
     public Person getPerson(String name) {
         if(personRepoPostgres.existsByNameIgnoreCase(name)) {
             PersonEntity personEntity = personRepoPostgres.findByNameIgnoreCase(name);
@@ -49,23 +48,24 @@ public class PersonService implements PersonRepo {
         }else throw new PersonNotExistsException(name);
     }
 
-    @Override
+    
     public List<Person> getAllPerson() {
         return personRepoPostgres.findAll().stream().map(personMapper::entityToPerson).collect(Collectors.toList());
     }
 
-    public void updateDebt(Float debt, String name){
+    public void setDebt(Float debt, String name){
         personRepoPostgres.updateDebt(debt,name);
     }
 
-    public SaleDto payDebt(Float payedDebt, String name){
-        personRepoPostgres.reduceDebt(payedDebt,name);
+    //todo test
+    public SaleDto payDebt(Float payedDebt, String personName){
+        personRepoPostgres.reduceDebt(payedDebt,personName);
 
         Product payDebtProduct = new Product(StaticProducts.PAY_DEBT.name(), payedDebt);
         if(!productRepoPostgres.existsByNameIgnoreCase(payDebtProduct.getName())){
             productRepoPostgres.save(productMapper.productToEntity(payDebtProduct));
         }
-        Person person = getPerson(name);
+        Person person = getPerson(personName);
         Product product = productMapper.entityToProduct(productRepoPostgres.getByNameIgnoreCase(payDebtProduct.getName()));
         Sale payDebtSale = new Sale(product, person, payedDebt);
         saleRepoPostgres.save(saleMapper.saleToEntity(payDebtSale));

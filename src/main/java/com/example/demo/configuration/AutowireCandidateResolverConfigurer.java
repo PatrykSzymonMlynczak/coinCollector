@@ -16,6 +16,8 @@ import java.lang.annotation.Annotation;
  * from application.properties
  * into @Qualifier
  **/
+
+@Deprecated
 @Component
 public class AutowireCandidateResolverConfigurer implements BeanFactoryPostProcessor {
     private static class EnvironmentAwareQualifierAnnotationAutowireCandidateResolver extends QualifierAnnotationAutowireCandidateResolver {
@@ -48,5 +50,3 @@ public class AutowireCandidateResolverConfigurer implements BeanFactoryPostProce
         bf.setAutowireCandidateResolver(new EnvironmentAwareQualifierAnnotationAutowireCandidateResolver());
     }
 }
-
-

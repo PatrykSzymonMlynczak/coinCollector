@@ -7,7 +7,6 @@ import com.example.demo.businessLogic.sale.Sale;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDate;
 import java.util.TreeMap;
 
 public class SaleTest {

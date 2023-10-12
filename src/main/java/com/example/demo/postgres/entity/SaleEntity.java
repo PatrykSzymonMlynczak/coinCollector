@@ -1,6 +1,5 @@
 package com.example.demo.postgres.entity;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -29,7 +28,7 @@ public class SaleEntity {
 
     private Float quantity;
 
-    @OneToOne(cascade = CascadeType.REMOVE)
+    @OneToOne
     @JoinColumn(name = "person_id")
     private PersonEntity person;
 

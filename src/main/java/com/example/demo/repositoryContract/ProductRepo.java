@@ -4,7 +4,8 @@ import com.example.demo.businessLogic.product.Product;
 
 import java.util.List;
 
-public interface ProductRepo{
+@Deprecated
+public interface ProductRepo {
 
     Product saveProduct(Product product);
     Product getProductByName(String productName);
