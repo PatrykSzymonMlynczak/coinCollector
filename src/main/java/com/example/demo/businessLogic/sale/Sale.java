@@ -10,9 +10,15 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
+import java.util.stream.Stream;
 
 
 @Data
@@ -42,11 +48,11 @@ public class Sale implements Serializable {
 
     /**
      * when money not given - not earned
-     * */
-    public static Sale createManualSale(Product product, Float quantity, Person person, Float manualPrice, Float givenMoney, String date){
+     */
+    public static Sale createManualSale(Product product, Float quantity, Person person, Float manualPrice, Float givenMoney, String date) {
         float income = manualPrice;
         float mySortPrice = product.getMyPrice();
-        if(givenMoney != null) {
+        if (givenMoney != null) {
             /** when given money are smaller than price,
              * decrease income and increase debt
              * when given money will be bigger, additional money will decrease debt or make surplus*/
@@ -57,7 +63,7 @@ public class Sale implements Serializable {
 
         return Sale.builder()
                 .product(product)
-                .sortAmountBefore(product.getTotalSortAmount()+quantity)
+                .sortAmountBefore(product.getTotalSortAmount() + quantity)
                 .quantity(quantity)
                 .person(person)
                 .transactionDate(date == null || date.equals("undefined") ? LocalDate.now() : LocalDate.parse(date))
@@ -65,7 +71,7 @@ public class Sale implements Serializable {
                 .income(income)
                 .loss(0f)
                 .earned(roundFloatToTwoDecimalPlaces(income - (mySortPrice * quantity)))
-                .sortAmountBefore(product.getTotalSortAmount()+quantity)
+                .sortAmountBefore(product.getTotalSortAmount() + quantity)
                 .build();
     }
 
@@ -73,7 +79,7 @@ public class Sale implements Serializable {
         discount = (discount == null) ? 0F : discount;
         float income = roundFloatToTwoDecimalPlaces(getIncomeByProductPricingNotIgnoreSurplus(product.getQuantityPriceMap(), quantity, discount));
         float mySortPrice = product.getMyPrice();
-        if(givenMoney != null) {
+        if (givenMoney != null) {
             /** when given money are smaller than price,
              * decrease income and increase debt
              * when given money will be bigger, additional money will decrease debt or make surplus*/
@@ -83,7 +89,7 @@ public class Sale implements Serializable {
         }
         return Sale.builder()
                 .product(product)
-                .sortAmountBefore(product.getTotalSortAmount()+quantity)
+                .sortAmountBefore(product.getTotalSortAmount() + quantity)
                 .quantity(quantity)
                 .person(person)
                 .transactionDate(date == null || date.equals("undefined") ? LocalDate.now() : LocalDate.parse(date))
@@ -93,25 +99,25 @@ public class Sale implements Serializable {
                 .mySortPrice(mySortPrice)
                 .loss(0f)
                 .earned(roundFloatToTwoDecimalPlaces(income - (mySortPrice * quantity)))
-                .sortAmountBefore(product.getTotalSortAmount()+quantity)
+                .sortAmountBefore(product.getTotalSortAmount() + quantity)
                 .build();
     }
 
     private void setNowDateIfNotExist(boolean date, String date1) {
-        if(date){
+        if (date) {
             this.transactionDate = LocalDate.now();
             this.transactionTime = LocalTime.now();
 
-        }else {
+        } else {
             this.transactionDate = LocalDate.parse(date1);
-            this.transactionTime = LocalTime.of(0,0,0);
+            this.transactionTime = LocalTime.of(0, 0, 0);
         }
     }
 
-    public Sale(Product product, Float quantity, Person person, Float discount, Float givenMoney, String date){
+    public Sale(Product product, Float quantity, Person person, Float discount, Float givenMoney, String date) {
 
         this.product = product;
-        this.sortAmountBefore = product.getTotalSortAmount()+quantity;
+        this.sortAmountBefore = product.getTotalSortAmount() + quantity;
         this.quantity = quantity;
         this.person = person;
 
@@ -119,7 +125,7 @@ public class Sale implements Serializable {
         this.mySortPrice = product.getMyPrice();
         this.discount = (discount == null) ? 0F : discount;
         this.income = getIncomeByProductPricingIgnoreSurplus(product.getQuantityPriceMap(), (int) Math.floor(quantity));
-        if(givenMoney != null) {
+        if (givenMoney != null) {
             /** when given money are smaller than price,
              * decrease income and increase debt
              * when given money will be bigger, additional money will decrease debt or make surplus*/
@@ -128,7 +134,7 @@ public class Sale implements Serializable {
             this.income -= debt;
         }
         this.loss = getLoss(quantity);
-        this.earned = roundFloatToTwoDecimalPlaces(income - loss - (mySortPrice * (quantity - (quantity%1))));
+        this.earned = roundFloatToTwoDecimalPlaces(income - loss - (mySortPrice * (quantity - (quantity % 1))));
 
     }
 
@@ -146,7 +152,7 @@ public class Sale implements Serializable {
     }
 
     //In case of payed debt
-    public Sale(Product product,Person person,Float payedMoney) {
+    public Sale(Product product, Person person, Float payedMoney) {
 
         this.product = product;
         this.quantity = 0f;
@@ -161,34 +167,48 @@ public class Sale implements Serializable {
         this.earned = payedMoney;
     }
 
-    private static Float getIncomeByProductPricingNotIgnoreSurplus(TreeMap<Float, Float> sortPricingMap, float quantity, float discount){
+    public static Float getQuantityByPrice(Product product, Float payedMoney) {
+        Map<Float, Float> quantityPriceMap = product.getQuantityPriceMap();
+        List<Float> sortedDescendingListOfQuantities = new ArrayList<>(quantityPriceMap.keySet());
+        sortedDescendingListOfQuantities.sort(Collections.reverseOrder());
+        Float quantityKey =  sortedDescendingListOfQuantities.stream().filter(quantity -> {
+            float quotient = payedMoney/quantity;
+            float priceOfQuan = quantityPriceMap.get(quantity);
+            return quotient >= priceOfQuan;
+        }).findFirst().orElseThrow();
+
+        DecimalFormat format = new DecimalFormat("##.00");
+        return (float) (Math.round((payedMoney/ quantityPriceMap.get(quantityKey))* 100.0) / 100.0);
+    }
+
+    private static Float getIncomeByProductPricingNotIgnoreSurplus(TreeMap<Float, Float> sortPricingMap, float quantity, float discount) {
         Float pricePerSale = 0F;
 
-        Float previousQuantity= 0F;
+        Float previousQuantity = 0F;
         //If quantity is not standardized take last bigger value
-        for (Float quantityFromMap: sortPricingMap.keySet()) {
-            if(previousQuantity > quantity) break;
+        for (Float quantityFromMap : sortPricingMap.keySet()) {
+            if (previousQuantity > quantity) break;
 
-            if (quantity >= quantityFromMap ) {
+            if (quantity >= quantityFromMap) {
                 previousQuantity = quantityFromMap;
-                pricePerSale = quantity * ( sortPricingMap.get(quantityFromMap));
+                pricePerSale = quantity * (sortPricingMap.get(quantityFromMap));
             }
         }
         pricePerSale -= discount;
         return pricePerSale;
     }
 
-    private Float getIncomeByProductPricingIgnoreSurplus(TreeMap<Float, Float> sortPricingMap, Integer roundedQuantity ){
+    private Float getIncomeByProductPricingIgnoreSurplus(TreeMap<Float, Float> sortPricingMap, Integer roundedQuantity) {
         Float pricePerSale = 0F;
 
-        Float previousQuantity= 0F;
+        Float previousQuantity = 0F;
         //If quantity is not standardized take last bigger value
-        for (Float quantityFromMap: sortPricingMap.keySet()) {
-            if(previousQuantity > Math.round(roundedQuantity)) break;
+        for (Float quantityFromMap : sortPricingMap.keySet()) {
+            if (previousQuantity > Math.round(roundedQuantity)) break;
 
-            if (roundedQuantity >= quantityFromMap ) {
+            if (roundedQuantity >= quantityFromMap) {
                 previousQuantity = quantityFromMap;
-                pricePerSale = roundedQuantity * ( sortPricingMap.get(quantityFromMap));
+                pricePerSale = roundedQuantity * (sortPricingMap.get(quantityFromMap));
             }
         }
         pricePerSale -= discount;
