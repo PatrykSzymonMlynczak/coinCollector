@@ -7,7 +7,14 @@ import com.example.demo.businessLogic.sale.Sale;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
+
+import static com.google.common.truth.Truth.assertThat;
 
 public class SaleTest {
 
@@ -182,4 +189,21 @@ public class SaleTest {
         //then
         Assertions.assertEquals(newSale.getIncome(), 110F);
     }
+
+    @Test
+    public void testGettingQuantityByPrice(){
+        quantityPriceMap.put(1F,50F);
+        quantityPriceMap.put(5F,40F);
+        quantityPriceMap.put(10F,30F);
+
+        float x = Sale.getQuantityByPrice(new Product("xx", quantityPriceMap, 20), 200f);
+        assertThat(x).isEqualTo(5);
+
+        float y = Sale.getQuantityByPrice(new Product("xx", quantityPriceMap, 20), 100f);
+        assertThat(y).isEqualTo(2);
+
+        float z = Sale.getQuantityByPrice(new Product("xx", quantityPriceMap, 20), 1000f);
+        assertThat(z).isEqualTo(33.33f);
+    }
+
 }
