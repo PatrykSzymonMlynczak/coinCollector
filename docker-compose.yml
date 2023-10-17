@@ -10,6 +10,7 @@ services:
       - postgres
     networks:
       - kolektorowa
+    restart: unless-stopped
 
   postgres:
     container_name: coincollector_db
