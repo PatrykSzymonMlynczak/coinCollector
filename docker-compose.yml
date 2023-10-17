@@ -1,8 +1,18 @@
 version: '3.5'
 
 services:
+  backend:
+    container_name: coincollector_service
+    build: ./
+    ports:
+      - "8082:8082"
+    depends_on:
+      - postgres
+    networks:
+      - kolektorowa
+
   postgres:
-    container_name: coincollector_container
+    container_name: coincollector_db
     image: postgres
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
@@ -13,7 +23,7 @@ services:
     ports:
       - "5432:5432"
     networks:
-      - postgres
+      - kolektorowa
     restart: unless-stopped
   
   pgadmin:
@@ -29,11 +39,11 @@ services:
     ports:
       - "${PGADMIN_PORT:-5050}:80"
     networks:
-      - postgres
+      - kolektorowa
     restart: unless-stopped
 
 networks:
-  postgres:
+  kolektorowa:
     driver: bridge
 
 volumes:
